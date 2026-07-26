@@ -1858,10 +1858,11 @@ footer.pixel-panel p {
 /* 公仔对话框 / Mascot Dialog */
 .mascot-dialog {
   position: absolute;
-  top: -10px;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
+  margin-bottom: 12px;
+  z-index: 9999;
   animation: mascotDialogPop 0.2s ease-out;
 }
 @keyframes mascotDialogPop {
@@ -1907,6 +1908,9 @@ footer.pixel-panel p {
   transform: translateX(-50%);
   bottom: -10px;
   z-index: 1;
+}
+.mascot-dialog {
+  cursor: pointer;
 }
 .mascot-dialog:hover .mascot-dialog-bubble {
   border-color: #ff5555;

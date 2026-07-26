@@ -2519,6 +2519,10 @@
       if (HIDDEN_PAGES[id]) {
         el.classList.add('hidden');
       }
+      // eve-chat-page 初始有 hidden 类，隐藏时需要恢复
+      if (id === 'eve-chat-page') {
+        el.classList.add('hidden');
+      }
     }
   }
 
@@ -2544,6 +2548,7 @@
     if (!el) return;
     if (ACTIVE_PAGES[pageId]) {
       el.classList.add('active');
+      el.classList.remove('hidden');
     } else if (HIDDEN_PAGES[pageId]) {
       el.classList.remove('hidden');
     }
@@ -3257,32 +3262,53 @@
 
   // ---------- 公仔彩蛋交互 / Mascot Easter Egg Interaction ----------
   function initMascotEasterEgg() {
-    const mascotContainer = document.getElementById('landing-mascot-container');
-    const mascotDialog = document.getElementById('mascot-dialog');
-    const dialogText = document.getElementById('mascot-dialog-text');
+    var mascotContainer = document.getElementById('landing-mascot-container');
+    var mascotDialog = document.getElementById('mascot-dialog');
+    var dialogText = document.getElementById('mascot-dialog-text');
     if (!mascotContainer || !mascotDialog || !dialogText) return;
 
-    const dialogKeys = ['mascot_dialog_1', 'mascot_dialog_2', 'mascot_dialog_3', 'mascot_dialog_4', 'mascot_dialog_5', 'mascot_dialog_6'];
+    var dialogKeys = ['mascot_dialog_1', 'mascot_dialog_2', 'mascot_dialog_3', 'mascot_dialog_4', 'mascot_dialog_5', 'mascot_dialog_6'];
+
+    // 初始化：确保对话框隐藏
+    mascotDialog.style.display = 'none';
 
     mascotContainer.addEventListener('click', function(e) {
+      // 如果点击的是对话框本身，不处理（让对话框自己的事件处理）
       if (e.target.closest('.mascot-dialog')) return;
-      if (mascotDialog.style.display === 'none') {
-        const randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
-        dialogText.textContent = i18n.t(randomKey);
+
+      var isHidden = mascotDialog.style.display === 'none' || mascotDialog.style.display === '';
+      if (isHidden) {
+        // 显示对话框
+        var randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
+        try {
+          dialogText.textContent = window.i18n ? window.i18n.t(randomKey) : randomKey;
+        } catch (err) {
+          dialogText.textContent = randomKey;
+        }
         mascotDialog.style.display = 'block';
+        // 重置动画
+        mascotDialog.style.animation = 'none';
+        void mascotDialog.offsetWidth;
+        mascotDialog.style.animation = '';
       } else {
         mascotDialog.style.display = 'none';
       }
     });
 
+    // 点击对话框进入 Eve 聊天室
     mascotDialog.addEventListener('click', function(e) {
       e.stopPropagation();
+      mascotDialog.style.display = 'none';
       showEveChat();
     });
 
-    document.getElementById('btn-eve-back').addEventListener('click', function() {
-      showAppLanding();
-    });
+    // 返回按钮
+    var btnEveBack = document.getElementById('btn-eve-back');
+    if (btnEveBack) {
+      btnEveBack.addEventListener('click', function() {
+        showAppLanding();
+      });
+    }
   }
 
   function initPageSwitching() {
