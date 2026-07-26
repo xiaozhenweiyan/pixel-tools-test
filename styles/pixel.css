@@ -6893,10 +6893,10 @@ canvas {
   background: #2d2d44;
   border: 2px solid #3d3d54;
   padding: 10px 14px;
-  color: #f0f0f0;
-  font-family: 'Courier New', Courier, monospace;
+  color: #e0e0e8;
+  font-family: 'Consolas', 'Monaco', 'Source Code Pro', 'Menlo', 'Courier New', monospace;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -6908,7 +6908,7 @@ canvas {
 
 .ai-message-content em,
 .ai-message-content i {
-  color: #ff9999;
+  color: #ffb3b3;
   font-style: italic;
 }
 
@@ -6922,13 +6922,21 @@ canvas {
   padding: 2px 6px;
   border: 1px solid #3d3d54;
   font-size: 13px;
-  color: #00ff88;
+  color: #d8d8e8;
+  font-family: 'Consolas', 'Monaco', 'Source Code Pro', 'Menlo', 'Courier New', monospace;
 }
 
 .ai-message-content pre {
   background: #1a1a2e;
+  background-image:
+    linear-gradient(45deg, rgba(61, 61, 84, 0.4) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(61, 61, 84, 0.4) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(61, 61, 84, 0.4) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(61, 61, 84, 0.4) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
   border: 2px solid #3d3d54;
-  padding: 10px;
+  padding: 12px;
   overflow-x: auto;
   margin: 8px 0;
 }
@@ -6936,6 +6944,9 @@ canvas {
 .ai-message-content pre code {
   border: none;
   padding: 0;
+  background: transparent;
+  color: #e0e0e8;
+  background-image: none;
 }
 
 .ai-message-content h3 {
@@ -6963,11 +6974,17 @@ canvas {
 
 .ai-message-content blockquote {
   border-left: 4px solid #ffd700;
-  padding-left: 12px;
+  padding: 8px 12px;
   margin: 8px 0;
-  color: #aaaacc;
-  background: rgba(255, 215, 0, 0.05);
-  padding: 6px 12px;
+  color: #c8c8e0;
+  background: #1a1a2e;
+  background-image:
+    linear-gradient(45deg, rgba(255, 215, 0, 0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 215, 0, 0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 215, 0, 0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 215, 0, 0.08) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
 }
 
 .ai-message-content a {

@@ -158,48 +158,48 @@ window.PixelAI = (function () {
   // 将 Markdown 转换为 HTML / Convert Markdown to HTML
   function markdownToHtml(text) {
     if (!text) return '';
-    
+
     // 转义 HTML 标签，然后逐步转换 Markdown 语法
     var html = text.replace(/&/g, '&amp;')
                    .replace(/</g, '&lt;')
                    .replace(/>/g, '&gt;');
-    
+
     // 代码块（```code```）/ Code blocks
     html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-    
+
     // 内联代码（`code`）/ Inline code
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    
+
     // 粗体（**text**）/ Bold
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
+
     // 斜体（*text*）/ Italic
     html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    
+
     // 删除线（~~text~~）/ Strikethrough
     html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-    
+
     // 链接（[text](url)）/ Links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    
+
     // 三级标题（### text）/ h3 headers
     html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-    
+
     // 四级标题（#### text）/ h4 headers
     html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
-    
+
     // 列表项（- text）/ List items
     html = html.replace(/^-\s(.+)$/gm, '<li>$1</li>');
-    
+
     // 引用（> text）/ Blockquote
     html = html.replace(/^>\s(.+)$/gm, '<blockquote>$1</blockquote>');
-    
+
     // 将连续的 li 包裹在 ul 中 / Wrap consecutive li in ul
     html = html.replace(/(<li>.+<\/li>)+/g, '<ul>$&</ul>');
-    
+
     // 换行（\n）/ Line breaks
     html = html.replace(/\n/g, '<br>');
-    
+
     return html;
   }
 
@@ -869,8 +869,13 @@ window.PixelAI = (function () {
     state.streamingContent = content;
     var contentDiv = state.streamingMessageEl.querySelector('.ai-message-content');
     if (contentDiv) {
-      // 流式输出时用 textContent，完成后用 innerHTML / Use textContent during streaming
-      contentDiv.textContent = content;
+      // 流式输出时实时渲染 Markdown / Render Markdown in real-time during streaming
+      try {
+        contentDiv.innerHTML = sanitizeHtml(markdownToHtml(content));
+      } catch (e) {
+        // 转换失败时回退到纯文本 / Fallback to text on conversion error
+        contentDiv.textContent = content;
+      }
     }
     if (state.dom.messages) {
       state.dom.messages.scrollTop = state.dom.messages.scrollHeight;
