@@ -905,6 +905,17 @@ cd wasm
 
 ## Changelog
 
+### 2026-07 · AI Chat Tutorial & UX Refinement (v35)
+
+- **Tutorial button relocated** — moved to the right of the Back button in a new `.pixel-ai-topbar-left` group; overrode the global `.tutorial-btn` fixed-position style for the AI page so it sits inline
+- **Tutorial content fully expanded** — bilingual (zh/en) `tutorial_pixel_ai` rewritten with 13 sections: API Key acquisition for all 9 providers, model configuration, chatting, conversation sidebar, message editing, HTML rendering, custom scrollbar, creative features (copy/regenerate/export/prompt templates), token stats, mobile, common errors, privacy
+- **Tutorial content styling** — added `.tutorial-content h4 / strong / code / a` styles for richer formatting inside the modal
+- **Pixel AI in Recent Tools** — added `pixel-ai-page` to `RECENT_TRACKED_PAGES` and `PAGE_TO_INFO` so Pixel AI now appears on the homepage "RECENT" area
+- **Prompt templates i18n** — replaced hardcoded Chinese `data-prompt` with `data-prompt-key` lookup via `t()`; added 5 new `_text` i18n keys (zh + en)
+- **Service Worker** cache version upgraded v34 → v35
+
+---
+
 ### 2026-07 · AI Chat Overhaul: History + Edit + New Features
 
 - **Conversation History Sidebar** — Left sidebar with multi-conversation management, persisted to `localStorage` (`pixel_ai_conversations`), survives browser restart. Red warning at bottom: "⚠ Clearing browser cache will erase all conversations!!!"
@@ -1906,6 +1917,17 @@ cd wasm
 ---
 
 ## 更新日志
+
+### 2026-07 · AI 对话教程与体验优化（v35）
+
+- **教程按钮位置调整** — 移至「返回」按钮右侧，新增 `.pixel-ai-topbar-left` 容器；覆盖全局 `.tutorial-btn` 的 fixed 定位样式，使其在 AI 页面正常内联显示
+- **教程内容全面完善** — 中英文 `tutorial_pixel_ai` 重写为 13 个章节：9 家服务商 API Key 获取、模型配置、开始对话、对话记录栏、消息编辑、HTML 渲染、自制滚动条、创新功能（复制/重新生成/导出/提示词模板）、Token 统计、移动端、常见错误、隐私说明
+- **教程弹窗样式增强** — 新增 `.tutorial-content h4 / strong / code / a` 样式，弹窗内格式更丰富
+- **像素 AI 加入最近使用** — 将 `pixel-ai-page` 添加到 `RECENT_TRACKED_PAGES` 和 `PAGE_TO_INFO`，首页"最近使用"区域现在会显示像素 AI
+- **提示词模板国际化** — 用 `data-prompt-key` 配合 `t()` 查找替换硬编码中文 `data-prompt`，新增 5 个 `_text` 中英文 i18n 键
+- **Service Worker** 缓存版本升级 v34 → v35
+
+---
 
 ### 2026-07 · AI 对话大升级：对话记录 + 编辑 + 创新功能
 
