@@ -1618,32 +1618,62 @@
 
   <!-- 像素AI页面 / Pixel AI Page -->
   <div id="pixel-ai-page" class="pixel-ai-page">
-    <!-- 顶部栏 -->
-    <div class="pixel-ai-topbar">
-      <button class="pixel-btn pixel-ai-back-btn" id="btn-back-home-ai">
-        &larr; <span data-i18n="pixel_ai_back">返回</span>
-      </button>
-      <h1 class="pixel-ai-title" data-i18n="pixel_ai_title">像素AI PIXEL AI</h1>
-      <div class="pixel-ai-topbar-actions">
-        <button class="pixel-btn pixel-ai-tutorial-btn tutorial-btn" data-page="pixel-ai" data-i18n="pixel_ai_tutorial">教程</button>
-        <button class="pixel-btn pixel-ai-clear-btn" id="btn-ai-clear" data-i18n="pixel_ai_clear">清空对话</button>
-        <button class="pixel-btn pixel-ai-settings-btn" id="btn-ai-settings" data-i18n="pixel_ai_settings">设置</button>
+    <!-- 左侧对话记录栏 / Left Sidebar -->
+    <div class="pixel-ai-sidebar" id="pixel-ai-sidebar">
+      <div class="ai-sidebar-header">
+        <button class="pixel-btn ai-new-chat-btn" id="btn-ai-new-chat">
+          <span>＋</span> <span data-i18n="pixel_ai_new_chat">新对话</span>
+        </button>
       </div>
+      <div class="ai-conversation-list" id="ai-conversation-list"></div>
+      <div class="ai-sidebar-warning" data-i18n="pixel_ai_cache_warning">⚠ 清空浏览器缓存会导致对话记录消失！！！</div>
     </div>
 
-    <!-- 消息列表区 -->
-    <div class="pixel-ai-messages" id="ai-messages"></div>
+    <!-- 主聊天区 / Main Chat Area -->
+    <div class="pixel-ai-main">
+      <!-- 顶部栏 -->
+      <div class="pixel-ai-topbar">
+        <button class="pixel-btn pixel-ai-back-btn" id="btn-back-home-ai">
+          &larr; <span data-i18n="pixel_ai_back">返回</span>
+        </button>
+        <button class="pixel-btn ai-sidebar-toggle" id="btn-ai-sidebar-toggle">☰</button>
+        <h1 class="pixel-ai-title" data-i18n="pixel_ai_title">像素AI PIXEL AI</h1>
+        <div class="pixel-ai-topbar-actions">
+          <button class="pixel-btn pixel-ai-tutorial-btn tutorial-btn" data-page="pixel-ai" data-i18n="pixel_ai_tutorial">教程</button>
+          <button class="pixel-btn pixel-ai-clear-btn" id="btn-ai-clear" data-i18n="pixel_ai_clear">清空对话</button>
+          <button class="pixel-btn" id="btn-ai-export" data-i18n="pixel_ai_export">导出</button>
+          <button class="pixel-btn pixel-ai-settings-btn" id="btn-ai-settings" data-i18n="pixel_ai_settings">设置</button>
+        </div>
+      </div>
 
-    <!-- Token 状态栏 -->
-    <div class="pixel-ai-token-bar" id="ai-token-bar">
-      <span class="token-label" data-i18n="pixel_ai_token_total_session">会话总 Token:</span>
-      <span class="token-value" id="ai-total-tokens">0</span>
-    </div>
+      <!-- 消息列表区（自制滚动条）/ Messages with custom scrollbar -->
+      <div class="pixel-ai-messages-wrap">
+        <div class="pixel-ai-messages" id="ai-messages"></div>
+        <div class="ai-custom-scrollbar" id="ai-scrollbar-track">
+          <div class="ai-scrollbar-thumb" id="ai-scrollbar-thumb"></div>
+        </div>
+      </div>
 
-    <!-- 输入区 -->
-    <div class="pixel-ai-input-area">
-      <textarea class="pixel-ai-input pixel-input" id="ai-input" rows="3" data-i18n="pixel_ai_placeholder" placeholder="输入消息..."></textarea>
-      <button class="pixel-btn pixel-ai-send-btn" id="btn-ai-send" data-i18n="pixel_ai_send">发送</button>
+      <!-- Token 状态栏 -->
+      <div class="pixel-ai-token-bar" id="ai-token-bar">
+        <span class="token-label" data-i18n="pixel_ai_token_total_session">会话总 Token:</span>
+        <span class="token-value" id="ai-total-tokens">0</span>
+      </div>
+
+      <!-- 提示词模板 / Prompt Templates -->
+      <div class="ai-prompt-templates" id="ai-prompt-templates">
+        <button class="prompt-chip" data-prompt="请将以下内容翻译成英文：&#10;" data-i18n="pixel_ai_prompt_translate">翻译</button>
+        <button class="prompt-chip" data-prompt="请总结以下内容的要点：&#10;" data-i18n="pixel_ai_prompt_summarize">总结</button>
+        <button class="prompt-chip" data-prompt="请解释以下代码：&#10;" data-i18n="pixel_ai_prompt_code">代码解释</button>
+        <button class="prompt-chip" data-prompt="请用简单的话解释以下概念：&#10;" data-i18n="pixel_ai_prompt_explain">概念解释</button>
+        <button class="prompt-chip" data-prompt="请帮我写一个" data-i18n="pixel_ai_prompt_write">写作</button>
+      </div>
+
+      <!-- 输入区 -->
+      <div class="pixel-ai-input-area">
+        <textarea class="pixel-ai-input pixel-input" id="ai-input" rows="3" data-i18n="pixel_ai_placeholder" placeholder="输入消息..."></textarea>
+        <button class="pixel-btn pixel-ai-send-btn" id="btn-ai-send" data-i18n="pixel_ai_send">发送</button>
+      </div>
     </div>
 
     <!-- 模型设置弹窗 -->
