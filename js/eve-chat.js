@@ -55,13 +55,13 @@
       var input = document.getElementById('eve-api-key-input');
       var btn = document.getElementById('btn-eve-toggle-key');
       if (!input || !btn) return;
-      
+
       if (input.type === 'password') {
         input.type = 'text';
-        btn.textContent = t('pixel_ai_settings_hide') || '隐藏';
+        btn.textContent = (window.i18n && window.i18n.t('pixel_ai_settings_hide')) || '隐藏';
       } else {
         input.type = 'password';
-        btn.textContent = t('pixel_ai_settings_show') || '显示';
+        btn.textContent = (window.i18n && window.i18n.t('pixel_ai_settings_show')) || '显示';
       }
     },
     
@@ -153,17 +153,17 @@
     },
     
     applyI18n: function() {
-      if (typeof t !== 'function') return;
-      
+      if (!window.i18n || typeof window.i18n.t !== 'function') return;
+
       var elements = document.querySelectorAll('[data-i18n]');
       for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
         var key = element.getAttribute('data-i18n');
-        if (t(key)) {
+        if (window.i18n.t(key)) {
           if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-            element.placeholder = t(key);
+            element.placeholder = window.i18n.t(key);
           } else {
-            element.textContent = t(key);
+            element.textContent = window.i18n.t(key);
           }
         }
       }

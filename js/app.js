@@ -3268,7 +3268,7 @@
       if (e.target.closest('.mascot-dialog')) return;
       if (mascotDialog.style.display === 'none') {
         const randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
-        dialogText.textContent = t(randomKey);
+        dialogText.textContent = i18n.t(randomKey);
         mascotDialog.style.display = 'block';
       } else {
         mascotDialog.style.display = 'none';
