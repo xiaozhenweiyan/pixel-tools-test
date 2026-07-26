@@ -7137,11 +7137,24 @@ canvas {
 
 /* 自制确认弹窗 / Custom Confirm Modal */
 .ai-confirm-modal {
-  z-index: 1001;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ai-confirm-fade-in 0.15s ease-out;
+}
+
+@keyframes ai-confirm-fade-in {
+  from { background: rgba(0, 0, 0, 0); }
+  to { background: rgba(0, 0, 0, 0.8); }
 }
 
 .ai-confirm-dialog {
   text-align: center;
+  width: 90%;
   max-width: 380px;
   background:
     linear-gradient(45deg, rgba(255, 215, 0, 0.05) 25%, transparent 25%),
@@ -7152,6 +7165,12 @@ canvas {
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
   border-color: #ff5555;
+  animation: ai-confirm-pop 0.2s ease-out;
+}
+
+@keyframes ai-confirm-pop {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .ai-confirm-icon {
