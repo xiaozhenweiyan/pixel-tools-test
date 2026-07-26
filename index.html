@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title data-i18n="page_title">像素风格工具网站 Pixel Tools</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles/pixel.css">
+</head>
+<body>
+  <!-- 注册弹窗 / Register Modal -->
+  <div id="register-modal" class="register-modal" style="display:none;">
+    <div class="register-modal-content pixel-panel">
+      <h2 data-i18n="register_title">欢迎来到像素风格工具网站</h2>
+      <p data-i18n="register_nickname_hint">请输入你的昵称（可跳过）</p>
+      <input type="text" id="register-nickname" class="pixel-input" maxlength="20" data-i18n="register_placeholder" placeholder="访客">
+      <div class="register-modal-buttons">
+        <button id="register-skip" class="pixel-btn" data-i18n="register_skip">跳过</button>
+        <button id="register-confirm" class="pixel-btn" data-i18n="register_confirm">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 教程弹窗 / Tutorial Modal -->
+  <div id="tutorial-modal" class="tutorial-modal" style="display:none;">
+    <div class="tutorial-modal-content pixel-panel">
+      <div class="tutorial-modal-header">
+        <h2 id="tutorial-title" data-i18n="tutorial_title">教程</h2>
+        <button id="tutorial-close" class="tutorial-close-btn">×</button>
+      </div>
+      <div id="tutorial-content" class="tutorial-content"></div>
+    </div>
+  </div>
+
+  <!-- 像素风格工具网站首页 / App Landing Page -->
+  <div id="app-landing-page" class="app-landing-page">
+    <div class="app-landing-content">
+      <h1 class="app-landing-title" data-i18n="app_landing_title">像素风格工具网站</h1>
+      <p class="app-landing-subtitle" data-i18n="app_landing_subtitle">PIXEL TOOLS</p>
+      <!-- 最近使用区域 / Recent Tools Area -->
+      <div id="recent-tools-area" class="recent-tools-area" style="display:none;">
+        <div class="recent-tools-header">
+          <span class="recent-tools-title" data-i18n="recent_tools_title">最近使用 RECENT</span>
+          <button id="btn-recent-clear" class="recent-tools-clear" data-i18n="recent_tools_clear">清空</button>
+        </div>
+        <div id="recent-tools-list" class="recent-tools-list"></div>
+      </div>
+      <div class="app-landing-cards">
+        <div class="app-landing-category">
+          <div class="app-landing-category-title" data-category="learning"><span data-i18n="category_learning">学习类 LEARNING</span><span class="category-toggle-icon" aria-hidden="true">▼</span></div>
+          <button class="app-landing-card" id="btn-enter-math">
+            <div class="app-landing-card-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                <text x="24" y="32" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="22" font-weight="bold">π</text>
+                <circle cx="14" cy="14" r="2" fill="#1e90ff"/>
+                <circle cx="34" cy="14" r="2" fill="#ff4500"/>
+                <circle cx="14" cy="34" r="2" fill="#228b22"/>
+                <circle cx="34" cy="34" r="2" fill="#ffd700"/>
+              </svg>
+            </div>
+            <div class="app-landing-card-body">
+              <div class="app-landing-card-title" data-i18n="card_math_title">像素数学</div>
+              <div class="app-landing-card-desc" data-i18n="card_math_desc">数字序列预测 · 计算器 · 神经网络可视化</div>
+            </div>
+          </button>
+          <button class="app-landing-card" id="btn-enter-pixel-programming">
+            <div class="app-landing-card-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                <!-- 像素齿轮 / Pixel Gear -->
+                <rect x="22" y="10" width="4" height="4" fill="#ffd700"/>
+                <rect x="22" y="34" width="4" height="4" fill="#ffd700"/>
+                <rect x="10" y="22" width="4" height="4" fill="#ffd700"/>
+                <rect x="34" y="22" width="4" height="4" fill="#ffd700"/>
+                <rect x="14" y="14" width="4" height="4" fill="#1e90ff"/>
+                <rect x="30" y="14" width="4" height="4" fill="#1e90ff"/>
+                <rect x="14" y="30" width="4" height="4" fill="#1e90ff"/>
+                <rect x="30" y="30" width="4" height="4" fill="#1e90ff"/>
+                <rect x="20" y="20" width="8" height="8" fill="#ffd700"/>
+                <rect x="22" y="22" width="4" height="4" fill="#1a1a2e"/>
+                <!-- 代码符号 / Code Symbol -->
+                <rect x="10" y="38" width="3" height="3" fill="#228b22"/>
+                <rect x="35" y="38" width="3" height="3" fill="#ff4500"/>
+              </svg>
+            </div>
+            <div class="app-landing-card-body">
+              <div class="app-landing-card-title" data-i18n="card_pixel_programming_title">像素编程</div>
+              <div class="app-landing-card-desc" data-i18n="card_pixel_programming_desc">像素迷宫 · 神经网络可视化</div>
+            </div>
+          </button>
+          <button class="app-landing-card" id="btn-enter-pixel-ai">
+            <div class="app-landing-card-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                <rect x="14" y="12" width="20" height="18" fill="#1e90ff"/>
+                <rect x="18" y="18" width="4" height="4" fill="#ffd700"/>
+                <rect x="26" y="18" width="4" height="4" fill="#ffd700"/>
+                <rect x="20" y="26" width="8" height="2" fill="#ff4500"/>
+                <rect x="22" y="8" width="4" height="4" fill="#ffd700"/>
+                <rect x="10" y="18" width="4" height="8" fill="#1e90ff"/>
+                <rect x="34" y="18" width="4" height="8" fill="#1e90ff"/>
+                <rect x="12" y="34" width="24" height="6" fill="#228b22"/>
+                <rect x="32" y="36" width="2" height="2" fill="#228b22"/>
+              </svg>
+            </div>
+            <div class="app-landing-card-body">
+              <div class="app-landing-card-title" data-i18n="card_pixel_ai_title">像素AI</div>
+              <div class="app-landing-card-desc" data-i18n="card_pixel_ai_desc">AI对话聊天 · 多模型支持 · Token消耗统计</div>
+            </div>
+          </button>
+        </div>
+        <div class="app-landing-category">
+          <div class="app-landing-category-title" data-category="art"><span data-i18n="category_art">艺术类 ART</span><span class="category-toggle-icon" aria-hidden="true">▼</span></div>
+
+          <div class="app-landing-subcategory">
+            <div class="app-landing-subcategory-title" data-i18n="category_pixel_drawing">PIXEL DRAWING 像素图画</div>
+            <button class="app-landing-card" id="btn-enter-pixel-art">
+              <div class="app-landing-card-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                  <rect x="10" y="10" width="6" height="6" fill="#ff4500"/>
+                  <rect x="18" y="10" width="6" height="6" fill="#ffd700"/>
+                  <rect x="26" y="10" width="6" height="6" fill="#1e90ff"/>
+                  <rect x="10" y="18" width="6" height="6" fill="#228b22"/>
+                  <rect x="18" y="18" width="6" height="6" fill="#ffffff"/>
+                  <rect x="26" y="18" width="6" height="6" fill="#8b4513"/>
+                  <rect x="10" y="26" width="6" height="6" fill="#1e90ff"/>
+                  <rect x="18" y="26" width="6" height="6" fill="#ffd700"/>
+                  <rect x="26" y="26" width="6" height="6" fill="#ff4500"/>
+                </svg>
+              </div>
+              <div class="app-landing-card-body">
+                <div class="app-landing-card-title" data-i18n="card_pixel_art_title">像素艺术生成器</div>
+                <div class="app-landing-card-desc" data-i18n="card_pixel_art_desc">种子化随机生成像素艺术 · 流场 · 粒子 · 几何图案</div>
+              </div>
+            </button>
+            <button class="app-landing-card" id="btn-enter-pixel-draw-editor">
+              <div class="app-landing-card-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                  <rect x="10" y="10" width="28" height="20" stroke="#ffffff" stroke-width="2" fill="#1a1a2e"/>
+                  <rect x="14" y="14" width="4" height="4" fill="#ff4500"/>
+                  <rect x="20" y="14" width="4" height="4" fill="#ffd700"/>
+                  <rect x="26" y="14" width="4" height="4" fill="#1e90ff"/>
+                  <rect x="14" y="20" width="4" height="4" fill="#228b22"/>
+                  <rect x="20" y="20" width="4" height="4" fill="#ffffff"/>
+                  <rect x="26" y="20" width="4" height="4" fill="#ff4500"/>
+                  <rect x="32" y="32" width="6" height="6" fill="#8b4513"/>
+                  <rect x="28" y="34" width="4" height="4" fill="#8b4513"/>
+                </svg>
+              </div>
+              <div class="app-landing-card-body">
+                <div class="app-landing-card-title" data-i18n="card_pixel_draw_title">像素绘图编辑器</div>
+                <div class="app-landing-card-desc" data-i18n="card_pixel_draw_desc">逐像素手绘创作 · 多图层 · 调色板 · 导出 PNG</div>
+              </div>
+            </button>
+          </div>
+
+          <div class="app-landing-subcategory">
+            <div class="app-landing-subcategory-title" data-i18n="category_pixel_music">PIXEL MUSIC 像素音乐</div>
+            <button class="app-landing-card" id="btn-enter-pixel-music">
+              <div class="app-landing-card-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                  <rect x="12" y="12" width="4" height="24" fill="#ff4500"/>
+                  <rect x="20" y="16" width="4" height="20" fill="#ffd700"/>
+                  <rect x="28" y="10" width="4" height="26" fill="#1e90ff"/>
+                  <rect x="36" y="18" width="4" height="18" fill="#228b22"/>
+                  <circle cx="14" cy="36" r="3" fill="#ffd700"/>
+                  <circle cx="22" cy="36" r="3" fill="#ffd700"/>
+                  <circle cx="30" cy="36" r="3" fill="#ffd700"/>
+                  <circle cx="38" cy="36" r="3" fill="#ffd700"/>
+                </svg>
+              </div>
+              <div class="app-landing-card-body">
+                <div class="app-landing-card-title" data-i18n="card_pixel_music_title">像素音乐合成器</div>
+                <div class="app-landing-card-desc" data-i18n="card_pixel_music_desc">8-bit 芯片音乐创作 · 音序器 · 多轨合成 · 导出 WAV</div>
+              </div>
+            </button>
+          </div>
+
+          <div class="app-landing-subcategory">
+            <div class="app-landing-subcategory-title" data-i18n="category_pixel_sandbox">PIXEL SANDBOX 像素沙盒</div>
+            <button class="app-landing-card" id="btn-enter-physics">
+              <div class="app-landing-card-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                  <rect x="10" y="28" width="28" height="8" fill="#8b4513"/>
+                  <rect x="12" y="20" width="6" height="8" fill="#1e90ff"/>
+                  <rect x="20" y="22" width="6" height="6" fill="#ff4500"/>
+                  <rect x="28" y="18" width="6" height="10" fill="#228b22"/>
+                  <rect x="14" y="14" width="4" height="4" fill="#ffd700"/>
+                  <rect x="30" y="12" width="4" height="4" fill="#ffd700"/>
+                </svg>
+              </div>
+              <div class="app-landing-card-body">
+                <div class="app-landing-card-title" data-i18n="card_physics_title">物理模拟器</div>
+                <div class="app-landing-card-desc" data-i18n="card_physics_desc">元素交互 · 沙/水/火/植物/金属 · 实时模拟</div>
+              </div>
+            </button>
+            <button class="app-landing-card" id="btn-enter-pixelizer">
+              <div class="app-landing-card-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                  <rect x="10" y="10" width="14" height="14" fill="#ff4500"/>
+                  <rect x="24" y="10" width="14" height="14" fill="#ffd700"/>
+                  <rect x="10" y="24" width="14" height="14" fill="#1e90ff"/>
+                  <rect x="24" y="24" width="14" height="14" fill="#228b22"/>
+                </svg>
+              </div>
+              <div class="app-landing-card-body">
+                <div class="app-landing-card-title" data-i18n="card_pixelizer_title">AI图像像素化</div>
+                <div class="app-landing-card-desc" data-i18n="card_pixelizer_desc">图片上传 · 调色板量化 · NES/GameBoy/CGA 风格</div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div class="app-landing-category">
+          <div class="app-landing-category-title" data-category="tools"><span data-i18n="category_tools">工具类 TOOLS</span><span class="category-toggle-icon" aria-hidden="true">▼</span></div>
+          <button class="app-landing-card" id="btn-enter-clock">
+            <div class="app-landing-card-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                <circle cx="24" cy="24" r="14" stroke="#ffd700" stroke-width="2.5" fill="#1a1a2e"/>
+                <line x1="24" y1="24" x2="24" y2="14" stroke="#1e90ff" stroke-width="2.5" stroke-linecap="square"/>
+                <line x1="24" y1="24" x2="32" y2="24" stroke="#ff4500" stroke-width="2.5" stroke-linecap="square"/>
+                <circle cx="24" cy="24" r="2" fill="#ffd700"/>
+                <rect x="22" y="6" width="4" height="3" fill="#ffd700"/>
+              </svg>
+            </div>
+            <div class="app-landing-card-body">
+              <div class="app-landing-card-title" data-i18n="card_clock_title">像素时钟</div>
+              <div class="app-landing-card-desc" data-i18n="card_clock_desc">时钟 · 日历 · 番茄钟 · 三种字体风格</div>
+            </div>
+          </button>
+        </div>
+        <div class="app-landing-category">
+          <div class="app-landing-category-title" data-category="entertainment"><span data-i18n="category_entertainment">娱乐类 ENTERTAINMENT</span><span class="category-toggle-icon" aria-hidden="true">▼</span></div>
+          <button class="app-landing-card" id="btn-enter-rpg">
+            <div class="app-landing-card-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+                <rect x="14" y="18" width="6" height="10" fill="#1e90ff"/>
+                <rect x="20" y="14" width="8" height="14" fill="#ffd700"/>
+                <rect x="28" y="18" width="6" height="10" fill="#1e90ff"/>
+                <rect x="18" y="28" width="12" height="6" fill="#8b4513"/>
+                <rect x="22" y="10" width="4" height="4" fill="#ff4500"/>
+                <rect x="32" y="22" width="6" height="3" fill="#228b22"/>
+              </svg>
+            </div>
+            <div class="app-landing-card-body">
+              <div class="app-landing-card-title" data-i18n="card_rpg_title">像素RPG</div>
+              <div class="app-landing-card-desc" data-i18n="card_rpg_desc">回合制战斗 · 升级 · 像素风角色 · 8-bit 音效</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <footer class="app-landing-footer">
+      <a href="https://github.com/xiaozhenweiyan/pixel-tools" target="_blank" rel="noopener noreferrer" data-i18n="footer_github">GitHub 仓库：xiaozhenweiyan/pixel-tools</a>
+      <a href="https://github.com/xiaozhenweiyan/pixel-tools" target="_blank" rel="noopener noreferrer" data-i18n="footer_official">正式版仓库：xiaozhenweiyan/pixel-tools</a>
+      <a href="https://github.com/xiaozhenweiyan/pixel-tools-test" target="_blank" rel="noopener noreferrer" data-i18n="footer_test">测试版仓库：xiaozhenweiyan/pixel-tools-test</a>
+      <a href="https://github.com/xiaozhenweiyan/pixel-tools-intro" target="_blank" rel="noopener noreferrer" data-i18n="footer_intro">网站介绍仓库：xiaozhenweiyan/pixel-tools-intro</a>
+      <a href="https://hcnj46275xas.feishu.cn/docx/Qbj5d9GNAoX33Rx5tR3cvW9Tntd" target="_blank" rel="noopener noreferrer" data-i18n="footer_feishu">飞书文档：网站介绍与教程</a>
+    </footer>
+    <button class="tutorial-btn" data-page="app-landing-page" data-i18n="tutorial_btn">教程</button>
+    <div class="landing-pixels"></div>
+  </div>
+
+  <!-- 数学学习网站落地页 / Landing Page -->
+  <div id="landing-page" class="landing-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-tools" data-i18n="back_to_tools">← 返回工具首页</button>
+    <div class="landing-content">
+      <h1 class="landing-title" data-i18n="landing_title">像素数学</h1>
+      <p class="landing-subtitle" data-i18n="landing_subtitle">PIXEL MATH</p>
+      <div class="landing-cards">
+        <button class="landing-card" id="btn-enter-predictor">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <polyline points="10,30 18,22 26,28 38,14" stroke="#ffd700" stroke-width="3" fill="none" stroke-linecap="square"/>
+              <circle cx="18" cy="22" r="2.5" fill="#1e90ff"/>
+              <circle cx="26" cy="28" r="2.5" fill="#ff4500"/>
+              <circle cx="38" cy="14" r="2.5" fill="#228b22"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_predictor_title">预测系统</div>
+            <div class="landing-card-desc" data-i18n="card_predictor_desc">输入数字序列，40 种数学方法 + 神经网络预测</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-function">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <!-- 坐标轴 -->
+              <line x1="10" y1="38" x2="38" y2="38" stroke="#ffffff" stroke-width="2"/>
+              <line x1="10" y1="10" x2="10" y2="38" stroke="#ffffff" stroke-width="2"/>
+              <!-- 曲线 -->
+              <path d="M 12 36 Q 24 12 36 14" stroke="#ffd700" stroke-width="2.5" fill="none"/>
+              <circle cx="12" cy="36" r="2" fill="#1e90ff"/>
+              <circle cx="24" cy="20" r="2" fill="#ff4500"/>
+              <circle cx="36" cy="14" r="2" fill="#228b22"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_function_title">函数系统</div>
+            <div class="landing-card-desc" data-i18n="card_function_desc">输入函数表达式 · 绘制平面直角坐标系图像</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-learning">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <rect x="12" y="14" width="24" height="20" stroke="#ffd700" stroke-width="2" fill="#1a1a2e"/>
+              <line x1="16" y1="20" x2="32" y2="20" stroke="#ffd700" stroke-width="1.5"/>
+              <line x1="16" y1="24" x2="28" y2="24" stroke="#ffd700" stroke-width="1.5"/>
+              <line x1="16" y1="28" x2="30" y2="28" stroke="#ffd700" stroke-width="1.5"/>
+              <path d="M34 10 L38 14 L36 14 L36 18 L32 18 L32 14 L30 14 Z" fill="#ffd700"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_learning_title">学习系统</div>
+            <div class="landing-card-desc" data-i18n="card_learning_desc">数学学习卡片，互动练习</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-calculator">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="4" width="32" height="40" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <rect x="12" y="8" width="24" height="8" fill="#1e90ff"/>
+              <rect x="12" y="20" width="6" height="6" fill="#ffd700"/>
+              <rect x="21" y="20" width="6" height="6" fill="#ffd700"/>
+              <rect x="30" y="20" width="6" height="6" fill="#ff4500"/>
+              <rect x="12" y="29" width="6" height="6" fill="#ffd700"/>
+              <rect x="21" y="29" width="6" height="6" fill="#ffd700"/>
+              <rect x="30" y="29" width="6" height="6" fill="#ffd700"/>
+              <rect x="12" y="38" width="6" height="6" fill="#ffd700"/>
+              <rect x="21" y="38" width="15" height="6" fill="#228b22"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_calculator_title">计算机系统</div>
+            <div class="landing-card-desc" data-i18n="card_calculator_desc">像素风计算器，支持四则运算与表达式求值</div>
+          </div>
+        </button>
+        <!-- 后续可在此添加更多功能卡片 -->
+      </div>
+    </div>
+    <div class="landing-pixels"></div>
+  <button class="tutorial-btn" data-page="landing-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 学习系统首页 / Learning Landing Page -->
+  <div id="learning-landing-page" class="learning-landing-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-landing" data-i18n="back_to_math">← 返回像素数学</button>
+    <div class="learning-landing-content">
+      <h1 class="learning-landing-title" data-i18n="learning_title">学习系统</h1>
+      <p class="learning-landing-subtitle" data-i18n="learning_subtitle">LEARNING SYSTEM</p>
+      <p class="learning-landing-subdesc" data-i18n="learning_subdesc">互动数学学习</p>
+      <div class="learning-category">
+        <div class="learning-category-title" data-i18n="learning_category_math">数学学习卡片 MATH CARDS</div>
+      </div>
+      <div class="learning-cards">
+        <button class="landing-card" id="btn-enter-arithmetic">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <text x="16" y="22" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">+</text>
+              <text x="32" y="22" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">−</text>
+              <text x="16" y="38" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">×</text>
+              <text x="32" y="38" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">÷</text>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_arithmetic_title">四则运算</div>
+            <div class="landing-card-desc" data-i18n="card_arithmetic_desc">加减乘除基础运算练习</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-mixed">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <path d="M14 14 L14 34" stroke="#ffd700" stroke-width="2.5" stroke-linecap="square"/>
+              <path d="M34 14 L34 34" stroke="#ffd700" stroke-width="2.5" stroke-linecap="square"/>
+              <text x="24" y="28" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="12" font-weight="bold">+×</text>
+              <text x="24" y="38" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="10" font-weight="bold">( )</text>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_mixed_title">混合运算</div>
+            <div class="landing-card-desc" data-i18n="card_mixed_desc">带括号的四则混合运算练习</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-fraction">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <text x="24" y="20" text-anchor="middle" fill="#1e90ff" font-family="Courier New" font-size="14" font-weight="bold">1</text>
+              <rect x="12" y="24" width="24" height="2" fill="#ffd700"/>
+              <text x="24" y="38" text-anchor="middle" fill="#ff4500" font-family="Courier New" font-size="14" font-weight="bold">2</text>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_fraction_title">分数</div>
+            <div class="landing-card-desc" data-i18n="card_fraction_desc">分数加减乘除 · 约分 · 通分动画</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-decimal">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <text x="24" y="32" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="16" font-weight="bold">0.5</text>
+              <rect x="20" y="36" width="3" height="3" fill="#1e90ff"/>
+              <rect x="26" y="36" width="3" height="3" fill="#ff4500"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_decimal_title">小数</div>
+            <div class="landing-card-desc" data-i18n="card_decimal_desc">小数运算 · 与分数互转动画</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-equation">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <text x="14" y="30" text-anchor="middle" fill="#1e90ff" font-family="Courier New" font-size="14" font-weight="bold">x</text>
+              <text x="22" y="30" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">+</text>
+              <text x="30" y="30" text-anchor="middle" fill="#ff4500" font-family="Courier New" font-size="14" font-weight="bold">3</text>
+              <text x="38" y="30" text-anchor="middle" fill="#ffd700" font-family="Courier New" font-size="14" font-weight="bold">=</text>
+              <rect x="12" y="34" width="24" height="2" fill="#228b22"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_equation_title">方程</div>
+            <div class="landing-card-desc" data-i18n="card_equation_desc">一元一次/二次方程 · 天平动画求解</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-geometry">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <polygon points="14,34 24,16 34,34" stroke="#ffd700" stroke-width="2.5" fill="none" stroke-linejoin="miter"/>
+              <rect x="14" y="34" width="20" height="2" fill="#1e90ff"/>
+              <circle cx="24" cy="28" r="2" fill="#ff4500"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_geometry_title">几何</div>
+            <div class="landing-card-desc" data-i18n="card_geometry_desc">面积/周长/体积公式 · 互动图形</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-speed">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <circle cx="24" cy="24" r="12" stroke="#ffd700" stroke-width="2.5" fill="none"/>
+              <line x1="24" y1="24" x2="24" y2="14" stroke="#1e90ff" stroke-width="2.5" stroke-linecap="square"/>
+              <line x1="24" y1="24" x2="32" y2="24" stroke="#ff4500" stroke-width="2.5" stroke-linecap="square"/>
+              <circle cx="24" cy="24" r="2" fill="#ffd700"/>
+              <text x="24" y="42" text-anchor="middle" fill="#228b22" font-family="Courier New" font-size="8" font-weight="bold">60s</text>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_speed_title">速算挑战</div>
+            <div class="landing-card-desc" data-i18n="card_speed_desc">60 秒限时答题 · 本地排行榜</div>
+          </div>
+        </button>
+      </div>
+    </div>
+    <div class="landing-pixels"></div>
+  <button class="tutorial-btn" data-page="learning-landing-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素编程首页 / Pixel Programming Landing Page -->
+  <div id="pixel-programming-landing-page" class="learning-landing-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-tools-from-prog" data-i18n="back_to_tools">← 返回工具首页</button>
+    <div class="learning-landing-content">
+      <h1 class="learning-landing-title" data-i18n="pixel_programming_title">像素编程</h1>
+      <p class="learning-landing-subtitle" data-i18n="pixel_programming_subtitle">PIXEL PROGRAMMING</p>
+      <p class="learning-landing-subdesc" data-i18n="pixel_programming_subdesc">算法可视化 · 神经网络</p>
+      <div class="learning-category">
+        <div class="learning-category-title" data-i18n="pixel_programming_category">像素编程工具 PROGRAMMING TOOLS</div>
+      </div>
+      <div class="learning-cards">
+        <button class="landing-card" id="btn-enter-maze">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <path d="M10 10 L10 38 L18 38 L18 18 L26 18 L26 30 L34 30 L34 10 L18 10" stroke="#ffd700" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+              <rect x="10" y="10" width="3" height="3" fill="#228b22"/>
+              <rect x="34" y="10" width="3" height="3" fill="#ff4500"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_maze_title">像素迷宫</div>
+            <div class="landing-card-desc" data-i18n="card_maze_desc">递归回溯/Prim/Kruskal/Eller 算法 · BFS 求解</div>
+          </div>
+        </button>
+        <button class="landing-card" id="btn-enter-nn-visualizer">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <circle cx="14" cy="14" r="3" fill="#1e90ff"/>
+              <circle cx="14" cy="24" r="3" fill="#1e90ff"/>
+              <circle cx="14" cy="34" r="3" fill="#1e90ff"/>
+              <circle cx="24" cy="19" r="3" fill="#ffd700"/>
+              <circle cx="24" cy="29" r="3" fill="#ffd700"/>
+              <circle cx="34" cy="24" r="3" fill="#ff4500"/>
+              <line x1="17" y1="14" x2="21" y2="19" stroke="#ffffff" stroke-width="1"/>
+              <line x1="17" y1="14" x2="21" y2="29" stroke="#ffffff" stroke-width="1"/>
+              <line x1="17" y1="24" x2="21" y2="19" stroke="#ffffff" stroke-width="1"/>
+              <line x1="17" y1="24" x2="21" y2="29" stroke="#ffffff" stroke-width="1"/>
+              <line x1="17" y1="34" x2="21" y2="19" stroke="#ffffff" stroke-width="1"/>
+              <line x1="17" y1="34" x2="21" y2="29" stroke="#ffffff" stroke-width="1"/>
+              <line x1="27" y1="19" x2="31" y2="24" stroke="#ffffff" stroke-width="1"/>
+              <line x1="27" y1="29" x2="31" y2="24" stroke="#ffffff" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_nnvis_title">神经网络可视化</div>
+            <div class="landing-card-desc" data-i18n="card_nnvis_desc">前向/反向传播 · 实时权重 · 损失曲线</div>
+          </div>
+        </button>
+      </div>
+    </div>
+    <div class="landing-pixels"></div>
+  <button class="tutorial-btn" data-page="pixel-programming-landing-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 四则运算学习卡片 / Arithmetic Learning Cards -->
+  <div id="arithmetic-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="arithmetic_title">四则运算学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="arithmetic_subtitle">ARITHMETIC LEARNING</p>
+      </header>
+
+      <!-- 运算符选择 Tab / Operation Tabs -->
+      <div class="arithmetic-tabs" id="arithmetic-tabs">
+        <button class="arithmetic-tab active" data-op="add" data-i18n="tab_add">加法 ADD</button>
+        <button class="arithmetic-tab" data-op="subtract" data-i18n="tab_subtract">减法 SUB</button>
+        <button class="arithmetic-tab" data-op="multiply" data-i18n="tab_multiply">乘法 MUL</button>
+        <button class="arithmetic-tab" data-op="divide" data-i18n="tab_divide">除法 DIV</button>
+      </div>
+
+      <!-- Canvas 动画区域 / Canvas Animation Area -->
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="arithmetic-canvas" class="arithmetic-canvas" width="680" height="360"></canvas>
+      </div>
+
+      <!-- 输入控件 / Input Controls -->
+      <div class="arithmetic-controls pixel-panel">
+        <div class="arithmetic-input-group">
+          <label class="arithmetic-label" data-i18n="arithmetic_input_a">数字 A</label>
+          <input type="number" id="arithmetic-input-a" class="pixel-input arithmetic-num-input" value="3" min="0" max="30">
+        </div>
+        <div class="arithmetic-op-display" id="arithmetic-op-display">+</div>
+        <div class="arithmetic-input-group">
+          <label class="arithmetic-label" data-i18n="arithmetic_input_b">数字 B</label>
+          <input type="number" id="arithmetic-input-b" class="pixel-input arithmetic-num-input" value="2" min="0" max="30">
+        </div>
+        <button class="pixel-btn arithmetic-demo-btn" id="arithmetic-demo" data-i18n="btn_demo">演示</button>
+      </div>
+
+      <!-- 说明文字 / Hint -->
+      <div class="arithmetic-hint" id="arithmetic-hint" data-i18n="arithmetic_hint_add">加法：a 个方块 + b 个方块合并</div>
+
+      <!-- 错误提示 / Error Message -->
+      <div class="arithmetic-error" id="arithmetic-error" style="display:none;"></div>
+    </div>
+  <button class="tutorial-btn" data-page="arithmetic-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 混合运算学习卡片 / Mixed Arithmetic Learning Cards -->
+  <div id="mixed-arithmetic-page" class="arithmetic-page mixed-arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-mixed" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="mixed_title">混合运算学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="mixed_subtitle">MIXED ARITHMETIC LEARNING</p>
+      </header>
+
+      <!-- Canvas 动画区域 / Canvas Animation Area -->
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="mixed-arithmetic-canvas" class="arithmetic-canvas" width="680" height="360"></canvas>
+      </div>
+
+      <!-- 输入控件：A op1 B op2 C / Input Controls -->
+      <div class="arithmetic-controls arithmetic-controls-mixed pixel-panel">
+        <div class="arithmetic-input-group">
+          <label class="arithmetic-label" data-i18n="mixed_input_a">数字 A</label>
+          <input type="number" id="mixed-input-a" class="pixel-input arithmetic-num-input" value="5" min="0" max="30">
+        </div>
+        <div class="arithmetic-input-group arithmetic-op-group">
+          <label class="arithmetic-label" data-i18n="mixed_op1">运算 1</label>
+          <select id="mixed-op1" class="pixel-input arithmetic-op-select">
+            <option value="add">+</option>
+            <option value="subtract" selected>−</option>
+            <option value="multiply">×</option>
+            <option value="divide">÷</option>
+          </select>
+        </div>
+        <div class="arithmetic-input-group">
+          <label class="arithmetic-label" data-i18n="mixed_input_b">数字 B</label>
+          <input type="number" id="mixed-input-b" class="pixel-input arithmetic-num-input" value="2" min="0" max="30">
+        </div>
+        <div class="arithmetic-input-group arithmetic-op-group">
+          <label class="arithmetic-label" data-i18n="mixed_op2">运算 2</label>
+          <select id="mixed-op2" class="pixel-input arithmetic-op-select">
+            <option value="add">+</option>
+            <option value="subtract">−</option>
+            <option value="multiply">×</option>
+            <option value="divide">÷</option>
+          </select>
+        </div>
+        <div class="arithmetic-input-group">
+          <label class="arithmetic-label" data-i18n="mixed_input_c">数字 C</label>
+          <input type="number" id="mixed-input-c" class="pixel-input arithmetic-num-input" value="1" min="0" max="30">
+        </div>
+        <button class="pixel-btn arithmetic-demo-btn" id="mixed-demo" data-i18n="btn_demo">演示</button>
+      </div>
+
+      <!-- 说明文字 / Hint -->
+      <div class="arithmetic-hint" id="mixed-hint" data-i18n="mixed_hint">两步运算：先计算 A op1 B，再用结果 op2 C</div>
+
+      <!-- 错误提示 / Error Message -->
+      <div class="arithmetic-error" id="mixed-error" style="display:none;"></div>
+    </div>
+  <button class="tutorial-btn" data-page="mixed-arithmetic-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 分数学习卡片 / Fraction Learning Card -->
+  <div id="fraction-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-fraction" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="fraction_title">分数学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="fraction_subtitle">FRACTION LEARNING</p>
+      </header>
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="fraction-canvas" class="arithmetic-canvas" width="680" height="400"></canvas>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="fraction-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 小数学习卡片 / Decimal Learning Card -->
+  <div id="decimal-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-decimal" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="decimal_title">小数学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="decimal_subtitle">DECIMAL LEARNING</p>
+      </header>
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="decimal-canvas" class="arithmetic-canvas" width="680" height="400"></canvas>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="decimal-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 方程学习卡片 / Equation Learning Card -->
+  <div id="equation-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-equation" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="equation_title">方程学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="equation_subtitle">EQUATION LEARNING</p>
+      </header>
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="equation-canvas" class="arithmetic-canvas" width="680" height="400"></canvas>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="equation-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 几何学习卡片 / Geometry Learning Card -->
+  <div id="geometry-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-geometry" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="geometry_title">几何学习</h1>
+        <p class="arithmetic-subtitle" data-i18n="geometry_subtitle">GEOMETRY LEARNING</p>
+      </header>
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="geometry-canvas" class="arithmetic-canvas" width="680" height="400"></canvas>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="geometry-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 速算挑战学习卡片 / Speed Challenge Learning Card -->
+  <div id="speed-page" class="arithmetic-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-learning-speed" data-i18n="back_to_learning">← 返回学习系统</button>
+    <div class="arithmetic-container">
+      <header class="arithmetic-header">
+        <h1 class="arithmetic-title" data-i18n="speed_title">速算挑战</h1>
+        <p class="arithmetic-subtitle" data-i18n="speed_subtitle">SPEED CHALLENGE</p>
+      </header>
+      <div class="arithmetic-canvas-wrap pixel-panel">
+        <canvas id="speed-canvas" class="arithmetic-canvas" width="680" height="400"></canvas>
+      </div>
+      <div class="pixel-panel mathext-leaderboard">
+        <h2 data-i18n="mathext_leaderboard">速算排行榜</h2>
+        <div id="speed-leaderboard-list" class="mathext-leaderboard-list" data-i18n="mathext_no_scores">— 暂无记录 —</div>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="speed-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <div id="predictor-page" class="predictor-page">
+  <button class="floating-back-btn" id="btn-back-home-predict" data-i18n="back_home">← 返回首页</button>
+  <header class="pixel-panel" style="text-align:center; margin:20px;">
+    <h1 class="pixel-title" data-i18n="predictor_title">预测系统 PIXEL PREDICTOR</h1>
+    <p class="pixel-subtitle" data-i18n="predictor_subtitle">输入数字序列 · 40 种数学方法预测 · 复古深空像素风</p>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT MAIN AREA -->
+    <section class="main-area">
+      <!-- Input Panel -->
+      <div class="pixel-panel input-panel">
+        <h2 data-i18n="input_series_title">输入数字序列</h2>
+        <textarea id="input-series" class="pixel-input" rows="4" data-i18n="input_series_placeholder" placeholder="输入数字，用空格/逗号/换行分隔，如：1, 2, 3, 5, 8, 13"></textarea>
+        <div class="button-row">
+          <div class="predict-count-wrap">
+            <button id="btn-predict" class="pixel-btn" data-i18n="btn_predict">预测</button>
+            <input type="number" id="predict-count" class="pixel-input predict-count-input" value="1" min="1" max="50" title="预测数量" data-i18n-title="predictor_predict_count_title">
+          </div>
+          <button id="btn-reset" class="pixel-btn" data-i18n="btn_reset">重置</button>
+          <button id="btn-export-json" class="pixel-btn" data-i18n="btn_export_json">导出 JSON</button>
+          <button id="btn-export-csv" class="pixel-btn" data-i18n="btn_export_csv">导出 CSV</button>
+          <label class="pixel-switch-wrap">
+            <input type="checkbox" id="longterm-toggle" class="pixel-switch-input">
+            <span class="pixel-switch-track">
+              <span class="pixel-switch-thumb"></span>
+            </span>
+            <span class="pixel-switch-label" data-i18n="label_longterm">长期训练</span>
+          </label>
+        </div>
+        <div class="weight-mode">
+          <span data-i18n="weight_mode_label">权重模式：</span>
+          <label><input type="radio" name="weight-mode" value="backtest" checked> <span data-i18n="weight_backtest">回测权重</span></label>
+          <label><input type="radio" name="weight-mode" value="uniform"> <span data-i18n="weight_uniform">均匀权重</span></label>
+        </div>
+        <div class="training-progress" id="training-progress" style="display:none;">
+          <div class="progress-label" id="progress-label" data-i18n="training_label">训练中...</div>
+          <div class="pixel-progress-track">
+            <div class="pixel-progress-fill" id="progress-fill" style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ensemble Result Panel -->
+      <div class="pixel-panel result-panel">
+        <h2 data-i18n="ensemble_title">融合预测结果</h2>
+        <div id="ensemble-result" class="ensemble-display" data-i18n="waiting_input">— 等待输入 —</div>
+      </div>
+
+      <!-- Neural Network Panel -->
+      <div class="pixel-panel nn-panel">
+        <h2 data-i18n="nn_title">神经网络预测（独立，不参与融合）</h2>
+        <div class="nn-canvas-wrap">
+          <canvas id="nn-canvas"></canvas>
+        </div>
+        <div class="nn-result" id="nn-result" data-i18n="waiting_input">— 等待输入 —</div>
+      </div>
+    </section>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar">
+      <!-- Weight Bars Panel -->
+      <div class="pixel-panel">
+        <h2 data-i18n="weight_title">方法权重</h2>
+        <canvas id="weight-chart" width="400" height="500"></canvas>
+      </div>
+
+      <!-- Method List Panel -->
+      <div class="pixel-panel">
+        <h2 data-i18n="method_list_title">40 种方法详情</h2>
+        <div id="method-list" class="method-list" data-i18n="waiting_predict">— 等待预测 —</div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="chart-panel-bottom pixel-panel">
+    <h2 data-i18n="chart_title">折线图（拖动滚动条平移 · +/- 缩放）</h2>
+    <div class="chart-canvas-wrap" id="line-chart-wrap">
+      <canvas id="line-chart"></canvas>
+      <!-- 自制滚动条 -->
+      <div class="pixel-scrollbar-h" id="scrollbar-h"><div class="pixel-scrollbar-thumb-h" id="scrollbar-thumb-h"></div></div>
+      <div class="pixel-scrollbar-v" id="scrollbar-v"><div class="pixel-scrollbar-thumb-v" id="scrollbar-thumb-v"></div></div>
+      <!-- 缩放按钮 -->
+      <div class="zoom-controls">
+        <button class="pixel-btn pixel-zoom-btn" id="btn-zoom-in">+</button>
+        <button class="pixel-btn pixel-zoom-btn" id="btn-zoom-out">−</button>
+      </div>
+    </div>
+    <div class="pixel-panel function-fit-panel" id="function-fit-panel" style="display:none;">
+      <h2 data-i18n="fit_title">拟合函数</h2>
+      <div class="function-fit-content" id="function-fit-content">
+        <div class="fit-formula" id="fit-formula">f(x) = —</div>
+        <div class="fit-info">
+          <span id="fit-domain">定义域: —</span>
+          <span id="fit-range">值域: —</span>
+          <span id="fit-r2">R²: —</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pixel-panel overfit-panel" id="overfit-panel" style="display:none; margin-top:16px;">
+      <h2 data-i18n="overfit_title">过拟合算法（独立，不参与融合）</h2>
+      <div class="overfit-content">
+        <div class="overfit-result" id="overfit-result">—</div>
+        <div class="overfit-details" id="overfit-details"></div>
+      </div>
+    </div>
+
+    <div class="pixel-panel offset-panel" id="offset-panel" style="display:none; margin-top:16px;">
+      <h2 data-i18n="offset_title">偏移算法（独立，不参与融合）</h2>
+      <div class="offset-content">
+        <div class="offset-formula" id="offset-formula">f(x) = —</div>
+        <div class="offset-info">
+          <span id="offset-type">类型: —</span>
+          <span id="offset-r2">R²: —</span>
+          <span id="offset-exact">—</span>
+        </div>
+        <div class="offset-result" id="offset-result">预测: —</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="tutorial-btn" data-page="predictor-page" data-i18n="tutorial_btn">教程</button>
+
+  <footer class="pixel-panel" style="text-align:center; margin:20px;">
+    <p data-i18n="footer_copyright">© 2026 Pixel Predictor · MIT License · 复古深空像素风</p>
+  </footer>
+  </div><!-- end predictor-page -->
+
+  <div id="function-page" class="function-page">
+    <button class="floating-back-btn" id="btn-back-home-function" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="function_title">函数系统 PIXEL FUNCTION</h1>
+      <p class="pixel-subtitle" data-i18n="function_subtitle">输入函数表达式 · 平面直角坐标系 · 拖拽平移 · 滚轮缩放</p>
+    </header>
+    <main class="function-layout">
+      <div class="pixel-panel function-canvas-panel">
+        <h2 data-i18n="function_canvas_title">坐标系</h2>
+        <div class="function-canvas-wrap">
+          <canvas id="function-canvas"></canvas>
+          <canvas id="function-3d-canvas" style="display:none;"></canvas>
+          <div class="function-zoom-controls">
+            <button class="pixel-btn function-zoom-btn" id="btn-function-zoom-in">+</button>
+            <button class="pixel-btn function-zoom-btn" id="btn-function-zoom-out">−</button>
+          </div>
+        </div>
+      </div>
+      <div class="pixel-panel function-input-panel">
+        <h2 data-i18n="function_input_title">函数输入</h2>
+        <div class="function-mode-toggle">
+          <button id="btn-function-toggle-3d" class="pixel-btn function-toggle-btn" data-i18n="function_toggle_3d">切换 3D</button>
+          <span class="function-mode-label" id="function-mode-label" data-i18n="function_mode_2d">当前模式：2D</span>
+        </div>
+        <div class="function-input-row">
+          <input type="text" id="function-input" class="pixel-input" data-i18n="function_input_placeholder" placeholder="输入函数，如 y=x^2 或 f(x)=sin(x)，按回车添加" autocomplete="off">
+          <button id="btn-function-add" class="pixel-btn" data-i18n="btn_add">添加</button>
+          <button id="btn-function-clear" class="pixel-btn" data-i18n="btn_clear_all">清除全部</button>
+        </div>
+        <div class="function-list" id="function-list">
+          <div class="function-list-empty" data-i18n="function_empty">— 暂无函数 —</div>
+        </div>
+        <div class="param-panel" id="param-panel" style="display:none;">
+          <h3 data-i18n="function_param_panel_title">参数调节</h3>
+          <div class="param-empty-hint" data-i18n="function_param_empty_hint">当前函数无参数。输入含参数的表达式（如 y=a*x^2+b）可启用参数滑动条，或点击下方按钮手动添加参数。</div>
+          <button class="param-add-btn" type="button" data-i18n="function_param_add_btn">+ 添加参数</button>
+          <div class="param-animation-bar" id="param-animation-bar" style="display:none;">
+            <button class="param-animation-play-btn" id="param-animation-play-btn" title="播放动画" data-i18n-title="function_param_play_anim_title">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <polygon points="4,2 14,8 4,14" fill="#ffd700"/>
+              </svg>
+            </button>
+            <div class="param-speed-wrap">
+              <span class="param-speed-label" data-i18n="function_param_speed_label">速度</span>
+              <select class="param-speed-select pixel-input" id="param-speed-select">
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+          </div>
+          <div class="param-sliders" id="param-sliders"></div>
+        </div>
+        <div class="function-help">
+          <p data-i18n="function_help_1">支持格式：y=表达式 或 f(x)=表达式</p>
+          <p data-i18n="function_help_2">支持函数：sin, cos, tan, log, sqrt, abs, exp</p>
+          <p data-i18n="function_help_3">支持运算：+ - * / ^（幂）</p>
+          <p data-i18n="function_help_4">操作：鼠标拖拽平移 · 滚轮缩放 · 右下角 +/- 按钮缩放</p>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="function-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <div id="calculator-page" class="calculator-page">
+    <button class="floating-back-btn" id="btn-back-home-calc" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="calculator_title">计算机系统 PIXEL CALCULATOR</h1>
+      <p class="pixel-subtitle" data-i18n="calculator_subtitle">按键或键盘输入 · 支持四则运算 · 复古深空像素风</p>
+    </header>
+    <main class="calc-layout">
+      <div class="pixel-panel calc-panel">
+        <h2 data-i18n="calculator_heading">计算器</h2>
+        <div class="calc-output" id="calc-output">
+          <div class="calc-history" id="calc-history" data-i18n="calc_history_empty">— 等待输入 —</div>
+          <div class="calc-current" id="calc-current">0</div>
+        </div>
+        <div class="calc-keys">
+          <button class="pixel-btn calc-key" data-key="7">7</button>
+          <button class="pixel-btn calc-key" data-key="8">8</button>
+          <button class="pixel-btn calc-key" data-key="9">9</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="/">÷</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="C">C</button>
+
+          <button class="pixel-btn calc-key" data-key="4">4</button>
+          <button class="pixel-btn calc-key" data-key="5">5</button>
+          <button class="pixel-btn calc-key" data-key="6">6</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="*">×</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="(">(</button>
+
+          <button class="pixel-btn calc-key" data-key="1">1</button>
+          <button class="pixel-btn calc-key" data-key="2">2</button>
+          <button class="pixel-btn calc-key" data-key="3">3</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="-">−</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key=")">)</button>
+
+          <button class="pixel-btn calc-key" data-key="0">0</button>
+          <button class="pixel-btn calc-key" data-key=".">.</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="+">+</button>
+          <button class="pixel-btn calc-key calc-key-eq" data-key="=">=</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="back">⌫</button>
+
+          <button class="pixel-btn calc-key calc-key-op" data-key="sin">sin</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="cos">cos</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="tan">tan</button>
+          <button class="pixel-btn calc-key calc-key-op" data-key="sqrt">√</button>
+          <button class="pixel-btn calc-key calc-key-op" id="calc-angle-mode" data-key="angle-mode">RAD</button>
+        </div>
+        <input type="text" id="calc-input" class="pixel-input calc-input" data-i18n="calc_input_placeholder" placeholder="输入表达式，如 1+2*3，按回车求值" autocomplete="off">
+        <div class="calc-steps-wrap">
+          <div class="calc-steps-title" data-i18n="calc_steps_title">运算过程</div>
+          <div class="calc-steps" id="calc-steps">
+            <div class="calc-step-empty" data-i18n="calc_steps_empty">— 等待计算 —</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="calculator-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <div id="pixel-art-page" class="pixel-art-page">
+    <button class="floating-back-btn" id="btn-back-home-art" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="pixel_art_title">像素艺术生成器 PIXEL ART</h1>
+      <p class="pixel-subtitle" data-i18n="pixel_art_subtitle">种子化随机生成 · 复古深空像素风</p>
+    </header>
+    <main class="pixel-art-layout">
+      <div class="pixel-panel pixel-art-canvas-panel">
+        <h2 data-i18n="canvas_title">画布</h2>
+        <div class="pixel-art-canvas-wrap">
+          <div id="pixel-art-canvas-container"></div>
+        </div>
+      </div>
+      <aside class="pixel-panel pixel-art-controls">
+        <h2 data-i18n="controls_title">控制台</h2>
+
+        <div class="pixel-art-section">
+          <label class="settings-label" data-i18n="label_seed">种子</label>
+          <div class="pixel-art-seed-row">
+            <button id="art-seed-prev" class="pixel-btn">◀</button>
+            <input type="number" id="art-seed" class="pixel-input" value="1" min="1" max="999999">
+            <button id="art-seed-next" class="pixel-btn">▶</button>
+          </div>
+          <button id="art-seed-random" class="pixel-btn" data-i18n="btn_random_seed">随机种子</button>
+        </div>
+
+        <div class="pixel-art-section">
+          <label class="settings-label" data-i18n="label_art_mode">艺术模式</label>
+          <select id="art-mode" class="pixel-input" data-i18n-select="art_mode">
+            <option value="flow" data-i18n="mode_flow">流场 Flow Field</option>
+            <option value="particles" data-i18n="mode_particles">粒子系统 Particles</option>
+            <option value="mosaic" data-i18n="mode_mosaic">几何马赛克 Mosaic</option>
+            <option value="spiral" data-i18n="mode_spiral">螺旋 Spiral</option>
+            <option value="fractal-tree" data-i18n="mode_fractal_tree">分形树 Fractal Tree</option>
+            <option value="voronoi" data-i18n="mode_voronoi">Voronoi 镶嵌</option>
+            <option value="wave-interference" data-i18n="mode_wave">波干涉 Wave</option>
+            <option value="reaction-diffusion" data-i18n="mode_reaction_diffusion">反应扩散 RD</option>
+          </select>
+        </div>
+
+        <div class="pixel-art-section">
+          <label class="settings-label"><span data-i18n="label_resolution">分辨率</span> <span id="art-resolution-value">48</span>px</label>
+          <input type="range" id="art-resolution" min="24" max="96" step="4" value="48" class="pixel-input">
+        </div>
+
+        <div class="pixel-art-section">
+          <label class="settings-label"><span data-i18n="label_density">密度</span> <span id="art-density-value">50</span></label>
+          <input type="range" id="art-density" min="10" max="100" step="5" value="50" class="pixel-input">
+        </div>
+
+        <div class="pixel-art-section">
+          <label class="settings-label"><span data-i18n="label_hue">色相</span> <span id="art-hue-value">45</span>°</label>
+          <input type="range" id="art-hue" min="0" max="360" step="15" value="45" class="pixel-input">
+        </div>
+
+        <!-- 分形树参数 / Fractal Tree params -->
+        <div class="pixel-art-section" id="art-section-fractal-tree" style="display:none;">
+          <label class="settings-label"><span data-i18n="label_fractal_depth">递归深度</span> <span id="art-fractal-depth-value">6</span></label>
+          <input type="range" id="art-fractal-depth" min="3" max="10" step="1" value="6" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_fractal_angle">分支角度</span> <span id="art-fractal-angle-value">25</span>°</label>
+          <input type="range" id="art-fractal-angle" min="10" max="60" step="1" value="25" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_fractal_ratio">长度衰减</span> <span id="art-fractal-ratio-value">0.70</span></label>
+          <input type="range" id="art-fractal-ratio" min="50" max="90" step="1" value="70" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_fractal_initlen">初始长度</span> <span id="art-fractal-initlen-value">150</span></label>
+          <input type="range" id="art-fractal-initlen" min="50" max="300" step="10" value="150" class="pixel-input">
+        </div>
+
+        <!-- Voronoi 参数 / Voronoi params -->
+        <div class="pixel-art-section" id="art-section-voronoi" style="display:none;">
+          <label class="settings-label"><span data-i18n="label_voronoi_points">种子点数</span> <span id="art-voronoi-points-value">80</span></label>
+          <input type="range" id="art-voronoi-points" min="20" max="200" step="5" value="80" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_voronoi_relax">松弛迭代</span> <span id="art-voronoi-relax-value">3</span></label>
+          <input type="range" id="art-voronoi-relax" min="0" max="10" step="1" value="3" class="pixel-input">
+          <label class="settings-label" data-i18n="label_voronoi_color">配色方式</label>
+          <select id="art-voronoi-color-mode" class="pixel-input">
+            <option value="distance" data-i18n="voronoi_color_distance">按距离</option>
+            <option value="size" data-i18n="voronoi_color_size">按细胞大小</option>
+          </select>
+        </div>
+
+        <!-- 波干涉参数 / Wave Interference params -->
+        <div class="pixel-art-section" id="art-section-wave-interference" style="display:none;">
+          <label class="settings-label"><span data-i18n="label_wave_sources">波源数量</span> <span id="art-wave-sources-value">4</span></label>
+          <input type="range" id="art-wave-sources" min="2" max="8" step="1" value="4" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_wave_freq">频率</span> <span id="art-wave-freq-value">1.5</span></label>
+          <input type="range" id="art-wave-freq" min="5" max="30" step="1" value="15" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_wave_amp">振幅</span> <span id="art-wave-amp-value">50</span></label>
+          <input type="range" id="art-wave-amp" min="20" max="100" step="5" value="50" class="pixel-input">
+        </div>
+
+        <!-- 反应扩散参数 / Reaction-Diffusion params -->
+        <div class="pixel-art-section" id="art-section-reaction-diffusion" style="display:none;">
+          <label class="settings-label"><span data-i18n="label_rd_feed">Feed 速率</span> <span id="art-rd-feed-value">0.055</span></label>
+          <input type="range" id="art-rd-feed" min="10" max="100" step="1" value="55" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_rd_kill">Kill 速率</span> <span id="art-rd-kill-value">0.062</span></label>
+          <input type="range" id="art-rd-kill" min="40" max="70" step="1" value="62" class="pixel-input">
+          <label class="settings-label"><span data-i18n="label_rd_iter">迭代次数</span> <span id="art-rd-iter-value">800</span></label>
+          <input type="range" id="art-rd-iter" min="100" max="2000" step="50" value="800" class="pixel-input">
+        </div>
+
+        <div class="pixel-art-section">
+          <button id="art-regenerate" class="pixel-btn" data-i18n="btn_regenerate">重新生成</button>
+          <button id="art-download" class="pixel-btn" data-i18n="btn_download">下载 PNG</button>
+          <button id="art-animate" class="pixel-btn" data-i18n="btn_animate">动画播放</button>
+        </div>
+      </aside>
+    </main>
+  <button class="tutorial-btn" data-page="pixel-art-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素绘图编辑器页面 / Pixel Drawing Editor Page -->
+  <div id="pixel-drawing-page" class="pixel-drawing-page">
+    <button class="floating-back-btn" id="btn-back-home-drawing" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="pixel_drawing_title">像素绘图编辑器 PIXEL DRAWING EDITOR</h1>
+      <p class="pixel-subtitle" data-i18n="pixel_drawing_subtitle">逐像素手绘创作 · 调色板 · 导出 PNG</p>
+    </header>
+
+    <main class="pixel-drawing-layout">
+      <!-- 左侧工具栏 / Left Toolbar -->
+      <aside class="pixel-drawing-toolbar" id="pixel-drawing-toolbar">
+        <button class="pixel-drawing-tool-btn" id="tool-undo">↶</button>
+        <button class="pixel-drawing-tool-btn" id="tool-redo">↷</button>
+        <div class="pixel-drawing-tool-divider"></div>
+        <button class="pixel-drawing-tool-btn active" id="tool-brush">✏</button>
+        <button class="pixel-drawing-tool-btn" id="tool-eraser">⌫</button>
+        <button class="pixel-drawing-tool-btn" id="tool-picker">💧</button>
+        <button class="pixel-drawing-tool-btn" id="tool-bucket">🪣</button>
+        <div class="pixel-drawing-tool-divider"></div>
+        <button class="pixel-drawing-tool-btn" id="tool-line">━</button>
+        <button class="pixel-drawing-tool-btn" id="tool-rect">▭</button>
+        <button class="pixel-drawing-tool-btn" id="tool-circle">◯</button>
+        <div class="pixel-drawing-tool-divider"></div>
+        <button class="pixel-drawing-tool-btn" id="tool-mirror">⇋</button>
+        <div class="pixel-drawing-tool-divider"></div>
+        <button class="pixel-drawing-tool-btn" id="tool-clear">🗑</button>
+        <button class="pixel-drawing-tool-btn active" id="tool-grid">⊞</button>
+      </aside>
+
+      <!-- 主画布区域 / Main Canvas Area -->
+      <div class="pixel-drawing-main">
+        <div class="pixel-panel pixel-drawing-canvas-panel">
+          <h2 data-i18n="canvas_title">画布</h2>
+          <div class="pixel-drawing-canvas-wrap">
+            <canvas id="pixel-drawing-canvas" width="32" height="32"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部控制面板 / Bottom Control Panel -->
+    <div class="pixel-drawing-bottom-panel">
+      <div class="pixel-panel">
+        <div class="pixel-drawing-controls">
+          <!-- 调色板 / Palette -->
+          <div class="pixel-drawing-palette-section">
+            <div class="pixel-drawing-section-title" data-i18n="palette_title">调色板</div>
+            <div id="pixel-drawing-palette" class="pixel-drawing-palette"></div>
+          </div>
+
+          <!-- 当前颜色 / Current Colors -->
+          <div class="pixel-drawing-color-section">
+            <div class="pixel-drawing-section-title" data-i18n="current_color">当前颜色</div>
+            <div class="pixel-drawing-current-colors">
+              <div class="pixel-drawing-color-swatch foreground" id="color-swatch-fg" style="background-color: #FF004D;">
+                <span class="pixel-drawing-color-swatch-label" data-i18n="foreground_color">前景色</span>
+              </div>
+              <div class="pixel-drawing-color-swatch background" id="color-swatch-bg" style="background-color: #000000;">
+                <span class="pixel-drawing-color-swatch-label" data-i18n="background_color">背景色</span>
+              </div>
+            </div>
+            <div class="pixel-drawing-custom-color">
+              <span style="color: #aaaaaa; font-size: 12px;" data-i18n="custom_color">自定义颜色</span>
+              <input type="color" id="custom-color-picker" value="#FF004D">
+            </div>
+          </div>
+
+          <!-- 画布尺寸 / Canvas Size -->
+          <div class="pixel-drawing-size-section">
+            <div class="pixel-drawing-section-title" data-i18n="canvas_size">画布尺寸</div>
+            <div class="pixel-drawing-size-buttons">
+              <button class="pixel-drawing-size-btn" id="size-16">16×16</button>
+              <button class="pixel-drawing-size-btn active" id="size-32">32×32</button>
+              <button class="pixel-drawing-size-btn" id="size-64">64×64</button>
+              <button class="pixel-drawing-size-btn" id="size-128">128×128</button>
+            </div>
+          </div>
+
+          <!-- 导出按钮 / Export Button -->
+          <div class="pixel-drawing-export-section">
+            <button class="pixel-drawing-export-btn" id="btn-export-png" data-i18n="export_png">导出 PNG</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <button class="tutorial-btn" data-page="pixel-drawing-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素音乐合成器页面 / Pixel Music Synthesizer Page -->
+  <div id="pixel-music-page" class="pixel-music-page">
+    <button class="floating-back-btn" id="btn-back-home-music" data-i18n="pixel_music_back">← 返回工具首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="pixel_music_title">像素音乐合成器 PIXEL MUSIC SYNTH</h1>
+      <p class="pixel-subtitle" data-i18n="pixel_music_subtitle">8-bit 芯片音乐 · 钢琴键盘 · 多音色合成 · 示波器可视化</p>
+    </header>
+
+    <main class="pixel-music-layout">
+      <!-- 控制面板 / Control Panel -->
+      <div class="pixel-panel pixel-music-controls">
+        <div class="pixel-music-control-row">
+          <div class="pixel-music-control-group">
+            <label class="settings-label" data-i18n="pixel_music_timbre">音色 TIMBRE</label>
+            <div class="pixel-music-timbre-buttons">
+              <button class="pixel-btn pixel-music-timbre-btn active" data-timbre="square" data-i18n="pixel_music_square">方波 SQUARE</button>
+              <button class="pixel-btn pixel-music-timbre-btn" data-timbre="triangle" data-i18n="pixel_music_triangle">三角波 TRIANGLE</button>
+              <button class="pixel-btn pixel-music-timbre-btn" data-timbre="sawtooth" data-i18n="pixel_music_sawtooth">锯齿波 SAWTOOTH</button>
+              <button class="pixel-btn pixel-music-timbre-btn" data-timbre="noise" data-i18n="pixel_music_noise">噪声 NOISE</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pixel-music-control-row">
+          <div class="pixel-music-control-group">
+            <label class="settings-label"><span data-i18n="pixel_music_volume">音量 VOLUME</span> <span id="pixel-music-volume-value">70</span>%</label>
+            <input type="range" id="pixel-music-volume" min="0" max="100" step="1" value="70" class="pixel-input">
+          </div>
+          <div class="pixel-music-control-group">
+            <label class="settings-label" data-i18n="pixel_music_octave">八度 OCTAVE</label>
+            <div class="pixel-music-octave-buttons">
+              <button class="pixel-btn pixel-music-octave-btn" id="octave-down">−1</button>
+              <span class="pixel-music-octave-value" id="octave-value">0</span>
+              <button class="pixel-btn pixel-music-octave-btn" id="octave-up">+1</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 示波器 / Oscilloscope -->
+      <div class="pixel-panel pixel-music-oscilloscope-panel">
+        <h2 data-i18n="pixel_music_waveform">波形 WAVEFORM</h2>
+        <div class="pixel-music-oscilloscope-wrap">
+          <canvas id="pixel-music-oscilloscope"></canvas>
+        </div>
+      </div>
+
+      <!-- 音序器 / Sequencer -->
+      <div class="pixel-panel pixel-music-sequencer-panel">
+        <h2 data-i18n="sequencer_title">音序器 SEQUENCER</h2>
+        
+        <div class="sequencer-container">
+          <!-- 左侧轨控制 / Left Track Controls -->
+          <div class="sequencer-tracks-controls">
+            <div class="sequencer-track-header"></div>
+            <!-- 4 个轨控制将由 JS 动态生成 -->
+          </div>
+          
+          <!-- 右侧网格 / Right Grid -->
+          <div class="sequencer-grid-wrap">
+            <!-- 步号标记 / Step Number Labels -->
+            <div class="sequencer-step-labels" id="sequencer-step-labels">
+              <!-- 16 步号将由 JS 动态生成 -->
+            </div>
+            <!-- 网格 / Grid -->
+            <div class="sequencer-grid" id="sequencer-grid">
+              <!-- 16×4 网格将由 JS 动态生成 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部播放控制 / Bottom Playback Controls -->
+        <div class="sequencer-controls">
+          <div class="sequencer-controls-left">
+            <button id="sequencer-play-btn" class="pixel-btn sequencer-play-btn" data-i18n="sequencer_play">播放</button>
+            <button id="sequencer-stop-btn" class="pixel-btn sequencer-stop-btn" data-i18n="sequencer_stop">停止</button>
+          </div>
+          <div class="sequencer-controls-center">
+            <label class="settings-label">
+              <span data-i18n="sequencer_bpm">速度 BPM</span>
+              <span id="sequencer-bpm-value">120</span>
+            </label>
+            <input type="range" id="sequencer-bpm" min="60" max="200" step="1" value="120" class="pixel-input">
+          </div>
+          <div class="sequencer-controls-right">
+            <span class="settings-label">
+              <span data-i18n="sequencer_step">步</span>
+              <span id="sequencer-current-step">-</span> / 16
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 钢琴键盘 / Piano Keyboard -->
+      <div class="pixel-panel pixel-music-keyboard-panel">
+        <div class="pixel-music-keyboard-hint" data-i18n="pixel_music_keyboard_hint">键盘按键：白键 A S D F G H J K L ; '  黑键 W E T Y U O P</div>
+        <div class="pixel-music-keyboard" id="pixel-music-keyboard">
+          <!-- 键盘将由 JS 动态生成 -->
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="pixel-music-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素迷宫生成器页面 / Maze Generator Page -->
+  <div id="maze-page" class="maze-page">
+    <button class="floating-back-btn" id="btn-back-home-maze" data-i18n="back_to_pixel_programming">← 返回像素编程</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="maze_title">像素迷宫 PIXEL MAZE</h1>
+      <p class="pixel-subtitle" data-i18n="maze_subtitle">四种算法生成 · BFS 求解 · 复古深空像素风</p>
+    </header>
+    <main class="maze-layout">
+      <div class="pixel-panel maze-controls">
+        <h2 data-i18n="maze_controls_title">控制台</h2>
+        <div class="maze-control-row">
+          <label class="maze-label" data-i18n="maze_algorithm">算法</label>
+          <select id="maze-algorithm" class="pixel-input">
+            <option value="recursive" data-i18n="maze_algo_recursive">递归回溯</option>
+            <option value="prim" data-i18n="maze_algo_prim">Prim</option>
+            <option value="kruskal" data-i18n="maze_algo_kruskal">Kruskal</option>
+            <option value="eller" data-i18n="maze_algo_eller">Eller</option>
+          </select>
+        </div>
+        <div class="maze-control-row">
+          <label class="maze-label" data-i18n="maze_size">大小（奇数）</label>
+          <input type="number" id="maze-size" class="pixel-input" value="21" min="5" max="51" step="2">
+        </div>
+        <div class="maze-buttons">
+          <button id="btn-maze-generate" class="pixel-btn" data-i18n="maze_generate">生成</button>
+          <button id="btn-maze-solve" class="pixel-btn" data-i18n="maze_solve">求解</button>
+          <button id="btn-maze-clear" class="pixel-btn" data-i18n="maze_clear">清除</button>
+          <button id="btn-maze-export" class="pixel-btn" data-i18n="maze_export">导出 PNG</button>
+        </div>
+        <div class="maze-help" data-i18n="maze_help">提示：先点"生成"创建迷宫，再点"求解"动画显示最短路径</div>
+      </div>
+      <div class="pixel-panel maze-canvas-panel">
+        <h2 data-i18n="maze_canvas_title">画布</h2>
+        <div class="maze-canvas-wrap">
+          <canvas id="maze-canvas" width="480" height="480"></canvas>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="maze-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 神经网络可视化页面 / NN Visualizer Page -->
+  <div id="nn-visualizer-page" class="nn-visualizer-page">
+    <button class="floating-back-btn" id="btn-back-home-nn" data-i18n="back_to_pixel_programming">← 返回像素编程</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="nnvis_title">神经网络可视化 NEURAL NETWORK VIS</h1>
+      <p class="pixel-subtitle" data-i18n="nnvis_subtitle">前向/反向传播 · 实时权重 · 损失曲线</p>
+    </header>
+    <main class="nnvis-layout">
+      <div class="pixel-panel nnvis-controls">
+        <h2 data-i18n="nnvis_controls_title">控制台</h2>
+        <div class="nnvis-control-row">
+          <label class="nnvis-label" data-i18n="nnvis_dataset">数据集</label>
+          <select id="nnvis-dataset" class="pixel-input">
+            <option value="xor">XOR</option>
+            <option value="sine" data-i18n="nnvis_sine">正弦</option>
+            <option value="circle" data-i18n="nnvis_circle">圆形分类</option>
+            <option value="spiral" data-i18n="nnvis_spiral">螺旋分类</option>
+            <option value="custom" data-i18n="nnvis_custom">自定义</option>
+          </select>
+        </div>
+        <div class="nnvis-control-row">
+          <label class="nnvis-label" data-i18n="nnvis_structure">网络结构（如 2,4,1）</label>
+          <input type="text" id="nnvis-structure" class="pixel-input" value="2,4,1" autocomplete="off">
+        </div>
+        <div class="nnvis-control-row">
+          <label class="nnvis-label" data-i18n="nnvis_learning_rate">学习率</label>
+          <input type="number" id="nnvis-lr" class="pixel-input" value="0.3" min="0.001" max="1" step="0.01">
+        </div>
+        <div class="nnvis-buttons">
+          <button id="btn-nnvis-train" class="pixel-btn" data-i18n="nnvis_train">训练</button>
+          <button id="btn-nnvis-stop" class="pixel-btn" data-i18n="nnvis_stop">停止</button>
+          <button id="btn-nnvis-reset" class="pixel-btn" data-i18n="nnvis_reset">重置</button>
+        </div>
+      </div>
+      <div class="pixel-panel nnvis-network-panel">
+        <h2 data-i18n="nnvis_network">网络结构</h2>
+        <div class="nnvis-canvas-wrap">
+          <canvas id="nnvis-network-canvas" width="520" height="400"></canvas>
+        </div>
+      </div>
+      <div class="pixel-panel nnvis-loss-panel">
+        <h2 data-i18n="nnvis_loss">损失曲线</h2>
+        <div class="nnvis-canvas-wrap">
+          <canvas id="nnvis-loss-canvas" width="520" height="200"></canvas>
+        </div>
+      </div>
+      <div class="pixel-panel nnvis-dataset-panel">
+        <h2 data-i18n="nnvis_dataset_editor">训练集编辑器</h2>
+        <div class="nnvis-dataset-preview">
+          <h3 class="nnvis-subheading" data-i18n="nnvis_dataset_view">训练集预览</h3>
+          <div class="nnvis-canvas-wrap nnvis-dataset-canvas-wrap">
+            <canvas id="nnvis-dataset-canvas" width="300" height="300"></canvas>
+          </div>
+        </div>
+        <div class="nnvis-dataset-editor">
+          <div class="nnvis-control-row">
+            <label class="nnvis-label" data-i18n="nnvis_sample_input">输入 x1,x2,输出</label>
+            <input type="text" id="nnvis-sample-input" class="pixel-input" placeholder="0.5,0.5,1" autocomplete="off">
+          </div>
+          <div class="nnvis-buttons">
+            <button id="btn-nnvis-add-sample" class="pixel-btn" data-i18n="nnvis_add_sample">添加样本</button>
+            <button id="btn-nnvis-clear-dataset" class="pixel-btn" data-i18n="nnvis_clear_dataset">清空</button>
+          </div>
+          <div class="nnvis-buttons">
+            <button id="btn-nnvis-import-json" class="pixel-btn" data-i18n="nnvis_import_json">导入 JSON</button>
+            <button id="btn-nnvis-export-json" class="pixel-btn" data-i18n="nnvis_export_json">导出 JSON</button>
+          </div>
+          <input type="file" id="nnvis-import-file" accept=".json,application/json" style="display:none">
+          <div class="nnvis-sample-list-wrap">
+            <label class="nnvis-label" data-i18n="nnvis_sample_list">样本列表</label>
+            <div id="nnvis-sample-list" class="nnvis-sample-list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="nn-visualizer-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 物理模拟器页面 / Physics Sandbox Page -->
+  <div id="physics-page" class="physics-page">
+    <button class="floating-back-btn" id="btn-back-home-physics" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="physics_title">物理模拟器 PHYSICS SANDBOX</h1>
+      <p class="pixel-subtitle" data-i18n="physics_subtitle">元素交互 · 沙/水/火/植物/金属 · 实时模拟</p>
+    </header>
+    <main class="physics-layout">
+      <div class="pixel-panel physics-controls">
+        <h2 data-i18n="physics_controls_title">控制台</h2>
+        <div class="physics-elements" id="physics-elements"></div>
+        <div class="physics-control-row">
+          <label class="physics-label">
+            <span data-i18n="physics_brush">笔刷大小</span>
+            <span id="physics-brush-value">5</span>
+          </label>
+          <input type="range" id="physics-brush" min="1" max="20" value="5" class="pixel-input">
+        </div>
+        <div class="physics-buttons">
+          <button id="btn-physics-start" class="pixel-btn" data-i18n="physics_start">开始</button>
+          <button id="btn-physics-stop" class="pixel-btn" data-i18n="physics_stop">停止</button>
+          <button id="btn-physics-clear" class="pixel-btn" data-i18n="physics_clear">清除</button>
+          <button class="pixel-btn" id="btn-physics-gas" data-i18n="physics_gas">气体</button>
+        </div>
+        <div class="physics-help" data-i18n="physics_help">提示：选择元素后在画布上拖动绘制，点"开始"运行模拟</div>
+      </div>
+      <div class="pixel-panel physics-canvas-panel">
+        <h2 data-i18n="physics_canvas_title">模拟画布</h2>
+        <div class="physics-canvas-wrap">
+          <canvas id="physics-canvas" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="physics-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- AI图像像素化页面 / Image Pixelizer Page -->
+  <div id="pixelizer-page" class="pixelizer-page">
+    <button class="floating-back-btn" id="btn-back-home-pixelizer" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="pixelizer_title">AI图像像素化 IMAGE PIXELIZER</h1>
+      <p class="pixel-subtitle" data-i18n="pixelizer_subtitle">上传图片 · 调色板量化 · 复古像素风</p>
+    </header>
+    <main class="pixelizer-layout">
+      <div class="pixel-panel pixelizer-controls">
+        <h2 data-i18n="pixelizer_controls_title">控制台</h2>
+        <div class="pixelizer-control-row">
+          <label class="pixelizer-label" data-i18n="pixelizer_upload">上传图片</label>
+          <div class="file-upload-row">
+            <input type="file" id="pixelizer-file" accept="image/*" style="display:none;">
+            <button type="button" class="pixel-btn file-upload-btn" id="btn-pixelizer-choose" data-i18n="btn_choose_file">选择文件</button>
+            <span class="file-upload-hint" id="pixelizer-file-hint" data-i18n="file_no_selection">未选择文件</span>
+          </div>
+        </div>
+        <div class="pixelizer-control-row">
+          <label class="pixelizer-label">
+            <span data-i18n="pixelizer_pixel_size">像素大小</span>
+            <span id="pixelizer-pixel-value">8</span>
+          </label>
+          <input type="range" id="pixelizer-pixel-size" min="1" max="32" value="8" class="pixel-input">
+        </div>
+        <div class="pixelizer-control-row">
+          <label class="pixelizer-label" data-i18n="pixelizer_palette">调色板</label>
+          <select id="pixelizer-palette" class="pixel-input">
+            <option value="full" data-i18n="pixelizer_pal_full">全彩</option>
+            <option value="nes" data-i18n="pixelizer_pal_nes">NES</option>
+            <option value="gameboy" data-i18n="pixelizer_pal_gameboy">GameBoy</option>
+            <option value="cga" data-i18n="pixelizer_pal_cga">CGA</option>
+            <option value="grayscale" data-i18n="pixelizer_pal_grayscale">灰度</option>
+            <option value="custom" data-i18n="pixelizer_pal_custom">自定义</option>
+          </select>
+        </div>
+        <div class="pixelizer-control-row">
+          <label class="pixelizer-label">
+            <span data-i18n="pixelizer_color_count">颜色数量</span>
+            <span id="pixelizer-count-value">16</span>
+          </label>
+          <input type="range" id="pixelizer-color-count" min="2" max="32" value="16" class="pixel-input">
+        </div>
+        <div class="pixelizer-buttons">
+          <button id="btn-pixelizer-process" class="pixel-btn" data-i18n="pixelizer_process">处理</button>
+          <button id="btn-pixelizer-export" class="pixel-btn" data-i18n="pixelizer_export">导出 PNG</button>
+        </div>
+      </div>
+      <div class="pixel-panel pixelizer-original-panel">
+        <h2 data-i18n="pixelizer_original">原图</h2>
+        <div class="pixelizer-canvas-wrap">
+          <canvas id="pixelizer-original-canvas" width="320" height="320"></canvas>
+        </div>
+      </div>
+      <div class="pixel-panel pixelizer-processed-panel">
+        <h2 data-i18n="pixelizer_processed">处理后</h2>
+        <div class="pixelizer-canvas-wrap">
+          <canvas id="pixelizer-processed-canvas" width="320" height="320"></canvas>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="pixelizer-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素时钟页面 / Pixel Clock Page -->
+  <div id="clock-page" class="clock-page">
+    <button class="floating-back-btn" id="btn-back-home-clock" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="clock_title">像素时钟 PIXEL CLOCK</h1>
+      <p class="pixel-subtitle" data-i18n="clock_subtitle">时钟 · 日历 · 番茄钟 · 三种字体风格</p>
+    </header>
+    <main class="clock-layout">
+      <div class="pixel-panel clock-controls">
+        <div class="clock-tabs" id="clock-tabs">
+          <button class="clock-tab active" data-mode="clock" data-i18n="clock_tab_clock">时钟</button>
+          <button class="clock-tab" data-mode="calendar" data-i18n="clock_tab_calendar">日历</button>
+          <button class="clock-tab" data-mode="pomodoro" data-i18n="clock_tab_pomodoro">番茄钟</button>
+        </div>
+        <div class="clock-font-row">
+          <label class="clock-label" data-i18n="clock_font">字体风格</label>
+          <div class="clock-font-buttons" id="clock-font-buttons">
+            <button class="clock-font-btn active" data-font="digital" data-i18n="clock_font_digital">数码</button>
+            <button class="clock-font-btn" data-font="matrix" data-i18n="clock_font_matrix">矩阵</button>
+            <button class="clock-font-btn" data-font="block" data-i18n="clock_font_block">方块</button>
+          </div>
+        </div>
+      </div>
+      <div class="pixel-panel clock-canvas-panel">
+        <h2 data-i18n="clock_canvas_title">显示区</h2>
+        <div class="clock-canvas-wrap">
+          <canvas id="clock-canvas" width="640" height="360"></canvas>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="clock-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素RPG页面 / Pixel RPG Page -->
+  <div id="rpg-page" class="rpg-page">
+    <button class="floating-back-btn" id="btn-back-home-rpg" data-i18n="back_home">← 返回首页</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="rpg_title">像素RPG PIXEL RPG</h1>
+      <p class="pixel-subtitle" data-i18n="rpg_subtitle">回合制战斗 · 升级 · 像素风角色 · 8-bit 音效</p>
+    </header>
+    <main class="rpg-layout">
+      <div class="pixel-panel rpg-controls">
+        <h2 data-i18n="rpg_controls_title">控制台</h2>
+        <div class="rpg-control-buttons">
+          <button id="btn-rpg-start" class="pixel-btn" data-i18n="rpg_start">开始游戏</button>
+          <button id="btn-rpg-stop" class="pixel-btn" data-i18n="rpg_stop">停止</button>
+          <button id="btn-rpg-reset" class="pixel-btn" data-i18n="rpg_reset">重置</button>
+          <button id="btn-rpg-wiki" class="pixel-btn" data-i18n="rpg_wiki_btn">Wiki百科</button>
+        </div>
+        <div class="rpg-help">
+          <p data-i18n="rpg_help_1">方向键 / WASD：移动 · 点击：自动寻路</p>
+          <p data-i18n="rpg_help_2">空格 / J：攻击 · 点击怪物自动攻击</p>
+          <p data-i18n="rpg_help_3">R：重置</p>
+        </div>
+      </div>
+      <div class="rpg-main-row">
+        <div class="pixel-panel rpg-canvas-panel">
+          <h2 data-i18n="rpg_canvas_title">游戏画面</h2>
+          <div class="rpg-canvas-wrap">
+            <canvas id="rpg-canvas"></canvas>
+          </div>
+        </div>
+        <div class="pixel-panel rpg-side-panel">
+          <!-- 装备栏 -->
+          <h2 data-i18n="rpg_equipment_title">装备</h2>
+          <div class="rpg-equipment-grid" id="rpg-equipment"></div>
+          <!-- 物品栏 -->
+          <h2 data-i18n="rpg_inventory_title">背包</h2>
+          <div class="rpg-inventory-grid" id="rpg-inventory"></div>
+          <!-- 物品详情面板 -->
+          <div class="rpg-item-details" id="rpg-item-details"></div>
+        </div>
+      </div>
+      <div class="rpg-wiki-panel hidden" id="rpg-wiki-panel">
+        <div class="rpg-wiki-content">
+          <button class="rpg-wiki-close" id="btn-rpg-wiki-close" aria-label="关闭" data-i18n-aria-label="rpg_wiki_close_aria">×</button>
+          <h2 class="rpg-wiki-title" data-i18n="rpg_wiki_title">Wiki 百科</h2>
+          <nav class="rpg-wiki-toc">
+            <a href="#wiki-stats" data-i18n="rpg_wiki_toc_stats">基础属性</a>
+            <a href="#wiki-controls" data-i18n="rpg_wiki_toc_controls">操作指南</a>
+            <a href="#wiki-items" data-i18n="rpg_wiki_toc_items">物品图鉴</a>
+            <a href="#wiki-monsters" data-i18n="rpg_wiki_toc_monsters">怪物机制</a>
+          </nav>
+          <section id="wiki-stats" class="rpg-wiki-section">
+            <h3 data-i18n="rpg_wiki_section_stats">基础属性 / Basic Stats</h3>
+            <p><strong>HP</strong> — <span data-i18n="rpg_wiki_stats_hp">生命值，归零则游戏结束</span></p>
+            <p><strong>EXP</strong> — <span data-i18n="rpg_wiki_stats_exp">经验值，击败怪物获得，满经验升级</span></p>
+            <p><strong>ATK</strong> — <span data-i18n="rpg_wiki_stats_atk">攻击力，战斗中造成的伤害基数</span></p>
+            <p><strong>DEF</strong> — <span data-i18n="rpg_wiki_stats_def">防御力，战斗中减免的伤害</span></p>
+          </section>
+          <section id="wiki-controls" class="rpg-wiki-section">
+            <h3 data-i18n="rpg_wiki_section_controls">操作指南 / Controls</h3>
+            <p data-i18n="rpg_wiki_controls_move">方向键 / WASD：移动角色</p>
+            <p data-i18n="rpg_wiki_controls_click">点击/触摸地图：自动寻路到目标格（BFS 最短路径）</p>
+            <p data-i18n="rpg_wiki_controls_attack">空格 / J：攻击相邻怪物</p>
+            <p data-i18n="rpg_wiki_controls_auto">点击怪物：自动寻路到相邻格并攻击</p>
+            <p data-i18n="rpg_wiki_controls_reset">R：重置游戏</p>
+          </section>
+          <section id="wiki-items" class="rpg-wiki-section">
+            <h3 data-i18n="rpg_wiki_section_items">物品图鉴 / Items</h3>
+            <p><strong data-i18n="rpg_wiki_items_wooden_sword_name">木剑</strong> — <span data-i18n="rpg_wiki_items_wooden_sword_desc">武器，ATK +2</span></p>
+            <p><strong data-i18n="rpg_wiki_items_potion_name">恢复药水I</strong> — <span data-i18n="rpg_wiki_items_potion_desc">消耗品，恢复 20 HP</span></p>
+            <p><strong data-i18n="rpg_wiki_items_helmet_name">皮盔</strong> — <span data-i18n="rpg_wiki_items_helmet_desc">头部防具，DEF +1</span></p>
+            <p><strong data-i18n="rpg_wiki_items_armor_name">皮甲</strong> — <span data-i18n="rpg_wiki_items_armor_desc">身体防具，DEF +3</span></p>
+            <p><strong data-i18n="rpg_wiki_items_leggings_name">皮护腿</strong> — <span data-i18n="rpg_wiki_items_leggings_desc">腿部防具，DEF +2</span></p>
+            <p><strong data-i18n="rpg_wiki_items_boots_name">皮靴</strong> — <span data-i18n="rpg_wiki_items_boots_desc">脚部防具，DEF +1</span></p>
+            <p><strong data-i18n="rpg_wiki_items_gem_name">经验宝石I</strong> — <span data-i18n="rpg_wiki_items_gem_desc">消耗品，+1 经验</span></p>
+            <p><strong data-i18n="rpg_wiki_items_ring_name">攻击戒指</strong> — <span data-i18n="rpg_wiki_items_ring_desc">饰品，ATK +1</span></p>
+          </section>
+          <section id="wiki-monsters" class="rpg-wiki-section">
+            <h3 data-i18n="rpg_wiki_section_monsters">怪物机制 / Monster Mechanics</h3>
+            <p data-i18n="rpg_wiki_monsters_types">怪物类型：史莱姆、骷髅、哥布林</p>
+            <p data-i18n="rpg_wiki_monsters_spawn">刷新机制：每进入新层随机生成怪物</p>
+            <p data-i18n="rpg_wiki_monsters_combat">战斗方式：回合制，玩家与怪物交替攻击</p>
+            <p data-i18n="rpg_wiki_monsters_reward">击败奖励：获得经验值，累积升级</p>
+          </section>
+        </div>
+      </div>
+    </main>
+  <button class="tutorial-btn" data-page="rpg-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素AI页面 / Pixel AI Page -->
+  <div id="pixel-ai-page" class="pixel-ai-page">
+    <!-- 顶部栏 -->
+    <div class="pixel-ai-topbar">
+      <button class="pixel-btn pixel-ai-back-btn" id="btn-back-home-ai">
+        &larr; <span data-i18n="pixel_ai_back">返回</span>
+      </button>
+      <h1 class="pixel-ai-title" data-i18n="pixel_ai_title">像素AI PIXEL AI</h1>
+      <div class="pixel-ai-topbar-actions">
+        <button class="pixel-btn pixel-ai-tutorial-btn tutorial-btn" data-page="pixel-ai" data-i18n="pixel_ai_tutorial">教程</button>
+        <button class="pixel-btn pixel-ai-clear-btn" id="btn-ai-clear" data-i18n="pixel_ai_clear">清空对话</button>
+        <button class="pixel-btn pixel-ai-settings-btn" id="btn-ai-settings" data-i18n="pixel_ai_settings">设置</button>
+      </div>
+    </div>
+
+    <!-- 消息列表区 -->
+    <div class="pixel-ai-messages" id="ai-messages"></div>
+
+    <!-- Token 状态栏 -->
+    <div class="pixel-ai-token-bar" id="ai-token-bar">
+      <span class="token-label" data-i18n="pixel_ai_token_total_session">会话总 Token:</span>
+      <span class="token-value" id="ai-total-tokens">0</span>
+    </div>
+
+    <!-- 输入区 -->
+    <div class="pixel-ai-input-area">
+      <textarea class="pixel-ai-input pixel-input" id="ai-input" rows="3" data-i18n="pixel_ai_placeholder" placeholder="输入消息..."></textarea>
+      <button class="pixel-btn pixel-ai-send-btn" id="btn-ai-send" data-i18n="pixel_ai_send">发送</button>
+    </div>
+
+    <!-- 模型设置弹窗 -->
+    <div id="ai-settings-modal" class="ai-settings-modal pixel-dialog" style="display:none;">
+      <div class="pixel-dialog-content">
+        <h2 data-i18n="pixel_ai_settings_title">模型设置</h2>
+        
+        <div class="ai-settings-section">
+          <label class="settings-label" data-i18n="pixel_ai_settings_provider">模型提供商</label>
+          <select id="ai-provider-select" class="pixel-input">
+            <option value="openai" data-i18n="pixel_ai_provider_openai">OpenAI</option>
+            <option value="anthropic" data-i18n="pixel_ai_provider_anthropic">Anthropic</option>
+            <option value="google" data-i18n="pixel_ai_provider_google">Google Gemini</option>
+            <option value="qwen" data-i18n="pixel_ai_provider_qwen">通义千问</option>
+            <option value="ernie" data-i18n="pixel_ai_provider_ernie">文心一言</option>
+            <option value="deepseek" data-i18n="pixel_ai_provider_deepseek">DeepSeek</option>
+            <option value="mistral" data-i18n="pixel_ai_provider_mistral">Mistral</option>
+            <option value="groq" data-i18n="pixel_ai_provider_groq">Groq</option>
+            <option value="custom" data-i18n="pixel_ai_provider_custom">自定义 (OpenAI 兼容)</option>
+          </select>
+        </div>
+
+        <div class="ai-settings-section">
+          <label class="settings-label" data-i18n="pixel_ai_settings_model">模型</label>
+          <select id="ai-model-select" class="pixel-input"></select>
+        </div>
+
+        <div class="ai-settings-section">
+          <label class="settings-label" data-i18n="pixel_ai_settings_api_key">API Key</label>
+          <div class="ai-api-key-row">
+            <input type="password" id="ai-api-key-input" class="pixel-input" placeholder="sk-...">
+            <button type="button" class="pixel-btn" id="btn-ai-toggle-key" data-i18n="pixel_ai_settings_show">显示</button>
+          </div>
+        </div>
+
+        <div class="ai-settings-section" id="ai-base-url-section" style="display:none;">
+          <label class="settings-label" data-i18n="pixel_ai_settings_base_url">API Base URL</label>
+          <input type="text" id="ai-base-url-input" class="pixel-input" placeholder="https://api.example.com/v1">
+        </div>
+
+        <p class="ai-security-hint" data-i18n="pixel_ai_settings_security_hint">API Key 仅保存在本地浏览器，不上传任何服务器</p>
+
+        <div class="pixel-dialog-buttons">
+          <button class="pixel-btn" id="btn-ai-settings-cancel" data-i18n="pixel_ai_settings_cancel">取消</button>
+          <button class="pixel-btn" id="btn-ai-settings-save" data-i18n="pixel_ai_settings_save">保存</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="settings-page" class="settings-page">
+    <button id="btn-back-home-settings" class="floating-back-btn" data-i18n="btn_back_home" data-i18n-aria-label="btn_back_home_aria" aria-label="返回首页">←</button>
+    <header class="pixel-panel" style="text-align:center; margin:20px;">
+      <h1 class="pixel-title" data-i18n="settings_title">个人设置 PIXEL SETTINGS</h1>
+      <p class="pixel-subtitle" data-i18n="settings_subtitle">昵称 · 头像 · 背景 · 临时账号（关闭浏览器自动销毁）</p>
+    </header>
+    <main class="settings-layout">
+      <div class="pixel-panel settings-panel">
+        <h2 data-i18n="settings_heading">个人设置</h2>
+
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="label_nickname">昵称</label>
+          <input type="text" id="settings-nickname" class="pixel-input" maxlength="20" data-i18n="nickname_placeholder" placeholder="输入新昵称">
+          <button id="btn-save-nickname" class="pixel-btn" data-i18n="btn_save_nickname">保存昵称</button>
+        </div>
+
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="label_avatar">头像（≤200KB，jpg/png/gif/webp/svg）</label>
+          <div class="settings-avatar-row">
+            <div class="settings-avatar-preview" id="settings-avatar-preview">?</div>
+            <div class="file-upload-row">
+              <input type="file" id="settings-avatar-input" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" style="display:none;">
+              <button type="button" class="pixel-btn file-upload-btn" id="btn-avatar-choose" data-i18n="btn_choose_file">选择文件</button>
+              <span class="file-upload-hint" id="settings-avatar-hint" data-i18n="file_no_selection">未选择文件</span>
+            </div>
+          </div>
+          <button id="btn-clear-avatar" class="pixel-btn" data-i18n="btn_clear_avatar">清除头像</button>
+        </div>
+
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="label_bg_image">背景图片（≤1MB，jpg/png/gif/webp/svg）</label>
+          <div class="file-upload-row">
+            <input type="file" id="settings-bg-image-input" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" style="display:none;">
+            <button type="button" class="pixel-btn file-upload-btn" id="btn-bg-choose" data-i18n="btn_choose_file">选择文件</button>
+            <span class="file-upload-hint" id="settings-bg-hint" data-i18n="file_no_selection">未选择文件</span>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="label_bg_color">背景颜色</label>
+          <div class="settings-color-row">
+            <input type="color" id="settings-bg-color" value="#1a1a2e" class="settings-color-input">
+            <button id="btn-apply-bg-color" class="pixel-btn" data-i18n="btn_apply_color">应用颜色</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <button id="btn-reset-bg" class="pixel-btn" data-i18n="btn_reset_bg">恢复默认背景</button>
+        </div>
+
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="label_language">语言</label>
+          <div class="settings-language-row">
+            <select id="settings-language" class="pixel-input">
+              <option value="auto" data-i18n="lang_auto">跟随系统</option>
+              <option value="zh" data-i18n="lang_zh">中文</option>
+              <option value="en" data-i18n="lang_en">英文</option>
+            </select>
+            <button id="btn-reload-lang" class="pixel-btn" data-i18n="btn_reload" data-i18n-title="btn_reload_title" title="切换失败时点击刷新页面">刷新</button>
+          </div>
+        </div>
+
+        <div class="settings-section" id="settings-section-wasm">
+          <div style="flex:1;">
+            <label class="settings-label" data-i18n="label_wasm_acceleration">WebAssembly 加速</label>
+            <div class="settings-desc" data-i18n="wasm_desc">反应扩散模式硬件加速（实验性功能）</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="wasm-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-section">
+          <button id="btn-settings-logout" class="pixel-btn" data-i18n="btn_logout">退出登录</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <button class="floating-settings-btn" id="btn-floating-settings" title="个人系统" aria-label="个人系统" data-i18n-title="floating_settings_title" data-i18n-aria-label="floating_settings_title">
+    <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="10" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+      <circle cx="24" cy="24" r="3" fill="#ffd700"/>
+      <path d="M24 4 L24 12 M24 36 L24 44 M4 24 L12 24 M36 24 L44 24 M10 10 L16 16 M32 32 L38 38 M10 38 L16 32 M32 16 L38 10" stroke="#ffd700" stroke-width="3" stroke-linecap="square"/>
+    </svg>
+  </button>
+
+  <button class="floating-avatar" id="floating-avatar" title="访客" aria-label="个人设置" data-i18n-title="floating_avatar_title" data-i18n-aria-label="floating_avatar_aria"></button>
+
+  <div id="toast" class="pixel-panel pixel-toast" style="display:none;"></div>
+
+  <!-- Scripts loaded at end of body, in this exact order -->
+  <script src="js/i18n.js"></script>
+  <script src="js/mouse-trails.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+  <script src="js/pixel-art.js"></script>
+  <script src="js/pixel-music.js"></script>
+  <script src="js/pixel-drawing-editor.js"></script>
+  <script src="js/expression-parser.js"></script>
+  <script src="js/function-plotter.js"></script>
+  <script src="js/predictors.js"></script>
+  <script src="js/weights.js"></script>
+  <script src="js/nn.js"></script>
+  <script src="js/funcfit.js"></script>
+  <script src="js/overfit.js"></script>
+  <script src="js/offsetfit.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/math-cards.js"></script>
+  <script src="js/maze-generator.js"></script>
+  <script src="js/function-3d.js"></script>
+  <script src="js/nn-visualizer.js"></script>
+  <script src="js/math-cards-ext.js"></script>
+  <script src="js/physics-sandbox.js"></script>
+  <script src="js/image-pixelizer.js"></script>
+  <script src="js/pixel-clock.js"></script>
+  <script src="js/pixel-rpg.js"></script>
+  <script src="js/pixel-ai.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./service-worker.js').catch(function() {});
+    });
+    // 监听 service worker 更新通知，自动刷新页面
+    navigator.serviceWorker.addEventListener('message', function (event) {
+      if (event.data && event.data.type === 'SW_UPDATED') {
+        window.location.reload();
+      }
+    });
+    // 检测到新 service worker 等待激活时，立即触发 skipWaiting
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      // controller 已变更，页面可能需要刷新
+    });
+  }
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

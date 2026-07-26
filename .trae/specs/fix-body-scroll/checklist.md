@@ -1,0 +1,5 @@
+- [x] body 元素已有 overflow-y: auto
+- [x] service-worker.js 中 CACHE_VERSION 已升级为 v6
+- [x] 所有修改已提交到 git
+- [x] 已推送到 main 分支
+- [x] 已推送到 gh-pages 分支

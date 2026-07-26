@@ -1,0 +1,10 @@
+- [x] html 元素没有 overflow-y: auto（使用 viewport 默认滚动）
+- [x] body 元素没有 display: flex 和 overflow-y: auto
+- [x] body 元素保留 min-height: 100vh 和 overflow-x: hidden
+- [x] main.layout 的 flex 规则已移除
+- [x] body 的 overscroll-behavior-y: none 已移除
+- [x] html 不再设置 overflow-x: hidden（只在 body 上设置）
+- [x] service-worker.js 中 CACHE_VERSION 已升级为 v7
+- [x] 所有修改已提交到 git
+- [x] 已推送到 main 分支
+- [x] 已推送到 gh-pages 分支

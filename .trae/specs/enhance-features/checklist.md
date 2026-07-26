@@ -1,0 +1,7 @@
+- [x] Checkpoint 1: 鼠标拖拽粒子特效正常工作，不遮挡页面交互
+- [x] Checkpoint 2: 所有工具页面底部有"教程"按钮，点击弹出模态框
+- [x] Checkpoint 3: 学习系统所有演示按钮文字清晰可见
+- [x] Checkpoint 4: 函数系统参数识别、滑动条、范围调节、步长、动画功能完整
+- [x] Checkpoint 5: 函数系统和预测系统坐标系显示单位长度，缩放时正确更新
+- [x] Checkpoint 6: Service Worker 缓存版本升级，新增文件加入 precache
+- [x] Checkpoint 7: 代码提交并推送到 GitHub main 和 gh-pages 分支

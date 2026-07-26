@@ -1,0 +1,15 @@
+- [x] 神经网络对 [1,2,3,4] 多步预测输出递增序列（非乱序）— 实测 [4,5,6,6,6,6,6,6,6,6]
+- [x] postProcessPrediction 智能吸附：仅当差距 < 0.05 时才吸附
+- [x] 整数序列 tolerance = 0.1（不再卡死训练）
+- [x] 数据增强：短序列生成多个训练样本
+- [x] 多步预测差分修正：等差序列预测递增
+- [x] 神经网络训练过程中 nn-canvas 持续刷新（动画可见）— epochsPerFrame=5
+- [x] 浏览器标签页显示"数学学习网站"
+- [x] 落地页标题显示"数学学习网站"
+- [x] "预测系统"以卡片形式展示（含图标、标题、描述）
+- [x] 卡片点击后正常进入预测页面
+- [x] 卡片布局支持未来横向扩展（新增卡片）— CSS Grid auto-fit
+- [x] GitHub 仓库已重命名为 math-pixel-site
+- [x] 本地 git remote 已更新为新地址
+- [x] 代码已推送到新仓库 main + gh-pages
+- [x] https://xiaozhenweiyan.github.io/math-pixel-site/ 可访问
