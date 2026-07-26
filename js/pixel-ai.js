@@ -155,6 +155,54 @@ window.PixelAI = (function () {
     return div.innerHTML;
   }
 
+  // 将 Markdown 转换为 HTML / Convert Markdown to HTML
+  function markdownToHtml(text) {
+    if (!text) return '';
+    
+    // 转义 HTML 标签，然后逐步转换 Markdown 语法
+    var html = text.replace(/&/g, '&amp;')
+                   .replace(/</g, '&lt;')
+                   .replace(/>/g, '&gt;');
+    
+    // 代码块（```code```）/ Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+    
+    // 内联代码（`code`）/ Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // 粗体（**text**）/ Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // 斜体（*text*）/ Italic
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    
+    // 删除线（~~text~~）/ Strikethrough
+    html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+    
+    // 链接（[text](url)）/ Links
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    
+    // 三级标题（### text）/ h3 headers
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    
+    // 四级标题（#### text）/ h4 headers
+    html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+    
+    // 列表项（- text）/ List items
+    html = html.replace(/^-\s(.+)$/gm, '<li>$1</li>');
+    
+    // 引用（> text）/ Blockquote
+    html = html.replace(/^>\s(.+)$/gm, '<blockquote>$1</blockquote>');
+    
+    // 将连续的 li 包裹在 ul 中 / Wrap consecutive li in ul
+    html = html.replace(/(<li>.+<\/li>)+/g, '<ul>$&</ul>');
+    
+    // 换行（\n）/ Line breaks
+    html = html.replace(/\n/g, '<br>');
+    
+    return html;
+  }
+
   // 渲染 AI 回答的 HTML（移除 script 标签，保留格式化标签）/ Render AI HTML (strip scripts, keep formatting)
   function sanitizeHtml(html) {
     return html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
@@ -497,7 +545,7 @@ window.PixelAI = (function () {
     contentDiv.className = 'ai-message-content';
     if (msg.role === 'assistant' && !msg.isError) {
       // AI 回答渲染 HTML（已 sanitize）/ AI response renders HTML (sanitized)
-      contentDiv.innerHTML = sanitizeHtml(msg.content);
+      contentDiv.innerHTML = sanitizeHtml(markdownToHtml(msg.content));
     } else {
       contentDiv.textContent = msg.content;
     }
@@ -585,23 +633,23 @@ window.PixelAI = (function () {
     });
 
     saveBtn.addEventListener('click', function () {
-      var newContent = textarea.value.trim();
-      if (!newContent) return;
+          var newContent = textarea.value.trim();
+          if (!newContent) return;
 
-      if (msg.role === 'user') {
-        // 用户消息：截断后续消息并重新发送 / User message: truncate and resend
-        state.messages = state.messages.slice(0, index);
-        saveConversations();
-        renderMessages();
-        sendMessage(newContent);
-      } else {
-        // AI 回答：直接更新内容 / AI response: update content directly
-        msg.content = newContent;
-        saveConversations();
-        contentDiv.innerHTML = sanitizeHtml(newContent);
-        if (actions) actions.style.display = '';
-      }
-    });
+          if (msg.role === 'user') {
+            // 用户消息：截断后续消息并重新发送 / User message: truncate and resend
+            state.messages = state.messages.slice(0, index);
+            saveConversations();
+            renderMessages();
+            sendMessage(newContent);
+          } else {
+            // AI 回答：直接更新内容 / AI response: update content directly
+            msg.content = newContent;
+            saveConversations();
+            contentDiv.innerHTML = sanitizeHtml(markdownToHtml(newContent));
+            if (actions) actions.style.display = '';
+          }
+        });
   }
 
   // 重新生成回答 / Regenerate response
@@ -835,7 +883,7 @@ window.PixelAI = (function () {
       // 流式完成后渲染 HTML / Render HTML after streaming completes
       var contentDiv = state.streamingMessageEl.querySelector('.ai-message-content');
       if (contentDiv && state.streamingContent) {
-        contentDiv.innerHTML = sanitizeHtml(state.streamingContent);
+        contentDiv.innerHTML = sanitizeHtml(markdownToHtml(state.streamingContent));
       }
       state.streamingMessageEl.id = '';
       state.streamingMessageEl = null;

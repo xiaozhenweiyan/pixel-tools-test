@@ -6906,6 +6906,17 @@ canvas {
   color: #ffd700;
 }
 
+.ai-message-content em,
+.ai-message-content i {
+  color: #ff9999;
+  font-style: italic;
+}
+
+.ai-message-content del {
+  text-decoration: line-through;
+  color: #8888aa;
+}
+
 .ai-message-content code {
   background: #1a1a2e;
   padding: 2px 6px;
@@ -6925,6 +6936,48 @@ canvas {
 .ai-message-content pre code {
   border: none;
   padding: 0;
+}
+
+.ai-message-content h3 {
+  color: #ffd700;
+  font-size: 16px;
+  margin: 12px 0 6px 0;
+  border-bottom: 2px solid #3d3d54;
+  padding-bottom: 4px;
+}
+
+.ai-message-content h4 {
+  color: #1e90ff;
+  font-size: 15px;
+  margin: 10px 0 4px 0;
+}
+
+.ai-message-content ul {
+  margin: 6px 0;
+  padding-left: 24px;
+}
+
+.ai-message-content li {
+  margin: 4px 0;
+}
+
+.ai-message-content blockquote {
+  border-left: 4px solid #ffd700;
+  padding-left: 12px;
+  margin: 8px 0;
+  color: #aaaacc;
+  background: rgba(255, 215, 0, 0.05);
+  padding: 6px 12px;
+}
+
+.ai-message-content a {
+  color: #1e90ff;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.ai-message-content a:hover {
+  color: #00bfff;
 }
 
 .ai-message.user .ai-message-content {
