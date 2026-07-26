@@ -10,7 +10,7 @@
  * 每次部署后必须升级 CACHE_NAME 版本号，确保旧缓存被清除。
  */
 
-const CACHE_VERSION = 'v32';
+const CACHE_VERSION = 'v33';
 const CACHE_NAME = 'pixel-tools-' + CACHE_VERSION;
 
 const PRECACHE_URLS = [
