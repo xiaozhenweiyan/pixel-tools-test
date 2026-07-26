@@ -371,6 +371,91 @@ window.PixelAI = (function () {
     state.dom.scrollbarTrack = document.getElementById('ai-scrollbar-track');
     state.dom.scrollbarThumb = document.getElementById('ai-scrollbar-thumb');
     state.dom.promptTemplates = document.getElementById('ai-prompt-templates');
+    // 自制确认弹窗 / Custom confirm modal
+    state.dom.confirmModal = document.getElementById('ai-confirm-modal');
+    state.dom.confirmTitle = document.getElementById('ai-confirm-title');
+    state.dom.confirmMessage = document.getElementById('ai-confirm-message');
+    state.dom.confirmIcon = document.getElementById('ai-confirm-icon');
+    state.dom.confirmOk = document.getElementById('btn-ai-confirm-ok');
+    state.dom.confirmCancel = document.getElementById('btn-ai-confirm-cancel');
+  }
+
+  // ============================================================
+  // 自制确认弹窗 / Custom Confirm Dialog
+  // ============================================================
+
+  // 显示自制确认弹窗，返回 Promise（true=确定，false=取消）
+  // Show custom confirm dialog, returns Promise (true=OK, false=Cancel)
+  function showConfirmDialog(options) {
+    options = options || {};
+    var message = options.message || '';
+    var title = options.title || t('pixel_ai_confirm_title');
+    var icon = options.icon || '⚠';
+    var okText = options.okText || t('pixel_ai_confirm_ok');
+    var cancelText = options.cancelText || t('pixel_ai_confirm_cancel');
+    var danger = options.danger !== false; // 默认红色危险按钮 / Default red danger button
+
+    return new Promise(function (resolve) {
+      if (!state.dom.confirmModal) {
+        // 回退到原生 confirm / Fallback to native confirm
+        resolve(window.confirm(message));
+        return;
+      }
+
+      // 设置内容 / Set content
+      if (state.dom.confirmTitle) state.dom.confirmTitle.textContent = title;
+      if (state.dom.confirmMessage) state.dom.confirmMessage.textContent = message;
+      if (state.dom.confirmIcon) state.dom.confirmIcon.textContent = icon;
+      if (state.dom.confirmOk) state.dom.confirmOk.textContent = okText;
+      if (state.dom.confirmCancel) state.dom.confirmCancel.textContent = cancelText;
+
+      // 危险样式切换 / Toggle danger style
+      if (state.dom.confirmOk) {
+        if (danger) {
+          state.dom.confirmOk.classList.add('ai-confirm-ok-btn');
+        } else {
+          state.dom.confirmOk.classList.remove('ai-confirm-ok-btn');
+        }
+      }
+
+      // 显示弹窗 / Show modal
+      state.dom.confirmModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      // 清理旧监听器 / Clean old listeners
+      var okBtn = state.dom.confirmOk;
+      var cancelBtn = state.dom.confirmCancel;
+      var modal = state.dom.confirmModal;
+      var newOk = okBtn.cloneNode(true);
+      var newCancel = cancelBtn.cloneNode(true);
+      okBtn.parentNode.replaceChild(newOk, okBtn);
+      cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+      state.dom.confirmOk = newOk;
+      state.dom.confirmCancel = newCancel;
+
+      function close(result) {
+        state.dom.confirmModal.style.display = 'none';
+        document.body.style.overflow = '';
+        resolve(result);
+      }
+
+      newOk.addEventListener('click', function () { close(true); });
+      newCancel.addEventListener('click', function () { close(false); });
+
+      // 点击遮罩关闭 / Click backdrop to close
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) close(false);
+      });
+
+      // ESC 关闭 / ESC to close
+      var escHandler = function (e) {
+        if (e.key === 'Escape') {
+          close(false);
+          document.removeEventListener('keydown', escHandler);
+        }
+      };
+      document.addEventListener('keydown', escHandler);
+    });
   }
 
   // ============================================================
@@ -497,9 +582,16 @@ window.PixelAI = (function () {
         });
         delBtn.addEventListener('click', function (e) {
           e.stopPropagation();
-          if (confirm(t('pixel_ai_confirm_delete'))) {
-            deleteConversation(id);
-          }
+          showConfirmDialog({
+            title: t('pixel_ai_confirm_delete_title'),
+            message: t('pixel_ai_confirm_delete'),
+            icon: '🗑',
+            okText: t('pixel_ai_confirm_delete_ok')
+          }).then(function (confirmed) {
+            if (confirmed) {
+              deleteConversation(id);
+            }
+          });
         });
       })(conv.id);
 
@@ -1352,26 +1444,33 @@ window.PixelAI = (function () {
 
   function clearChat() {
     if (state.messages.length === 0) return;
-    if (!confirm(t('pixel_ai_confirm_clear'))) return;
+    showConfirmDialog({
+      title: t('pixel_ai_confirm_clear_title'),
+      message: t('pixel_ai_confirm_clear'),
+      icon: '🗑',
+      okText: t('pixel_ai_confirm_clear_ok')
+    }).then(function (confirmed) {
+      if (!confirmed) return;
 
-    // 清空当前对话的消息 / Clear current conversation messages
-    state.messages = [];
-    state.totalTokens = 0;
-    state.promptTokens = 0;
-    state.completionTokens = 0;
+      // 清空当前对话的消息 / Clear current conversation messages
+      state.messages = [];
+      state.totalTokens = 0;
+      state.promptTokens = 0;
+      state.completionTokens = 0;
 
-    if (state.currentConvId) {
-      var conv = getConversation(state.currentConvId);
-      if (conv) {
-        conv.messages = [];
-        conv.totalTokens = 0;
-        conv.title = t('pixel_ai_new_chat');
+      if (state.currentConvId) {
+        var conv = getConversation(state.currentConvId);
+        if (conv) {
+          conv.messages = [];
+          conv.totalTokens = 0;
+          conv.title = t('pixel_ai_new_chat');
+        }
       }
-    }
-    saveConversations();
-    renderMessages();
-    renderTokenStats();
-    renderConversationList();
+      saveConversations();
+      renderMessages();
+      renderTokenStats();
+      renderConversationList();
+    });
   }
 
   // ============================================================
