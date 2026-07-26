@@ -4598,7 +4598,9 @@
     }
 
     function openTutorial(pageId) {
-      const tutorialKey = 'tutorial_' + pageId.replace('-page', '');
+      // 规范化：去掉 -page 后缀，连字符转下划线，匹配 i18n 键命名约定
+      // Normalize: strip -page suffix, convert hyphens to underscores to match i18n key convention
+      const tutorialKey = 'tutorial_' + pageId.replace('-page', '').replace(/-/g, '_');
       let content = i18n.t(tutorialKey);
       if (!content || content === tutorialKey) {
         content = i18n.t('tutorial_fallback');
