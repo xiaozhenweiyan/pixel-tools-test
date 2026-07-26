@@ -905,6 +905,21 @@ cd wasm
 
 ## Changelog
 
+### 2026-07 · AI Chat Overhaul: History + Edit + New Features
+
+- **Conversation History Sidebar** — Left sidebar with multi-conversation management, persisted to `localStorage` (`pixel_ai_conversations`), survives browser restart. Red warning at bottom: "⚠ Clearing browser cache will erase all conversations!!!"
+- **Message Editing** — User messages can be edited and resent (auto-truncates following messages); AI responses can be edited directly
+- **AI HTML Rendering** — AI responses with HTML formatting (bold, color, code blocks) render properly; `<script>` tags auto-stripped via `sanitizeHtml()`
+- **Custom Scrollbar** — Gold pixel-style custom scrollbar, draggable, hides native scrollbar
+- **One-click Copy** — Copy button under each AI response, copies to clipboard
+- **Regenerate** — One-click regenerate button for unsatisfactory AI responses
+- **Export Conversation** — One-click export current conversation as Markdown file
+- **Prompt Templates** — Quick chips above input (Translate/Summarize/Code/Explain/Write), click to fill input
+- **Tutorial Button** — Confirmed left of clear button, no wrapping
+- **Service Worker** cache version upgraded to v34
+
+---
+
 ### 2026-07 · Pixel AI chat tool
 
 - **Pixel AI chat tool** — New AI chat tool with 9 LLM providers, token usage tracking, local API key storage, bilingual UI
@@ -1891,6 +1906,21 @@ cd wasm
 ---
 
 ## 更新日志
+
+### 2026-07 · AI 对话大升级：对话记录 + 编辑 + 创新功能
+
+- **左侧对话记录栏** — 多对话管理，存 localStorage（`pixel_ai_conversations`）持久化，退出浏览器不丢失。底部红色警告："⚠ 清空浏览器缓存会导致对话记录消失！！！"
+- **消息可编辑** — 用户问题可修改后重新发送（自动截断后续消息），AI 回答可直接编辑内容
+- **AI 回答 HTML 渲染** — AI 输出的 HTML 格式文本（加粗、颜色、代码块等）正常显示，`<script>` 标签通过 `sanitizeHtml()` 自动过滤
+- **自制滚动条** — 金色像素风自制滚动条，可拖拽，隐藏原生滚动条
+- **一键复制** — AI 回答下方复制按钮，一键复制到剪贴板
+- **重新生成** — 不满意 AI 回答可一键重新生成
+- **导出对话** — 一键导出当前对话为 Markdown 文件下载
+- **提示词模板** — 输入框上方快捷按钮（翻译/总结/代码解释/概念解释/写作），点击即填入
+- **教程按钮位置** — 确认在清空对话按钮左边，不换行
+- **Service Worker** 缓存版本升级到 v34
+
+---
 
 ### 2026-07 · 像素 AI 聊天工具
 
