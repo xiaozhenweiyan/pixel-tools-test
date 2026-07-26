@@ -39,8 +39,8 @@
       <h1 class="app-landing-title" data-i18n="app_landing_title">像素风格工具网站</h1>
       <p class="app-landing-subtitle" data-i18n="app_landing_subtitle">PIXEL TOOLS</p>
       <!-- 像素公仔 / Pixel Mascot -->
-      <div class="landing-mascot">
-        <div class="mascot-character">
+      <div class="landing-mascot" id="landing-mascot-container">
+        <div class="mascot-character" id="mascot-character">
           <div class="mc-row"><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span></div>
           <div class="mc-row"><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span></div>
           <div class="mc-row"><span class="mc-yellow"></span><span class="mc-dark"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-dark"></span><span class="mc-yellow"></span></div>
@@ -48,6 +48,12 @@
           <div class="mc-row"><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span></div>
           <div class="mc-row"><span></span><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span><span></span></div>
           <div class="mc-row"><span></span><span class="mc-cyan"></span><span></span><span class="mc-cyan"></span><span class="mc-cyan"></span><span></span><span class="mc-cyan"></span><span></span></div>
+        </div>
+        <div class="mascot-dialog" id="mascot-dialog" style="display:none;">
+          <div class="mascot-dialog-bubble">
+            <p id="mascot-dialog-text"></p>
+          </div>
+          <div class="mascot-dialog-pointer"></div>
         </div>
       </div>
       <!-- 最近使用区域 / Recent Tools Area -->
@@ -279,6 +285,92 @@
     </footer>
     <button class="tutorial-btn" data-page="app-landing-page" data-i18n="tutorial_btn">教程</button>
     <div class="landing-pixels"></div>
+  </div>
+
+  <!-- Eve 聊天室彩蛋页面 / Eve Chat Easter Egg Page -->
+  <div id="eve-chat-page" class="eve-chat-page hidden">
+    <button class="floating-back-btn" id="btn-eve-back" data-i18n="eve_chat_back">← 返回</button>
+    <button class="floating-settings-btn" id="btn-eve-settings">
+      <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="10" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+        <circle cx="24" cy="24" r="3" fill="#ffd700"/>
+        <path d="M24 4 L24 12 M24 36 L24 44 M4 24 L12 24 M36 24 L44 24 M10 10 L16 16 M32 32 L38 38 M10 38 L16 32 M32 16 L38 10" stroke="#ffd700" stroke-width="3" stroke-linecap="square"/>
+      </svg>
+    </button>
+
+    <div class="eve-chat-content">
+      <div class="eve-mascot-container">
+        <div class="mascot-character" id="eve-mascot">
+          <div class="mc-row"><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span></div>
+          <div class="mc-row"><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span></div>
+          <div class="mc-row"><span class="mc-yellow"></span><span class="mc-dark"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-dark"></span><span class="mc-yellow"></span></div>
+          <div class="mc-row"><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-green"></span><span class="mc-green"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span></div>
+          <div class="mc-row"><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span></div>
+          <div class="mc-row"><span></span><span></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span class="mc-yellow"></span><span></span><span></span></div>
+          <div class="mc-row"><span></span><span class="mc-cyan"></span><span></span><span class="mc-cyan"></span><span class="mc-cyan"></span><span></span><span class="mc-cyan"></span><span></span></div>
+        </div>
+        <div class="eve-mascot-name" data-i18n="eve_chat_title">Eve 的聊天室</div>
+      </div>
+
+      <div class="eve-chat-messages" id="eve-chat-messages">
+        <div class="eve-message eve-message-eve">
+          <div class="eve-message-bubble">
+            <p data-i18n="eve_chat_welcome">你好！我是 Eve，PIXEL TOOLS 的智能助手。有什么可以帮你的吗？</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="eve-chat-input-area">
+        <input type="text" id="eve-chat-input" class="pixel-input eve-chat-input" data-i18n="eve_chat_input_placeholder" placeholder="和 Eve 聊聊天吧...">
+        <button id="btn-eve-send" class="pixel-btn eve-chat-send-btn" data-i18n="pixel_ai_send">发送</button>
+      </div>
+    </div>
+
+    <!-- Eve 设置弹窗 / Eve Settings Modal -->
+    <div id="eve-settings-modal" class="tutorial-modal" style="display:none;">
+      <div class="tutorial-modal-content pixel-panel">
+        <div class="tutorial-modal-header">
+          <h2 data-i18n="eve_chat_settings">设置</h2>
+          <button id="btn-eve-settings-close" class="tutorial-close-btn">×</button>
+        </div>
+        <div class="eve-settings-content">
+          <div class="settings-section">
+            <span class="settings-label" data-i18n="pixel_ai_settings_provider">模型提供商</span>
+            <select id="eve-provider-select" class="pixel-input">
+              <option value="openai" data-i18n="pixel_ai_provider_openai">OpenAI</option>
+              <option value="anthropic" data-i18n="pixel_ai_provider_anthropic">Anthropic</option>
+              <option value="google" data-i18n="pixel_ai_provider_google">Google Gemini</option>
+              <option value="qwen" data-i18n="pixel_ai_provider_qwen">通义千问</option>
+              <option value="ernie" data-i18n="pixel_ai_provider_ernie">文心一言</option>
+              <option value="deepseek" data-i18n="pixel_ai_provider_deepseek">DeepSeek</option>
+              <option value="mistral" data-i18n="pixel_ai_provider_mistral">Mistral</option>
+              <option value="groq" data-i18n="pixel_ai_provider_groq">Groq</option>
+              <option value="custom" data-i18n="pixel_ai_provider_custom">自定义</option>
+            </select>
+          </div>
+          <div class="settings-section">
+            <span class="settings-label" data-i18n="pixel_ai_settings_model">模型</span>
+            <select id="eve-model-select" class="pixel-input"></select>
+          </div>
+          <div class="settings-section">
+            <span class="settings-label" data-i18n="pixel_ai_settings_api_key">API Key</span>
+            <div class="settings-language-row">
+              <input type="password" id="eve-api-key-input" class="pixel-input" placeholder="sk-...">
+              <button id="btn-eve-toggle-key" class="pixel-btn" data-i18n="pixel_ai_settings_show">显示</button>
+            </div>
+            <div class="settings-desc" data-i18n="pixel_ai_settings_security_hint">API Key 仅保存在本地浏览器，不上传任何服务器</div>
+          </div>
+          <div class="settings-section" id="eve-base-url-section" style="display:none;">
+            <span class="settings-label" data-i18n="pixel_ai_settings_base_url">API Base URL</span>
+            <input type="text" id="eve-base-url-input" class="pixel-input" placeholder="https://api.example.com/v1">
+          </div>
+          <div class="register-modal-buttons">
+            <button id="btn-eve-settings-cancel" class="pixel-btn" data-i18n="pixel_ai_settings_cancel">取消</button>
+            <button id="btn-eve-settings-save" class="pixel-btn" data-i18n="pixel_ai_settings_save">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 数学学习网站落地页 / Landing Page -->
@@ -1858,6 +1950,7 @@
   <script src="js/pixel-clock.js"></script>
   <script src="js/pixel-rpg.js"></script>
   <script src="js/pixel-ai.js"></script>
+  <script src="js/eve-chat.js"></script>
   <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {

@@ -2397,6 +2397,7 @@
     'clock-page',                         // 像素时钟
     'rpg-page',                           // 像素RPG
     'pixel-ai-page',                      // 像素AI
+    'eve-chat-page',                      // Eve聊天室彩蛋
     'settings-page'                      // 设置页
   ];
 
@@ -2416,6 +2417,7 @@
     'clock-page': true,
     'rpg-page': true,
     'pixel-ai-page': true,
+    'eve-chat-page': true,
     'settings-page': true
   };
 
@@ -3235,6 +3237,52 @@
     initFlags.pixelAI = true;
     if (!window.PixelAI) return;
     window.PixelAI.init();
+  }
+
+  // ---------- Eve聊天室彩蛋 / Eve Chat Easter Egg ----------
+  function showEveChat() {
+    stopBackgroundTools();
+    showPage('eve-chat-page');
+    setTimeout(initEveChat, 50);
+  }
+
+  var eveChatInitDone = false;
+  function initEveChat() {
+    if (eveChatInitDone) return;
+    eveChatInitDone = true;
+    if (window.EveChat) {
+      window.EveChat.init();
+    }
+  }
+
+  // ---------- 公仔彩蛋交互 / Mascot Easter Egg Interaction ----------
+  function initMascotEasterEgg() {
+    const mascotContainer = document.getElementById('landing-mascot-container');
+    const mascotDialog = document.getElementById('mascot-dialog');
+    const dialogText = document.getElementById('mascot-dialog-text');
+    if (!mascotContainer || !mascotDialog || !dialogText) return;
+
+    const dialogKeys = ['mascot_dialog_1', 'mascot_dialog_2', 'mascot_dialog_3', 'mascot_dialog_4', 'mascot_dialog_5', 'mascot_dialog_6'];
+
+    mascotContainer.addEventListener('click', function(e) {
+      if (e.target.closest('.mascot-dialog')) return;
+      if (mascotDialog.style.display === 'none') {
+        const randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
+        dialogText.textContent = t(randomKey);
+        mascotDialog.style.display = 'block';
+      } else {
+        mascotDialog.style.display = 'none';
+      }
+    });
+
+    mascotDialog.addEventListener('click', function(e) {
+      e.stopPropagation();
+      showEveChat();
+    });
+
+    document.getElementById('btn-eve-back').addEventListener('click', function() {
+      showAppLanding();
+    });
   }
 
   function initPageSwitching() {
@@ -4413,6 +4461,9 @@
     // 计算器与页面切换初始化 / calculator and page switching init
     initCalculator();
     initPageSwitching();
+
+    // 公仔彩蛋初始化 / Mascot Easter Egg init
+    initMascotEasterEgg();
 
     // 首页增强初始化 / home enhancements init
     initCategoryCollapse();

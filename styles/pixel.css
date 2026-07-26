@@ -1841,11 +1841,79 @@ footer.pixel-panel p {
 .landing-mascot {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   margin-bottom: 40px;
+  position: relative;
+  cursor: pointer;
 }
 .mascot-character {
   display: inline-block;
   animation: mascotFloat 3s ease-in-out infinite;
+  transition: filter 0.2s;
+}
+.mascot-character:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 16px rgba(255, 215, 0, 0.4));
+}
+
+/* 公仔对话框 / Mascot Dialog */
+.mascot-dialog {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  animation: mascotDialogPop 0.2s ease-out;
+}
+@keyframes mascotDialogPop {
+  from { transform: translateX(-50%) scale(0.8); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+.mascot-dialog-bubble {
+  background: #1a1a2e;
+  border: 3px solid #ffd700;
+  padding: 12px 16px;
+  max-width: 280px;
+  box-shadow: 4px 4px 0 #000;
+  position: relative;
+}
+.mascot-dialog-bubble p {
+  margin: 0;
+  color: #f0f0f0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
+.mascot-dialog-pointer {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 12px solid #ffd700;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -12px;
+}
+.mascot-dialog-bubble::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid #1a1a2e;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  z-index: 1;
+}
+.mascot-dialog:hover .mascot-dialog-bubble {
+  border-color: #ff5555;
+  box-shadow: 4px 4px 0 #ff5555;
+}
+.mascot-dialog:hover .mascot-dialog-pointer {
+  border-top-color: #ff5555;
 }
 @keyframes mascotFloat {
   0%, 100% { transform: translateY(0); }
@@ -7598,6 +7666,134 @@ canvas {
 
 .pixel-dialog-btn-confirm:hover {
   background: #ffea4d;
+}
+
+/* ============================================================
+   Eve 聊天室彩蛋页面 / Eve Chat Easter Egg Page
+   ============================================================ */
+.eve-chat-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #1a1a2e;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.eve-chat-page.hidden {
+  display: none;
+}
+.eve-chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 60px 20px 20px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+.eve-mascot-container {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.eve-mascot-container .mascot-character {
+  animation: mascotFloat 3s ease-in-out infinite;
+  margin: 0 auto;
+}
+.eve-mascot-name {
+  color: #ffd700;
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-top: 12px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+.eve-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: #0d0d1f;
+  border: 3px solid #ffffff;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+}
+.eve-message {
+  display: flex;
+  max-width: 85%;
+}
+.eve-message-eve {
+  align-self: flex-start;
+}
+.eve-message-user {
+  align-self: flex-end;
+}
+.eve-message-bubble {
+  background: #2d2d44;
+  border: 3px solid #ffffff;
+  border-radius: 4px;
+  padding: 12px 16px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ffffff;
+}
+.eve-message-user .eve-message-bubble {
+  background: #1a1a2e;
+  border-color: #ffd700;
+}
+.eve-message-bubble p {
+  margin: 0;
+  word-break: break-word;
+}
+.eve-chat-input-area {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.eve-chat-input {
+  flex: 1;
+  font-size: 14px;
+}
+.eve-chat-send-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.eve-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.eve-settings-content .settings-section {
+  flex-direction: column;
+  align-items: flex-start;
+}
+@media (max-width: 600px) {
+  .eve-chat-content {
+    padding: 50px 12px 12px;
+  }
+  .eve-chat-messages {
+    padding: 12px;
+  }
+  .eve-message {
+    max-width: 95%;
+  }
+  .eve-message-bubble {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
 }
 
 

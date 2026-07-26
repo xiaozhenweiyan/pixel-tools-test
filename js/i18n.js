@@ -27,6 +27,21 @@
 
       app_landing_title: '像素风格工具网站',
       app_landing_subtitle: 'PIXEL TOOLS',
+
+      /* 公仔对话彩蛋 / Mascot Dialog Easter Egg */
+      mascot_dialog_1: '我叫 Eve，是 PIXEL TOOLS 的智能助手',
+      mascot_dialog_2: '你知道吗，这个网站由 小枕未焱 独自制作',
+      mascot_dialog_3: '这个只是一个小网站，别在意',
+      mascot_dialog_4: '这里有很多好玩的工具，快去探索吧！',
+      mascot_dialog_5: '如果你喜欢像素风格，一定会爱上这里！',
+      mascot_dialog_6: '需要帮助的话，点击对话框找我聊天哦~',
+
+      /* 彩蛋聊天页面 / Easter Egg Chat Page */
+      eve_chat_title: 'Eve 的聊天室',
+      eve_chat_settings: '设置',
+      eve_chat_back: '返回',
+      eve_chat_input_placeholder: '和 Eve 聊聊天吧...',
+      eve_chat_welcome: '你好！我是 Eve，PIXEL TOOLS 的智能助手。有什么可以帮你的吗？',
       category_learning: '学习类 LEARNING',
       category_art: '艺术类 ART',
       card_math_title: '像素数学',
@@ -1112,6 +1127,22 @@
 
       app_landing_title: 'PIXEL TOOLS',
       app_landing_subtitle: 'PIXEL TOOLS',
+
+      /* Mascot Dialog Easter Egg */
+      mascot_dialog_1: 'My name is Eve, the AI assistant for PIXEL TOOLS',
+      mascot_dialog_2: 'Did you know? This website is made by xiaozhen_weiyan alone',
+      mascot_dialog_3: 'This is just a small website, don\'t mind it',
+      mascot_dialog_4: 'There are many fun tools here, go explore!',
+      mascot_dialog_5: 'If you like pixel art, you\'ll love it here!',
+      mascot_dialog_6: 'Need help? Click the dialog to chat with me~',
+
+      /* Easter Egg Chat Page */
+      eve_chat_title: "Eve's Chat Room",
+      eve_chat_settings: 'Settings',
+      eve_chat_back: 'Back',
+      eve_chat_input_placeholder: 'Chat with Eve...',
+      eve_chat_welcome: 'Hello! I am Eve, the AI assistant for PIXEL TOOLS. How can I help you?',
+
       category_learning: 'LEARNING',
       category_art: 'ART',
       card_math_title: 'Pixel Math',
