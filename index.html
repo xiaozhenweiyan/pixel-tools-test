@@ -1633,13 +1633,15 @@
     <div class="pixel-ai-main">
       <!-- 顶部栏 -->
       <div class="pixel-ai-topbar">
-        <button class="pixel-btn pixel-ai-back-btn" id="btn-back-home-ai">
-          &larr; <span data-i18n="pixel_ai_back">返回</span>
-        </button>
-        <button class="pixel-btn ai-sidebar-toggle" id="btn-ai-sidebar-toggle">☰</button>
+        <div class="pixel-ai-topbar-left">
+          <button class="pixel-btn pixel-ai-back-btn" id="btn-back-home-ai">
+            &larr; <span data-i18n="pixel_ai_back">返回</span>
+          </button>
+          <button class="pixel-btn pixel-ai-tutorial-btn tutorial-btn" data-page="pixel-ai" data-i18n="pixel_ai_tutorial">教程</button>
+          <button class="pixel-btn ai-sidebar-toggle" id="btn-ai-sidebar-toggle">☰</button>
+        </div>
         <h1 class="pixel-ai-title" data-i18n="pixel_ai_title">像素AI PIXEL AI</h1>
         <div class="pixel-ai-topbar-actions">
-          <button class="pixel-btn pixel-ai-tutorial-btn tutorial-btn" data-page="pixel-ai" data-i18n="pixel_ai_tutorial">教程</button>
           <button class="pixel-btn pixel-ai-clear-btn" id="btn-ai-clear" data-i18n="pixel_ai_clear">清空对话</button>
           <button class="pixel-btn" id="btn-ai-export" data-i18n="pixel_ai_export">导出</button>
           <button class="pixel-btn pixel-ai-settings-btn" id="btn-ai-settings" data-i18n="pixel_ai_settings">设置</button>
@@ -1662,11 +1664,11 @@
 
       <!-- 提示词模板 / Prompt Templates -->
       <div class="ai-prompt-templates" id="ai-prompt-templates">
-        <button class="prompt-chip" data-prompt="请将以下内容翻译成英文：&#10;" data-i18n="pixel_ai_prompt_translate">翻译</button>
-        <button class="prompt-chip" data-prompt="请总结以下内容的要点：&#10;" data-i18n="pixel_ai_prompt_summarize">总结</button>
-        <button class="prompt-chip" data-prompt="请解释以下代码：&#10;" data-i18n="pixel_ai_prompt_code">代码解释</button>
-        <button class="prompt-chip" data-prompt="请用简单的话解释以下概念：&#10;" data-i18n="pixel_ai_prompt_explain">概念解释</button>
-        <button class="prompt-chip" data-prompt="请帮我写一个" data-i18n="pixel_ai_prompt_write">写作</button>
+        <button class="prompt-chip" data-prompt-key="pixel_ai_prompt_translate_text" data-i18n="pixel_ai_prompt_translate">翻译</button>
+        <button class="prompt-chip" data-prompt-key="pixel_ai_prompt_summarize_text" data-i18n="pixel_ai_prompt_summarize">总结</button>
+        <button class="prompt-chip" data-prompt-key="pixel_ai_prompt_code_text" data-i18n="pixel_ai_prompt_code">代码解释</button>
+        <button class="prompt-chip" data-prompt-key="pixel_ai_prompt_explain_text" data-i18n="pixel_ai_prompt_explain">概念解释</button>
+        <button class="prompt-chip" data-prompt-key="pixel_ai_prompt_write_text" data-i18n="pixel_ai_prompt_write">写作</button>
       </div>
 
       <!-- 输入区 -->

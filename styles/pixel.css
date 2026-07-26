@@ -1526,6 +1526,28 @@ footer.pixel-panel p {
 .tutorial-content li {
   margin: 6px 0;
 }
+.tutorial-content h4 {
+  color: #ffd700;
+  margin: 12px 0 6px 0;
+  font-size: 15px;
+}
+.tutorial-content strong {
+  color: #ffd700;
+}
+.tutorial-content code {
+  background: #1a1a2e;
+  border: 1px solid #3d3d54;
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: #1e90ff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+.tutorial-content a {
+  color: #1e90ff;
+  text-decoration: underline;
+  word-break: break-all;
+}
 
 /* 教程按钮 / Tutorial Button - 固定在视口底部 */
 .tutorial-btn {
@@ -6481,6 +6503,27 @@ canvas {
   font-size: 13px;
 }
 
+.pixel-ai-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.pixel-ai-tutorial-btn {
+  position: static !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: auto !important;
+  max-width: none !important;
+  padding: 6px 12px !important;
+  font-size: 13px;
+  letter-spacing: 1px;
+  display: inline-block;
+}
+
 .pixel-ai-title {
   font-family: 'Courier New', Courier, monospace;
   font-size: 18px;
@@ -7075,6 +7118,13 @@ canvas {
     gap: 4px;
   }
   .pixel-ai-topbar-actions .pixel-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .pixel-ai-topbar-left {
+    gap: 4px;
+  }
+  .pixel-ai-topbar-left .pixel-btn {
     font-size: 11px;
     padding: 4px 8px;
   }

@@ -1415,7 +1415,9 @@ window.PixelAI = (function () {
       var chips = state.dom.promptTemplates.querySelectorAll('.prompt-chip');
       for (var i = 0; i < chips.length; i++) {
         chips[i].addEventListener('click', function () {
-          fillPrompt(this.dataset.prompt);
+          var promptKey = this.dataset.promptKey;
+          var promptText = promptKey ? t(promptKey) : this.dataset.prompt;
+          fillPrompt(promptText);
         });
       }
     }
