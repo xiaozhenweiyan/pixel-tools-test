@@ -2433,6 +2433,7 @@
     init: init,
     setLanguage: setLanguage,
     getCurrentLang: getCurrentLang,
-    getCurrentMode: getCurrentMode
+    getCurrentMode: getCurrentMode,
+    applyToDOM: applyToDOM
   };
 })();

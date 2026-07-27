@@ -802,6 +802,9 @@ window.PixelIDE = (function () {
   // ============================================================
 
   function init() {
+    if (window.i18n && typeof window.i18n.applyToDOM === 'function') {
+      window.i18n.applyToDOM();
+    }
     cacheDom();
     loadFiles();
     loadConversations();

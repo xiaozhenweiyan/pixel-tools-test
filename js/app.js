@@ -2477,6 +2477,7 @@
     'geometry-page': true,
     'speed-page': true,
     'maze-page': true,
+    'pixel-ide-page': true,
     'nn-visualizer-page': true,
     'physics-page': true,
     'pixelizer-page': true,
@@ -3420,9 +3421,10 @@
     if (btnEnterPixelAI) btnEnterPixelAI.addEventListener('click', showPixelAI);
 
     // 新工具返回按钮 / new tool back buttons
-    // 像素迷宫、神经网络可视化：返回像素编程首页 / Maze & NN Vis: back to Pixel Programming
+    // 像素迷宫、神经网络可视化、像素IDE：返回像素编程首页 / Maze & NN Vis & IDE: back to Pixel Programming
     const btnBackHomeMaze = document.getElementById('btn-back-home-maze');
     const btnBackHomeNN = document.getElementById('btn-back-home-nn');
+    const btnBackToPixelProgramming = document.getElementById('btn-back-to-pixel-programming');
     const btnBackHomePhysics = document.getElementById('btn-back-home-physics');
     const btnBackHomePixelizer = document.getElementById('btn-back-home-pixelizer');
     const btnBackHomeClock = document.getElementById('btn-back-home-clock');
@@ -3430,6 +3432,7 @@
     const btnBackHomeAI = document.getElementById('btn-back-home-ai');
     if (btnBackHomeMaze) btnBackHomeMaze.addEventListener('click', showPixelProgrammingLanding);
     if (btnBackHomeNN) btnBackHomeNN.addEventListener('click', showPixelProgrammingLanding);
+    if (btnBackToPixelProgramming) btnBackToPixelProgramming.addEventListener('click', showPixelProgrammingLanding);
     if (btnBackHomePhysics) btnBackHomePhysics.addEventListener('click', showAppLanding);
     if (btnBackHomePixelizer) btnBackHomePixelizer.addEventListener('click', showAppLanding);
     if (btnBackHomeClock) btnBackHomeClock.addEventListener('click', showAppLanding);
