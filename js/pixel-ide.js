@@ -522,8 +522,118 @@ window.PixelIDE = (function () {
     }
     msgDiv.appendChild(contentDiv);
 
+    if (msg.role === 'assistant' && !msg.isError) {
+      var codeBlocks = extractCodeBlocks(msg.content);
+      if (codeBlocks.length > 0) {
+        var applyDiv = document.createElement('div');
+        applyDiv.className = 'pixel-ide-ai-code-actions';
+
+        for (var ci = 0; ci < codeBlocks.length; ci++) {
+          (function (code, lang) {
+            var btn = document.createElement('button');
+            btn.className = 'pixel-btn pixel-btn-sm';
+            btn.textContent = t('pixel_ide_apply_code') + (codeBlocks.length > 1 ? ' (' + (ci + 1) + ')' : '');
+            btn.addEventListener('click', function () {
+              applyCodeToFile(code, lang);
+            });
+            applyDiv.appendChild(btn);
+          })(codeBlocks[ci].code, codeBlocks[ci].lang);
+        }
+
+        msgDiv.appendChild(applyDiv);
+      }
+    }
+
     container.appendChild(msgDiv);
     container.scrollTop = container.scrollHeight;
+  }
+
+  function extractCodeBlocks(text) {
+    var blocks = [];
+    if (!text) return blocks;
+    var regex = /```(\w+)?\n([\s\S]*?)```/g;
+    var match;
+    while ((match = regex.exec(text)) !== null) {
+      blocks.push({ lang: match[1] || '', code: match[2] });
+    }
+    if (blocks.length === 0) {
+      var pyRegex = /(?:python|py)\s*[:：]?\n([\s\S]+?)(?=\n\n|\n[A-Z]|$)/i;
+      var pyMatch = text.match(pyRegex);
+      if (pyMatch && pyMatch[1].trim().length > 20) {
+        blocks.push({ lang: 'python', code: pyMatch[1].trim() });
+      }
+    }
+    return blocks;
+  }
+
+  function getCurrentFile() {
+    if (!state.currentFileId) return null;
+    for (var i = 0; i < state.files.length; i++) {
+      if (state.files[i].id === state.currentFileId) return state.files[i];
+    }
+    return null;
+  }
+
+  function applyCodeToFile(code, lang) {
+    if (!state.currentFileId) {
+      showToast(t('pixel_ide_no_file'));
+      return;
+    }
+    var file = getCurrentFile();
+    if (!file) return;
+
+    if (lang && lang !== '') {
+      var normalizedLang = lang.toLowerCase();
+      if (normalizedLang === 'python' || normalizedLang === 'py') {
+        if (file.lang !== 'python') {
+          file.lang = 'python';
+          file.name = file.name.replace(/\.(cpp|c|cc|cxx)$/, '.py');
+        }
+      } else if (['cpp', 'c++', 'c', 'cc', 'cxx'].indexOf(normalizedLang) !== -1) {
+        if (file.lang !== 'cpp') {
+          file.lang = 'cpp';
+          file.name = file.name.replace(/\.py$/, '.cpp');
+        }
+      }
+      state.currentLang = file.lang;
+      if (state.dom.currentLang) {
+        state.dom.currentLang.textContent = file.lang === 'python' ? 'Python' : 'C++';
+      }
+      if (state.dom.currentFile) {
+        state.dom.currentFile.textContent = file.name;
+      }
+    }
+
+    file.content = code;
+    if (state.dom.editor) {
+      state.dom.editor.value = code;
+    }
+    saveFiles();
+    renderFilesList();
+    showToast(t('pixel_ide_code_applied'));
+  }
+
+  function addApplyCodeButtons(msgElement, content) {
+    if (!msgElement) return;
+    var codeBlocks = extractCodeBlocks(content);
+    if (codeBlocks.length === 0) return;
+
+    var applyDiv = document.createElement('div');
+    applyDiv.className = 'pixel-ide-ai-code-actions';
+
+    for (var ci = 0; ci < codeBlocks.length; ci++) {
+      (function (code, lang) {
+        var btn = document.createElement('button');
+        btn.className = 'pixel-btn pixel-btn-sm';
+        btn.textContent = t('pixel_ide_apply_code') + (codeBlocks.length > 1 ? ' (' + (ci + 1) + ')' : '');
+        btn.addEventListener('click', function () {
+          applyCodeToFile(code, lang);
+        });
+        applyDiv.appendChild(btn);
+      })(codeBlocks[ci].code, codeBlocks[ci].lang);
+    }
+
+    msgElement.appendChild(applyDiv);
   }
 
   // ============================================================
@@ -657,6 +767,9 @@ window.PixelIDE = (function () {
       state.messages.push({ role: 'assistant', content: reply, deepThinkingContent: state.deepThinkingContent });
 
       if (usedStream) {
+        if (state.streamingMessageEl) {
+          addApplyCodeButtons(state.streamingMessageEl, reply);
+        }
         finalizeStreamingMessage();
       } else {
         renderSingleAIMessage(state.messages[state.messages.length - 1], state.messages.length - 1);
@@ -698,11 +811,10 @@ window.PixelIDE = (function () {
     state.deepThinkingContent = '';
 
     var thinkingPrompt = buildDeepThinkingPrompt(state.messages);
-    var lastUserMsg = state.messages[state.messages.length - 1].content;
-    var thinkingMessages = [
-      { role: 'system', content: thinkingPrompt },
-      { role: 'user', content: lastUserMsg }
-    ];
+    var thinkingMessages = [{ role: 'system', content: thinkingPrompt }];
+    for (var i = 0; i < state.messages.length; i++) {
+      thinkingMessages.push({ role: state.messages[i].role, content: state.messages[i].content });
+    }
 
     // 临时替换 state.messages 用于思考阶段调用
     var originalMessages = state.messages.slice();
@@ -732,16 +844,17 @@ window.PixelIDE = (function () {
     appendStreamingMessage('assistant');
 
     var finalPrompt = buildFinalResponsePrompt(thinkingReply);
-    var finalMessages = originalMessages.slice();
-    finalMessages.unshift({ role: 'system', content: finalPrompt });
+    var finalMessages = [{ role: 'system', content: finalPrompt }];
+    for (var j = 0; j < originalMessages.length; j++) {
+      finalMessages.push({ role: originalMessages[j].role, content: originalMessages[j].content });
+    }
 
-    var originalMessages2 = originalMessages.slice();
     state.messages = finalMessages;
 
     try {
       return await callApi(true);
     } finally {
-      state.messages = originalMessages2;
+      state.messages = originalMessages;
     }
   }
 

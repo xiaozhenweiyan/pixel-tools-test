@@ -1089,7 +1089,31 @@ window.PixelAI = (function () {
           body: JSON.stringify({ model: modelId, messages: messages, stream: true, max_tokens: 4096 })
         });
         if (!response.ok) await handleApiError(response);
-        return parseSSE(response, onDelta);
+        var fullContent = '';
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder('utf-8');
+        var buffer = '';
+        while (true) {
+          var result = await reader.read();
+          if (result.done) break;
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line || line.indexOf('data: ') !== 0) continue;
+            var dataStr = line.substring(6);
+            if (dataStr === '[DONE]') break;
+            try {
+              var data = JSON.parse(dataStr);
+              if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) {
+                fullContent += data.choices[0].delta.content;
+                if (onDelta) onDelta(fullContent);
+              }
+            } catch (e) {}
+          }
+        }
+        return fullContent;
       } else {
         var response = await safeFetch(baseUrl + '/chat/completions', {
           method: 'POST',
@@ -1143,7 +1167,7 @@ window.PixelAI = (function () {
               var evt = JSON.parse(dataStr);
               if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
                 fullContent += evt.delta.text;
-                if (onDelta) onDelta(evt.delta.text);
+                if (onDelta) onDelta(fullContent);
               }
             } catch (e) {}
           }
@@ -1205,7 +1229,7 @@ window.PixelAI = (function () {
                 for (var q = 0; q < parts.length; q++) {
                   if (parts[q].text) {
                     fullContent += parts[q].text;
-                    if (onDelta) onDelta(parts[q].text);
+                    if (onDelta) onDelta(fullContent);
                   }
                 }
               }
@@ -1578,10 +1602,10 @@ window.PixelAI = (function () {
     state.deepThinkingContent = '';
 
     var thinkingPrompt = buildDeepThinkingPrompt(state.messages);
-    var thinkingMessages = [
-      { role: 'system', content: thinkingPrompt },
-      { role: 'user', content: state.messages[state.messages.length - 1].content }
-    ];
+    var thinkingMessages = [{ role: 'system', content: thinkingPrompt }];
+    for (var i = 0; i < state.messages.length; i++) {
+      thinkingMessages.push({ role: state.messages[i].role, content: state.messages[i].content });
+    }
 
     var originalMessages = state.messages.slice();
     state.messages = thinkingMessages;
@@ -1610,16 +1634,17 @@ window.PixelAI = (function () {
     appendStreamingMessage('assistant');
 
     var finalPrompt = buildFinalResponsePrompt(thinkingReply);
-    var finalMessages = state.messages.slice();
-    finalMessages.unshift({ role: 'system', content: finalPrompt });
+    var finalMessages = [{ role: 'system', content: finalPrompt }];
+    for (var j = 0; j < originalMessages.length; j++) {
+      finalMessages.push({ role: originalMessages[j].role, content: originalMessages[j].content });
+    }
 
-    var originalMessages2 = state.messages.slice();
     state.messages = finalMessages;
 
     try {
       return await callApi(true);
     } finally {
-      state.messages = originalMessages2;
+      state.messages = originalMessages;
     }
   }
 

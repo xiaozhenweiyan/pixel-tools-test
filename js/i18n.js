@@ -571,7 +571,9 @@
       pixel_ide_file_name_placeholder: '请输入文件名',
       pixel_ide_cancel: '取消',
       pixel_ide_create: '创建',
-      pixel_ide_save_success: '保存成功！',
+      pixel_ide_code_applied: '代码已应用到文件！',
+      pixel_ide_apply_code: '📝 应用到文件',
+      pixel_ide_no_file: '请先创建或打开一个文件',
       pixel_ide_sending: '发送中...',
 
       // 物理模拟器 / Physics Sandbox
@@ -1729,7 +1731,9 @@
       pixel_ide_file_name_placeholder: 'Enter file name',
       pixel_ide_cancel: 'Cancel',
       pixel_ide_create: 'Create',
-      pixel_ide_save_success: 'Saved successfully!',
+      pixel_ide_code_applied: 'Code applied to file!',
+      pixel_ide_apply_code: '📝 Apply to File',
+      pixel_ide_no_file: 'Please create or open a file first',
       pixel_ide_sending: 'Sending...',
 
       // Physics Sandbox

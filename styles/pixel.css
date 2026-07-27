@@ -8610,6 +8610,37 @@ canvas {
   font-size: 12px;
 }
 
+.pixel-ide-ai-code-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.pixel-btn-sm {
+  padding: 4px 10px;
+  font-size: 11px;
+  min-height: 24px;
+  line-height: 1;
+}
+
+.pixel-ide-ai-code-actions .pixel-btn {
+  background: var(--accent);
+  color: #1a1a2e;
+  border-color: var(--accent);
+}
+
+.pixel-ide-ai-code-actions .pixel-btn:hover {
+  background: #ffed4a;
+  border-color: #ffed4a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+.pixel-ide-ai-code-actions .pixel-btn:active {
+  transform: translateY(0);
+}
+
 .pixel-ide-ai-input-area {
   display: flex;
   gap: 8px;
