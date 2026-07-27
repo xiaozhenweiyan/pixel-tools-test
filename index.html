@@ -583,6 +583,24 @@
         <div class="learning-category-title" data-i18n="pixel_programming_category">像素编程工具 PROGRAMMING TOOLS</div>
       </div>
       <div class="learning-cards">
+        <button class="landing-card" id="btn-enter-ide">
+          <div class="landing-card-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" stroke="#ffd700" stroke-width="3" fill="#1a1a2e"/>
+              <rect x="10" y="10" width="28" height="20" stroke="#ffffff" stroke-width="2" fill="#1a1a2e"/>
+              <rect x="12" y="12" width="24" height="3" fill="#1e90ff"/>
+              <rect x="12" y="18" width="20" height="2" fill="#228b22"/>
+              <rect x="12" y="24" width="18" height="2" fill="#ff4500"/>
+              <rect x="12" y="30" width="24" height="6" fill="#228b22"/>
+              <rect x="32" y="32" width="2" height="2" fill="#228b22"/>
+              <rect x="34" y="32" width="2" height="2" fill="#228b22"/>
+            </svg>
+          </div>
+          <div class="landing-card-body">
+            <div class="landing-card-title" data-i18n="card_ide_title">像素IDE</div>
+            <div class="landing-card-desc" data-i18n="card_ide_desc">Python/C++ 代码编辑 · AI辅助编程 · 对话历史</div>
+          </div>
+        </button>
         <button class="landing-card" id="btn-enter-maze">
           <div class="landing-card-icon">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -626,6 +644,77 @@
     </div>
     <div class="landing-pixels"></div>
   <button class="tutorial-btn" data-page="pixel-programming-landing-page" data-i18n="tutorial_btn">教程</button>
+  </div>
+
+  <!-- 像素IDE页面 / Pixel IDE Page -->
+  <div id="pixel-ide-page" class="pixel-ide-page hidden">
+    <button class="floating-back-btn" id="btn-back-to-pixel-programming" data-i18n="back_to_pixel_programming">← 返回像素编程</button>
+    
+    <div class="pixel-ide-container">
+      <!-- 左侧面板 / Left Panel -->
+      <div class="pixel-ide-left-panel">
+        <div class="pixel-ide-panel-tabs">
+          <button class="pixel-ide-panel-tab active" id="btn-ide-conv-tab" data-i18n="pixel_ide_conversations">对话历史</button>
+          <button class="pixel-ide-panel-tab" id="btn-ide-files-tab" data-i18n="pixel_ide_files">代码文件</button>
+        </div>
+        
+        <div class="pixel-ide-panel-content">
+          <!-- 对话历史区域 / Conversation History Area -->
+          <div id="ide-conversation-list" class="pixel-ide-conv-list"></div>
+          
+          <!-- 代码文件区域 / Code Files Area -->
+          <div id="ide-files-list" class="pixel-ide-files-list hidden"></div>
+        </div>
+        
+        <div class="pixel-ide-cache-warning" data-i18n="pixel_ide_cache_warning">⚠ 清理缓存将会全部消失！！！</div>
+      </div>
+      
+      <!-- 中间代码编辑区域 / Middle Code Editor Area -->
+      <div class="pixel-ide-center-panel">
+        <div class="pixel-ide-toolbar">
+          <div class="pixel-ide-toolbar-left">
+            <select id="ide-lang-select" class="pixel-input">
+              <option value="python" data-i18n="pixel_ide_lang_python">Python</option>
+              <option value="cpp" data-i18n="pixel_ide_lang_cpp">C++</option>
+            </select>
+            <button id="btn-ide-run" class="pixel-btn" data-i18n="pixel_ide_run">运行</button>
+            <button id="btn-ide-save" class="pixel-btn" data-i18n="pixel_ide_save">保存</button>
+            <button id="btn-ide-new" class="pixel-btn" data-i18n="pixel_ide_new">新建</button>
+          </div>
+          <div class="pixel-ide-toolbar-right">
+            <span id="ide-current-file" class="pixel-ide-file-name"></span>
+          </div>
+        </div>
+        
+        <div class="pixel-ide-editor-container">
+          <textarea id="ide-code-editor" class="pixel-ide-code-editor" spellcheck="false"></textarea>
+        </div>
+        
+        <div class="pixel-ide-output-container">
+          <div class="pixel-ide-output-header">
+            <span data-i18n="pixel_ide_output">输出</span>
+            <button id="btn-ide-clear-output" class="pixel-btn pixel-ide-clear-btn" data-i18n="pixel_ide_clear">清空</button>
+          </div>
+          <div id="ide-output" class="pixel-ide-output"></div>
+        </div>
+      </div>
+      
+      <!-- 右侧AI窗口 / Right AI Window -->
+      <div class="pixel-ide-right-panel">
+        <div class="pixel-ide-ai-header">
+          <span data-i18n="pixel_ide_ai_title">AI 助手</span>
+          <button id="btn-ide-ai-settings" class="pixel-btn" data-i18n="pixel_ide_ai_settings">⚙ 设置</button>
+          <button id="btn-ide-ai-new-chat" class="pixel-btn" data-i18n="pixel_ide_ai_new_chat">新对话</button>
+        </div>
+        
+        <div id="ide-ai-messages" class="pixel-ide-ai-messages"></div>
+        
+        <div class="pixel-ide-ai-input-area">
+          <input type="text" id="ide-ai-input" class="pixel-input" data-i18n="pixel_ide_ai_placeholder" placeholder="输入你想要实现的功能...">
+          <button id="btn-ide-ai-send" class="pixel-btn" data-i18n="pixel_ide_ai_send">发送</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 四则运算学习卡片 / Arithmetic Learning Cards -->
@@ -1945,6 +2034,7 @@
   <script src="js/pixel-clock.js"></script>
   <script src="js/pixel-rpg.js"></script>
   <script src="js/pixel-ai.js"></script>
+  <script src="js/pixel-ide.js"></script>
   <script src="js/eve-chat.js"></script>
   <script>
   if ('serviceWorker' in navigator) {

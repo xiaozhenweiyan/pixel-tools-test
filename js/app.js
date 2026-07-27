@@ -76,7 +76,8 @@
     pixelizer: false,
     clock: false,
     rpg: false,
-    pixelAI: false
+    pixelAI: false,
+    pixelIDE: false
   };
 
   // ============================================================
@@ -2391,6 +2392,7 @@
     'geometry-page',                     // 几何学习卡片
     'speed-page',                         // 速算挑战卡片
     'maze-page',                          // 像素迷宫
+    'pixel-ide-page',                     // 像素IDE
     'nn-visualizer-page',                // 神经网络可视化
     'physics-page',                       // 物理模拟器
     'pixelizer-page',                     // AI图像像素化
@@ -2432,7 +2434,8 @@
     'decimal-page': true,
     'equation-page': true,
     'geometry-page': true,
-    'speed-page': true
+    'speed-page': true,
+    'pixel-ide-page': true
   };
 
   // ============================================================
@@ -2499,6 +2502,7 @@
     'geometry-page':        { btnId: 'btn-enter-geometry',          titleKey: 'card_geometry_title',        descKey: 'card_geometry_desc' },
     'speed-page':           { btnId: 'btn-enter-speed',             titleKey: 'card_speed_title',           descKey: 'card_speed_desc' },
     'maze-page':            { btnId: 'btn-enter-maze',              titleKey: 'card_maze_title',            descKey: 'card_maze_desc' },
+    'pixel-ide-page':       { btnId: 'btn-enter-ide',               titleKey: 'card_ide_title',             descKey: 'card_ide_desc' },
     'nn-visualizer-page':   { btnId: 'btn-enter-nn-visualizer',     titleKey: 'card_nnvis_title',           descKey: 'card_nnvis_desc' },
     'physics-page':         { btnId: 'btn-enter-physics',           titleKey: 'card_physics_title',         descKey: 'card_physics_desc' },
     'pixelizer-page':       { btnId: 'btn-enter-pixelizer',         titleKey: 'card_pixelizer_title',       descKey: 'card_pixelizer_desc' },
@@ -2754,6 +2758,20 @@
     stopBackgroundTools();
     showPage('maze-page');
     setTimeout(initMazeTool, 50);
+  }
+
+  function showPixelIDE() {
+    stopBackgroundTools();
+    showPage('pixel-ide-page');
+    setTimeout(initPixelIDETool, 50);
+  }
+
+  function initPixelIDETool() {
+    if (initFlags.pixelIDE) return;
+    initFlags.pixelIDE = true;
+    if (window.PixelIDE) {
+      window.PixelIDE.init();
+    }
   }
 
   function initMazeTool() {
@@ -3384,6 +3402,7 @@
     if (btnBackToLearningSpeed) btnBackToLearningSpeed.addEventListener('click', showLearningLanding);
 
     // 新工具卡片点击事件 / new tool card click events
+    const btnEnterIDE = document.getElementById('btn-enter-ide');
     const btnEnterMaze = document.getElementById('btn-enter-maze');
     const btnEnterNNVis = document.getElementById('btn-enter-nn-visualizer');
     const btnEnterPhysics = document.getElementById('btn-enter-physics');
@@ -3391,6 +3410,7 @@
     const btnEnterClock = document.getElementById('btn-enter-clock');
     const btnEnterRPG = document.getElementById('btn-enter-rpg');
     const btnEnterPixelAI = document.getElementById('btn-enter-pixel-ai');
+    if (btnEnterIDE) btnEnterIDE.addEventListener('click', showPixelIDE);
     if (btnEnterMaze) btnEnterMaze.addEventListener('click', showMaze);
     if (btnEnterNNVis) btnEnterNNVis.addEventListener('click', showNNVisualizer);
     if (btnEnterPhysics) btnEnterPhysics.addEventListener('click', showPhysics);
