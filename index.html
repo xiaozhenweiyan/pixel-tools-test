@@ -673,15 +673,12 @@
       <div class="pixel-ide-center-panel">
         <div class="pixel-ide-toolbar">
           <div class="pixel-ide-toolbar-left">
-            <select id="ide-lang-select" class="pixel-input">
-              <option value="python" data-i18n="pixel_ide_lang_python">Python</option>
-              <option value="cpp" data-i18n="pixel_ide_lang_cpp">C++</option>
-            </select>
+            <button id="btn-ide-new" class="pixel-btn" data-i18n="pixel_ide_new">新建</button>
             <button id="btn-ide-run" class="pixel-btn" data-i18n="pixel_ide_run">运行</button>
             <button id="btn-ide-save" class="pixel-btn" data-i18n="pixel_ide_save">保存</button>
-            <button id="btn-ide-new" class="pixel-btn" data-i18n="pixel_ide_new">新建</button>
           </div>
           <div class="pixel-ide-toolbar-right">
+            <span id="ide-current-lang" class="pixel-ide-lang-badge"></span>
             <span id="ide-current-file" class="pixel-ide-file-name"></span>
           </div>
         </div>
@@ -1900,6 +1897,37 @@
       <div class="pixel-dialog-buttons">
         <button class="pixel-btn" id="btn-ai-settings-cancel" data-i18n="pixel_ai_settings_cancel">取消</button>
         <button class="pixel-btn" id="btn-ai-settings-save" data-i18n="pixel_ai_settings_save">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新建文件对话框 / New File Dialog -->
+  <div id="ide-new-file-modal" class="ide-new-file-modal" style="display:none;">
+    <div class="pixel-dialog-content">
+      <h2 data-i18n="pixel_ide_new_file_title">新建文件</h2>
+
+      <div class="ai-settings-section">
+        <label class="settings-label" data-i18n="pixel_ide_select_language">选择语言</label>
+        <div class="ide-lang-selector">
+          <button class="ide-lang-option active" data-lang="python">
+            <span class="ide-lang-icon">🐍</span>
+            <span data-i18n="pixel_ide_lang_python">Python</span>
+          </button>
+          <button class="ide-lang-option" data-lang="cpp">
+            <span class="ide-lang-icon">⚡</span>
+            <span data-i18n="pixel_ide_lang_cpp">C++</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ai-settings-section">
+        <label class="settings-label" data-i18n="pixel_ide_file_name">文件名</label>
+        <input type="text" id="ide-new-file-name" class="pixel-input" data-i18n-placeholder="pixel_ide_file_name_placeholder" placeholder="例如：hello">
+      </div>
+
+      <div class="pixel-dialog-buttons">
+        <button class="pixel-btn" id="btn-ide-new-cancel" data-i18n="pixel_ide_cancel">取消</button>
+        <button class="pixel-btn" id="btn-ide-new-confirm" data-i18n="pixel_ide_create">创建</button>
       </div>
     </div>
   </div>

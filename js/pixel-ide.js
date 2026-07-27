@@ -117,16 +117,19 @@ window.PixelIDE = (function () {
     return null;
   }
 
-  function createNewFile(lang) {
+  function createNewFile(lang, name) {
+    var fileLang = lang || state.currentLang;
+    var fileName = name || (fileLang === 'python' ? 'untitled.py' : 'untitled.cpp');
     var file = {
       id: genId(),
-      name: (lang === 'python' ? 'untitled.py' : 'untitled.cpp'),
-      lang: lang || state.currentLang,
-      content: DEFAULT_CODE[lang || state.currentLang],
+      name: fileName,
+      lang: fileLang,
+      content: DEFAULT_CODE[fileLang],
       timestamp: Date.now()
     };
     state.files.unshift(file);
     state.currentFileId = file.id;
+    state.currentLang = fileLang;
     saveFiles();
     renderFilesList();
     loadFile(file);
@@ -164,12 +167,63 @@ window.PixelIDE = (function () {
     if (state.dom.editor) {
       state.dom.editor.value = file.content;
     }
-    if (state.dom.langSelect) {
-      state.dom.langSelect.value = file.lang;
+    if (state.dom.currentLang) {
+      state.dom.currentLang.textContent = file.lang === 'python' ? 'Python' : 'C++';
     }
     if (state.dom.currentFile) {
       state.dom.currentFile.textContent = file.name;
     }
+  }
+
+  // ============================================================
+  // 新建文件对话框 / New File Dialog
+  // ============================================================
+
+  var newFileSelectedLang = 'python';
+
+  function openNewFileDialog() {
+    if (!state.dom.newFileModal) return;
+    newFileSelectedLang = 'python';
+    if (state.dom.newFileNameInput) {
+      state.dom.newFileNameInput.value = '';
+    }
+    if (state.dom.newFileLangOptions) {
+      state.dom.newFileLangOptions.forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === 'python');
+      });
+    }
+    state.dom.newFileModal.style.display = 'flex';
+    if (state.dom.newFileNameInput) {
+      setTimeout(function () { state.dom.newFileNameInput.focus(); }, 100);
+    }
+  }
+
+  function closeNewFileDialog() {
+    if (!state.dom.newFileModal) return;
+    state.dom.newFileModal.style.display = 'none';
+  }
+
+  function selectNewFileLang(lang) {
+    newFileSelectedLang = lang;
+    if (state.dom.newFileLangOptions) {
+      state.dom.newFileLangOptions.forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === lang);
+      });
+    }
+  }
+
+  function confirmNewFile() {
+    var name = state.dom.newFileNameInput ? state.dom.newFileNameInput.value.trim() : '';
+    if (!name) {
+      name = newFileSelectedLang === 'python' ? 'untitled.py' : 'untitled.cpp';
+    } else {
+      var ext = newFileSelectedLang === 'python' ? '.py' : '.cpp';
+      if (!name.endsWith(ext)) {
+        name += ext;
+      }
+    }
+    createNewFile(newFileSelectedLang, name);
+    closeNewFileDialog();
   }
 
   // ============================================================
@@ -270,11 +324,11 @@ window.PixelIDE = (function () {
 
   function cacheDom() {
     state.dom.editor = document.getElementById('ide-code-editor');
-    state.dom.langSelect = document.getElementById('ide-lang-select');
     state.dom.runBtn = document.getElementById('btn-ide-run');
     state.dom.saveBtn = document.getElementById('btn-ide-save');
     state.dom.newBtn = document.getElementById('btn-ide-new');
     state.dom.currentFile = document.getElementById('ide-current-file');
+    state.dom.currentLang = document.getElementById('ide-current-lang');
     state.dom.output = document.getElementById('ide-output');
     state.dom.clearOutputBtn = document.getElementById('btn-ide-clear-output');
 
@@ -289,6 +343,12 @@ window.PixelIDE = (function () {
     state.dom.aiSettingsBtn = document.getElementById('btn-ide-ai-settings');
     state.dom.aiNewChatBtn = document.getElementById('btn-ide-ai-new-chat');
     state.dom.aiDeepThinkingBtn = document.getElementById('btn-ide-ai-deep-thinking');
+
+    state.dom.newFileModal = document.getElementById('ide-new-file-modal');
+    state.dom.newFileNameInput = document.getElementById('ide-new-file-name');
+    state.dom.newFileCancelBtn = document.getElementById('btn-ide-new-cancel');
+    state.dom.newFileConfirmBtn = document.getElementById('btn-ide-new-confirm');
+    state.dom.newFileLangOptions = document.querySelectorAll('.ide-lang-option');
 
     state.dom.backBtn = document.getElementById('btn-back-to-pixel-programming');
   }
@@ -521,19 +581,10 @@ window.PixelIDE = (function () {
 
   async function callApi(streaming) {
     var apiKey = window.PixelAI ? window.PixelAI.getApiKey() : '';
-    var provider = window.PixelAI ? window.PixelAI.getProviderId() : 'openai';
-    var model = window.PixelAI ? window.PixelAI.getModelId() : 'gpt-4o-mini';
 
     if (!apiKey) {
       showToast(t('pixel_ide_no_api_key'));
       throw new Error('NO_API_KEY');
-    }
-
-    var baseUrl;
-    if (window.PixelAI) {
-      baseUrl = window.PixelAI.getBaseUrl();
-    } else {
-      baseUrl = 'https://api.openai.com/v1';
     }
 
     var messages = [];
@@ -541,62 +592,15 @@ window.PixelIDE = (function () {
       messages.push({ role: state.messages[i].role, content: state.messages[i].content });
     }
 
-    var response = await fetch(baseUrl + '/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey
-      },
-      body: JSON.stringify({
-        model: model,
-        messages: messages,
-        stream: streaming,
-        max_tokens: 4096,
-        temperature: 0.7
-      })
-    });
-
-    if (!response.ok) {
-      var errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || 'API Error');
-    }
-
-    if (streaming) {
-      var fullContent = '';
-      var reader = response.body.getReader();
-      var decoder = new TextDecoder('utf-8');
-      var buffer = '';
-
-      try {
-        while (true) {
-          var result = await reader.read();
-          if (result.done) break;
-          buffer += decoder.decode(result.value, { stream: true });
-          var lines = buffer.split('\n');
-          buffer = lines.pop() || '';
-
-          for (var j = 0; j < lines.length; j++) {
-            var line = lines[j].trim();
-            if (!line || line.indexOf('data: ') !== 0) continue;
-            var dataStr = line.substring(6);
-            if (dataStr === '[DONE]') break;
-            try {
-              var data = JSON.parse(dataStr);
-              if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) {
-                fullContent += data.choices[0].delta.content;
-                updateStreamingMessage(fullContent);
-              }
-            } catch (e) {}
-          }
-        }
-      } finally {
-        reader.releaseLock();
+    if (window.PixelAI && window.PixelAI.callApiWithMessages) {
+      if (streaming) {
+        return await window.PixelAI.callApiWithMessages(messages, true, updateStreamingMessage);
+      } else {
+        return await window.PixelAI.callApiWithMessages(messages, false);
       }
-      return fullContent;
-    } else {
-      var data = await response.json();
-      return data.choices[0].message.content;
     }
+
+    throw new Error('PixelAI not available');
   }
 
   // ============================================================
@@ -907,13 +911,6 @@ window.PixelIDE = (function () {
   // ============================================================
 
   function bindEvents() {
-    if (state.dom.langSelect) {
-      state.dom.langSelect.addEventListener('change', function () {
-        state.currentLang = this.value;
-        saveFiles();
-      });
-    }
-
     if (state.dom.runBtn) {
       state.dom.runBtn.addEventListener('click', runCode);
     }
@@ -927,7 +924,31 @@ window.PixelIDE = (function () {
 
     if (state.dom.newBtn) {
       state.dom.newBtn.addEventListener('click', function () {
-        createNewFile(state.currentLang);
+        openNewFileDialog();
+      });
+    }
+
+    if (state.dom.newFileCancelBtn) {
+      state.dom.newFileCancelBtn.addEventListener('click', closeNewFileDialog);
+    }
+
+    if (state.dom.newFileConfirmBtn) {
+      state.dom.newFileConfirmBtn.addEventListener('click', confirmNewFile);
+    }
+
+    if (state.dom.newFileLangOptions) {
+      state.dom.newFileLangOptions.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          selectNewFileLang(this.dataset.lang);
+        });
+      });
+    }
+
+    if (state.dom.newFileNameInput) {
+      state.dom.newFileNameInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          confirmNewFile();
+        }
       });
     }
 

@@ -1072,6 +1072,169 @@ window.PixelAI = (function () {
     throw new Error('UNKNOWN_API_TYPE');
   }
 
+  async function callApiWithMessages(messages, useStream, onDelta) {
+    var provider = getProvider(state.settings.provider);
+    var apiType = provider.apiType;
+    var baseUrl = getBaseUrl(state.settings.provider);
+    var modelId = getModelId(state.settings.provider);
+    var apiKey = state.settings.apiKey;
+
+    if (!apiKey) throw new Error('NO_API_KEY');
+
+    if (apiType === API_TYPES.OPENAI) {
+      if (useStream) {
+        var response = await safeFetch(baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+          body: JSON.stringify({ model: modelId, messages: messages, stream: true, max_tokens: 4096 })
+        });
+        if (!response.ok) await handleApiError(response);
+        return parseSSE(response, onDelta);
+      } else {
+        var response = await safeFetch(baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+          body: JSON.stringify({ model: modelId, messages: messages, max_tokens: 4096 })
+        });
+        if (!response.ok) await handleApiError(response);
+        var data = await response.json();
+        if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+          return data.choices[0].message.content;
+        }
+        return '';
+      }
+    }
+
+    if (apiType === API_TYPES.ANTHROPIC) {
+      var anthropicMessages = [];
+      for (var i = 0; i < messages.length; i++) {
+        if (messages[i].role === 'system') continue;
+        anthropicMessages.push({ role: messages[i].role, content: messages[i].content });
+      }
+      var systemPrompt = '';
+      for (var j = 0; j < messages.length; j++) {
+        if (messages[j].role === 'system') { systemPrompt = messages[j].content; break; }
+      }
+      var body = { model: modelId, max_tokens: 4096, messages: anthropicMessages };
+      if (systemPrompt) body.system = systemPrompt;
+
+      if (useStream) {
+        var response = await safeFetch(baseUrl + '/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) await handleApiError(response);
+        var fullContent = '';
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder('utf-8');
+        var buffer = '';
+        while (true) {
+          var result = await reader.read();
+          if (result.done) break;
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (var k = 0; k < lines.length; k++) {
+            var line = lines[k].trim();
+            if (!line || line.indexOf('data: ') !== 0) continue;
+            var dataStr = line.substring(6);
+            try {
+              var evt = JSON.parse(dataStr);
+              if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+                fullContent += evt.delta.text;
+                if (onDelta) onDelta(evt.delta.text);
+              }
+            } catch (e) {}
+          }
+        }
+        return fullContent;
+      } else {
+        var response = await safeFetch(baseUrl + '/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) await handleApiError(response);
+        var data = await response.json();
+        var content = '';
+        if (data.content && data.content.length > 0) {
+          for (var m = 0; m < data.content.length; m++) {
+            if (data.content[m].type === 'text') content += data.content[m].text;
+          }
+        }
+        return content;
+      }
+    }
+
+    if (apiType === API_TYPES.GOOGLE) {
+      var contents = [];
+      for (var n = 0; n < messages.length; n++) {
+        if (messages[n].role === 'system') continue;
+        var role = messages[n].role === 'assistant' ? 'model' : 'user';
+        contents.push({ role: role, parts: [{ text: messages[n].content }] });
+      }
+      var url = baseUrl + '/models/' + modelId + ':' + (useStream ? 'streamGenerateContent' : 'generateContent') + '?key=' + encodeURIComponent(apiKey);
+      if (useStream) url += '&alt=sse';
+
+      if (useStream) {
+        var response = await safeFetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: contents })
+        });
+        if (!response.ok) await handleApiError(response);
+        var fullContent = '';
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder('utf-8');
+        var buffer = '';
+        while (true) {
+          var result = await reader.read();
+          if (result.done) break;
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (var p = 0; p < lines.length; p++) {
+            var line = lines[p].trim();
+            if (!line || line.indexOf('data: ') !== 0) continue;
+            var dataStr = line.substring(6);
+            try {
+              var chunk = JSON.parse(dataStr);
+              if (chunk.candidates && chunk.candidates[0] && chunk.candidates[0].content) {
+                var parts = chunk.candidates[0].content.parts || [];
+                for (var q = 0; q < parts.length; q++) {
+                  if (parts[q].text) {
+                    fullContent += parts[q].text;
+                    if (onDelta) onDelta(parts[q].text);
+                  }
+                }
+              }
+            } catch (e) {}
+          }
+        }
+        return fullContent;
+      } else {
+        var response = await safeFetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: contents })
+        });
+        if (!response.ok) await handleApiError(response);
+        var data = await response.json();
+        var content = '';
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          var parts = data.candidates[0].content.parts || [];
+          for (var r = 0; r < parts.length; r++) {
+            if (parts[r].text) content += parts[r].text;
+          }
+        }
+        return content;
+      }
+    }
+
+    throw new Error('UNKNOWN_API_TYPE');
+  }
+
   async function callOpenAI(baseUrl, model, apiKey) {
     var messages = buildOpenAIMessages();
     var response = await safeFetch(baseUrl + '/chat/completions', {
@@ -1844,6 +2007,11 @@ ${thinkingContent}
     sendMessage: sendMessage,
     clearChat: clearChat,
     openSettings: openSettings,
-    closeSettings: closeSettings
+    closeSettings: closeSettings,
+    callApiWithMessages: callApiWithMessages,
+    getApiKey: function () { return state.settings.apiKey || ''; },
+    getProviderId: function () { return state.settings.provider || 'openai'; },
+    getModelId: function () { return getModelId(state.settings.provider); },
+    getBaseUrl: function () { return getBaseUrl(state.settings.provider); }
   };
 })();
