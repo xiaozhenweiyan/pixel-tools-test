@@ -34,20 +34,21 @@ window.PixelAI = (function () {
       models: [
         { id: 'gpt-4o', nameKey: 'pixel_ai_model_gpt_4o' },
         { id: 'gpt-4o-mini', nameKey: 'pixel_ai_model_gpt_4o_mini' },
-        { id: 'gpt-4-turbo', nameKey: 'pixel_ai_model_gpt_4_turbo' },
-        { id: 'gpt-3.5-turbo', nameKey: 'pixel_ai_model_gpt_35_turbo' }
+        { id: 'gpt-4.1', nameKey: 'pixel_ai_model_gpt_41' },
+        { id: 'o3-mini', nameKey: 'pixel_ai_model_o3_mini' },
+        { id: 'o4-mini', nameKey: 'pixel_ai_model_o4_mini' }
       ]},
     { id: 'anthropic', nameKey: 'pixel_ai_provider_anthropic', apiType: API_TYPES.ANTHROPIC, baseUrl: 'https://api.anthropic.com/v1',
       models: [
         { id: 'claude-3-5-sonnet-20240620', nameKey: 'pixel_ai_model_claude_35_sonnet' },
-        { id: 'claude-3-opus-20240229', nameKey: 'pixel_ai_model_claude_3_opus' },
-        { id: 'claude-3-haiku-20240307', nameKey: 'pixel_ai_model_claude_3_haiku' }
+        { id: 'claude-3-5-haiku-20241022', nameKey: 'pixel_ai_model_claude_35_haiku' },
+        { id: 'claude-3-opus-20240229', nameKey: 'pixel_ai_model_claude_3_opus' }
       ]},
     { id: 'google', nameKey: 'pixel_ai_provider_google', apiType: API_TYPES.GOOGLE, baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
       models: [
+        { id: 'gemini-2.0-flash', nameKey: 'pixel_ai_model_gemini_20_flash' },
         { id: 'gemini-1.5-pro', nameKey: 'pixel_ai_model_gemini_15_pro' },
-        { id: 'gemini-1.5-flash', nameKey: 'pixel_ai_model_gemini_15_flash' },
-        { id: 'gemini-1.0-pro', nameKey: 'pixel_ai_model_gemini_10_pro' }
+        { id: 'gemini-1.5-flash', nameKey: 'pixel_ai_model_gemini_15_flash' }
       ]},
     { id: 'qwen', nameKey: 'pixel_ai_provider_qwen', apiType: API_TYPES.OPENAI, baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
       models: [
@@ -64,9 +65,8 @@ window.PixelAI = (function () {
       ]},
     { id: 'deepseek', nameKey: 'pixel_ai_provider_deepseek', apiType: API_TYPES.OPENAI, baseUrl: 'https://api.deepseek.com/v1',
       models: [
-        { id: 'deepseek-v4-pro', nameKey: 'pixel_ai_model_deepseek_v4_pro' },
-        { id: 'deepseek-v4-flash', nameKey: 'pixel_ai_model_deepseek_v4_flash' },
-        { id: 'deepseek-coder-v2', nameKey: 'pixel_ai_model_deepseek_coder_v2' }
+        { id: 'deepseek-chat', nameKey: 'pixel_ai_model_deepseek_chat' },
+        { id: 'deepseek-reasoner', nameKey: 'pixel_ai_model_deepseek_reasoner' }
       ]},
     { id: 'mistral', nameKey: 'pixel_ai_provider_mistral', apiType: API_TYPES.OPENAI, baseUrl: 'https://api.mistral.ai/v1',
       models: [

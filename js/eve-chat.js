@@ -50,6 +50,23 @@
       if (providerSelect) {
         providerSelect.addEventListener('change', this.onProviderChange.bind(this));
       }
+
+      // API Key 输入后自动获取模型列表
+      var apiKeyInput = document.getElementById('eve-api-key-input');
+      if (apiKeyInput) {
+        var debounceTimer = null;
+        apiKeyInput.addEventListener('input', function() {
+          if (debounceTimer) clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(function() {
+            var provider = document.getElementById('eve-provider-select').value;
+            var modelSelect = document.getElementById('eve-model-select');
+            var key = apiKeyInput.value.trim();
+            if (key && EveChat.isOpenAICompatible(provider)) {
+              EveChat.tryFetchModels(provider, key, modelSelect);
+            }
+          }, 800);
+        });
+      }
     },
     
     toggleApiKeyVisibility: function() {
@@ -70,13 +87,38 @@
       var provider = document.getElementById('eve-provider-select').value;
       var baseUrlSection = document.getElementById('eve-base-url-section');
       var modelSelect = document.getElementById('eve-model-select');
-      
+      var apiKeyInput = document.getElementById('eve-api-key-input');
+
       if (baseUrlSection) {
         baseUrlSection.style.display = provider === 'custom' ? 'flex' : 'none';
       }
-      
+
       if (modelSelect) {
         this.populateModelSelect(provider, modelSelect);
+      }
+
+      // 尝试自动获取模型列表
+      var apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+      if (apiKey && this.isOpenAICompatible(provider)) {
+        this.tryFetchModels(provider, apiKey, modelSelect);
+      }
+    },
+
+    tryFetchModels: async function(provider, apiKey, modelSelect) {
+      if (!modelSelect) return;
+      var currentModel = localStorage.getItem('pixel_ai_model') || '';
+      var fetchedModels = await this.fetchModels(provider, apiKey);
+      if (fetchedModels && fetchedModels.length > 0) {
+        modelSelect.innerHTML = '';
+        for (var i = 0; i < fetchedModels.length; i++) {
+          var option = document.createElement('option');
+          option.value = fetchedModels[i].value;
+          option.textContent = fetchedModels[i].label;
+          modelSelect.appendChild(option);
+        }
+        if (currentModel) {
+          modelSelect.value = currentModel;
+        }
       }
     },
     
@@ -95,44 +137,49 @@
     getModelsForProvider: function(provider) {
       var modelMap = {
         'openai': [
-          { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
           { value: 'gpt-4o', label: 'GPT-4o' },
-          { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
-          { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
+          { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+          { value: 'gpt-4.1', label: 'GPT-4.1' },
+          { value: 'o3-mini', label: 'o3-mini' },
+          { value: 'o4-mini', label: 'o4-mini' }
         ],
         'anthropic': [
-          { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku' },
-          { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet' },
+          { value: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet' },
+          { value: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku' },
           { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus' }
         ],
         'google': [
-          { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
+          { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
           { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
-          { value: 'gemini-1.0-pro', label: 'Gemini 1.0 Pro' }
+          { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' }
         ],
         'qwen': [
-          { value: 'qwen2-7b-chat', label: 'Qwen2-7B-Chat' },
-          { value: 'qwen2-56b-chat', label: 'Qwen2-56B-Chat' }
+          { value: 'qwen-max', label: 'Qwen Max' },
+          { value: 'qwen-plus', label: 'Qwen Plus' },
+          { value: 'qwen-turbo', label: 'Qwen Turbo' },
+          { value: 'qwen-long', label: 'Qwen Long' }
         ],
         'ernie': [
-          { value: 'ernie-4.0', label: 'ERNIE 4.0' },
-          { value: 'ernie-3.5', label: 'ERNIE 3.5' }
+          { value: 'ernie-4.0-8k', label: 'ERNIE 4.0 (8K)' },
+          { value: 'ernie-3.5-8k', label: 'ERNIE 3.5 (8K)' },
+          { value: 'ernie-lite-8k', label: 'ERNIE Lite (8K)' }
         ],
         'deepseek': [
-          { value: 'deepseek-chat', label: 'DeepSeek Chat' },
-          { value: 'deepseek-r1', label: 'DeepSeek R1' }
+          { value: 'deepseek-chat', label: 'DeepSeek Chat (V3.2)' },
+          { value: 'deepseek-reasoner', label: 'DeepSeek Reasoner (R1)' }
         ],
         'mistral': [
           { value: 'mistral-large-latest', label: 'Mistral Large' },
-          { value: 'mistral-7b-instruct', label: 'Mistral 7B' }
+          { value: 'mistral-medium-latest', label: 'Mistral Medium' },
+          { value: 'mistral-small-latest', label: 'Mistral Small' }
         ],
         'groq': [
+          { value: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B Versatile' },
           { value: 'mixtral-8x7b-32768', label: 'Mixtral 8x7B' },
-          { value: 'llama-3-8b-8192', label: 'Llama 3 8B' },
-          { value: 'llama-3-70b-8192', label: 'Llama 3 70B' }
+          { value: 'gemma-7b-it', label: 'Gemma 7B' }
         ],
         'custom': [
-          { value: '', label: '自定义模型名称' }
+          { value: '', label: (window.i18n && window.i18n.t('eve_chat_custom_model')) || '自定义模型名称' }
         ]
       };
       return modelMap[provider] || [];
@@ -359,11 +406,43 @@ ${userMessage}`;
       return { provider, apiKey, model, baseUrl };
     },
     
+    getProviderBaseUrl: function(provider) {
+      var urlMap = {
+        'openai': 'https://api.openai.com/v1',
+        'anthropic': 'https://api.anthropic.com/v1',
+        'google': 'https://generativelanguage.googleapis.com/v1beta',
+        'qwen': 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        'ernie': 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop',
+        'deepseek': 'https://api.deepseek.com/v1',
+        'mistral': 'https://api.mistral.ai/v1',
+        'groq': 'https://api.groq.com/openai/v1',
+        'custom': ''
+      };
+      return urlMap[provider] || urlMap['openai'];
+    },
+
+    isOpenAICompatible: function(provider) {
+      return provider === 'openai' || provider === 'deepseek' || provider === 'qwen' ||
+             provider === 'ernie' || provider === 'mistral' || provider === 'groq' ||
+             provider === 'custom';
+    },
+
     callAPI: async function(messages, settings) {
       var url, headers, body;
-      
-      if (settings.provider === 'openai' || settings.provider === 'custom') {
-        url = (settings.baseUrl || 'https://api.openai.com') + '/v1/chat/completions';
+
+      if (this.isOpenAICompatible(settings.provider)) {
+        var baseUrl = settings.baseUrl || this.getProviderBaseUrl(settings.provider);
+        if (settings.provider === 'custom' && !baseUrl) {
+          baseUrl = 'https://api.openai.com/v1';
+        }
+        // 确保 baseUrl 不以 / 结尾
+        baseUrl = baseUrl.replace(/\/$/, '');
+        // 如果 baseUrl 不包含 /v1，且不是自定义的完整路径，则追加 /v1
+        if (settings.provider !== 'custom' && baseUrl.indexOf('/v1') === -1 && baseUrl.indexOf('/openai/v1') === -1) {
+          baseUrl += '/v1';
+        }
+
+        url = baseUrl + '/chat/completions';
         headers = {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + settings.apiKey
@@ -374,19 +453,23 @@ ${userMessage}`;
           temperature: 0.7
         };
       } else if (settings.provider === 'anthropic') {
-        url = 'https://api.anthropic.com/v1/messages';
+        var anthropicBaseUrl = settings.baseUrl || 'https://api.anthropic.com/v1';
+        anthropicBaseUrl = anthropicBaseUrl.replace(/\/$/, '');
+        url = anthropicBaseUrl + '/messages';
         headers = {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + settings.apiKey,
+          'x-api-key': settings.apiKey,
           'anthropic-version': '2023-06-01'
         };
         body = {
-          model: settings.model || 'claude-3-haiku-20240307',
+          model: settings.model || 'claude-3-5-sonnet-20240620',
           max_tokens: 4096,
           messages: messages
         };
       } else if (settings.provider === 'google') {
-        url = 'https://generativelanguage.googleapis.com/v1beta/models/' + (settings.model || 'gemini-1.5-flash') + ':generateContent';
+        var googleBaseUrl = settings.baseUrl || 'https://generativelanguage.googleapis.com/v1beta';
+        googleBaseUrl = googleBaseUrl.replace(/\/$/, '');
+        url = googleBaseUrl + '/models/' + (settings.model || 'gemini-2.0-flash') + ':generateContent';
         headers = {
           'Content-Type': 'application/json'
         };
@@ -398,30 +481,91 @@ ${userMessage}`;
         };
         url += '?key=' + settings.apiKey;
       } else {
-        throw new Error('Unsupported provider');
+        throw new Error('Unsupported provider: ' + settings.provider);
       }
-      
+
       var response = await fetch(url, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body)
       });
-      
+
       if (!response.ok) {
-        throw new Error('API request failed: ' + response.status);
+        var errorText = '';
+        try {
+          var errorData = await response.json();
+          errorText = errorData.error ? (errorData.error.message || JSON.stringify(errorData.error)) : JSON.stringify(errorData);
+        } catch (e) {
+          errorText = 'HTTP ' + response.status;
+        }
+        throw new Error('API request failed: ' + response.status + ' - ' + errorText);
       }
-      
+
       var data = await response.json();
-      
-      if (settings.provider === 'openai' || settings.provider === 'custom') {
-        return data.choices[0].message.content;
+
+      if (this.isOpenAICompatible(settings.provider)) {
+        if (data.choices && data.choices[0]) {
+          if (data.choices[0].message && data.choices[0].message.content) return data.choices[0].message.content;
+          if (data.choices[0].text) return data.choices[0].text;
+        }
+        return '';
       } else if (settings.provider === 'anthropic') {
-        return data.content[0].text;
+        if (data.content && data.content.length > 0) {
+          var content = '';
+          for (var i = 0; i < data.content.length; i++) {
+            if (data.content[i].type === 'text') content += data.content[i].text;
+          }
+          return content;
+        }
+        return '';
       } else if (settings.provider === 'google') {
-        return data.candidates[0].content.parts[0].text;
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          var parts = data.candidates[0].content.parts || [];
+          var text = '';
+          for (var j = 0; j < parts.length; j++) {
+            if (parts[j].text) text += parts[j].text;
+          }
+          return text;
+        }
+        return '';
       }
-      
+
       return '';
+    },
+
+    fetchModels: async function(provider, apiKey) {
+      if (!this.isOpenAICompatible(provider) || !apiKey) return null;
+      try {
+        var baseUrl = this.getProviderBaseUrl(provider);
+        if (!baseUrl) return null;
+        baseUrl = baseUrl.replace(/\/$/, '');
+        var url = baseUrl + '/models';
+        var response = await fetch(url, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + apiKey }
+        });
+        if (!response.ok) return null;
+        var data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+          var models = data.data.map(function(m) {
+            return { value: m.id, label: m.id };
+          }).filter(function(m) {
+            // 过滤掉 embedding 等非 chat 模型
+            return m.value.indexOf('embed') === -1 &&
+                   m.value.indexOf('tts') === -1 &&
+                   m.value.indexOf('davinci') === -1 &&
+                   m.value.indexOf('babbage') === -1 &&
+                   m.value.indexOf('whisper') === -1 &&
+                   m.value.indexOf('image') === -1;
+          }).sort(function(a, b) {
+            return a.label.localeCompare(b.label);
+          });
+          return models.length > 0 ? models : null;
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
     },
     
     toggleSettings: function() {
@@ -441,12 +585,12 @@ ${userMessage}`;
       var apiKey = localStorage.getItem('pixel_ai_apikey') || '';
       var model = localStorage.getItem('pixel_ai_model') || '';
       var baseUrl = localStorage.getItem('pixel_ai_baseurl') || '';
-      
+
       var providerSelect = document.getElementById('eve-provider-select');
       var apiKeyInput = document.getElementById('eve-api-key-input');
       var modelSelect = document.getElementById('eve-model-select');
       var baseUrlInput = document.getElementById('eve-base-url-input');
-      
+
       if (providerSelect) {
         providerSelect.value = provider;
         this.populateModelSelect(provider, modelSelect);
@@ -454,10 +598,15 @@ ${userMessage}`;
       if (apiKeyInput) apiKeyInput.value = apiKey;
       if (modelSelect && model) modelSelect.value = model;
       if (baseUrlInput) baseUrlInput.value = baseUrl;
-      
+
       var baseUrlSection = document.getElementById('eve-base-url-section');
       if (baseUrlSection) {
         baseUrlSection.style.display = provider === 'custom' ? 'flex' : 'none';
+      }
+
+      // 自动获取最新模型列表
+      if (apiKey && this.isOpenAICompatible(provider) && modelSelect) {
+        this.tryFetchModels(provider, apiKey, modelSelect);
       }
     },
     
