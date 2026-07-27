@@ -7125,6 +7125,9 @@ canvas {
 
 /* 深度思考模式卡片 / Deep thinking mode card */
 .ai-deep-thinking-card {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
   background: #0a0a1a;
   border: 2px solid #444477;
   border-radius: 4px;
@@ -7132,6 +7135,7 @@ canvas {
   overflow: hidden;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .ai-deep-thinking-card:hover {
@@ -7145,6 +7149,7 @@ canvas {
   padding: 6px 10px;
   background: #111133;
   border-bottom: 1px solid #333355;
+  flex-shrink: 0;
 }
 
 .ai-deep-thinking-title {
@@ -7163,6 +7168,7 @@ canvas {
   font-family: 'Courier New', monospace;
   cursor: pointer;
   transition: all 0.1s;
+  flex-shrink: 0;
 }
 
 .ai-deep-thinking-toggle:hover {
@@ -7176,9 +7182,12 @@ canvas {
   line-height: 1.5;
   color: #ccccdd;
   font-family: 'Courier New', monospace;
-  max-height: 200px;
   overflow-y: auto;
-  transition: max-height 0.3s ease;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
 .ai-deep-thinking-content code {
@@ -7186,6 +7195,7 @@ canvas {
   padding: 1px 4px;
   border-radius: 2px;
   color: #ffcc88;
+  word-break: break-all;
 }
 
 .ai-deep-thinking-content pre {
@@ -7194,11 +7204,14 @@ canvas {
   border-radius: 4px;
   overflow-x: auto;
   margin: 4px 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .ai-deep-thinking-content pre code {
   background: transparent;
   padding: 0;
+  word-break: normal;
 }
 
 .ai-deep-thinking-content strong {
@@ -7206,9 +7219,7 @@ canvas {
 }
 
 .ai-deep-thinking-card.collapsed .ai-deep-thinking-content {
-  max-height: 0;
-  padding: 0 10px;
-  overflow: hidden;
+  display: none;
 }
 
 /* 深度思考模式切换按钮 / Deep thinking toggle button */

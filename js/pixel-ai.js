@@ -996,7 +996,9 @@ window.PixelAI = (function () {
   function updateStreamingMessage(content) {
     if (!state.streamingMessageEl) return;
     state.streamingContent = content;
+    // 先查找普通消息内容区，再查找深度思考内容区
     var contentDiv = state.streamingMessageEl.querySelector('.ai-message-content');
+    if (!contentDiv) contentDiv = state.streamingMessageEl.querySelector('.ai-deep-thinking-content');
     if (contentDiv) {
       // 流式输出时实时渲染 Markdown / Render Markdown in real-time during streaming
       try {
@@ -1418,21 +1420,30 @@ window.PixelAI = (function () {
       { role: 'user', content: state.messages[state.messages.length - 1].content }
     ];
 
-    var thinkingReply;
     var originalMessages = state.messages.slice();
     state.messages = thinkingMessages;
 
+    // 将流式输出目标临时指向思考卡片
+    state.streamingMessageEl = thinkingCard;
+    state.streamingContent = '';
+
+    var thinkingReply = '';
     try {
+      thinkingReply = await callApi(true);
+    } catch (e) {
+      // 流式失败则回退非流式
       thinkingReply = await callApi(false);
+      updateDeepThinkingCard(thinkingReply);
     } finally {
       state.messages = originalMessages;
     }
 
     state.deepThinkingContent = thinkingReply || '';
+    // 清除流式状态，但保留卡片
+    state.streamingMessageEl = null;
+    state.streamingContent = '';
 
-    updateDeepThinkingCard(thinkingReply);
-
-    removeThinkingMessage();
+    // 最终回答的流式输出
     appendStreamingMessage('assistant');
 
     var finalPrompt = buildFinalResponsePrompt(thinkingReply);
