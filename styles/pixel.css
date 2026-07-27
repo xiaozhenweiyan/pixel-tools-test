@@ -7675,6 +7675,58 @@ canvas {
 /* ============================================================
    Eve 聊天室彩蛋页面 / Eve Chat Easter Egg Page
    ============================================================ */
+.eve-floating-back-btn {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 10001;
+  padding: 8px 14px;
+  background: #1a1a2e;
+  color: #ffd700;
+  border: 3px solid #ffffff;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000000;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.eve-floating-back-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000000;
+}
+.eve-floating-back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 #000000;
+}
+.eve-floating-settings-btn {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 10001;
+  padding: 8px 14px;
+  background: #1a1a2e;
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000000;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.eve-floating-settings-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000000;
+  border-color: #ffd700;
+  color: #ffd700;
+}
+.eve-floating-settings-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 #000000;
+}
 .eve-chat-page {
   position: fixed;
   top: 0;
@@ -7785,6 +7837,18 @@ canvas {
   align-items: flex-start;
 }
 @media (max-width: 600px) {
+  .eve-floating-back-btn {
+    top: 8px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .eve-floating-settings-btn {
+    top: 52px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
   .eve-chat-content {
     padding: 50px 12px 12px;
   }

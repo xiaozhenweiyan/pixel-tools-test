@@ -6,6 +6,7 @@
     init: function() {
       this.bindEvents();
       this.applyI18n();
+      this.loadSettingsToModal();
     },
     
     bindEvents: function() {
@@ -155,16 +156,19 @@
     applyI18n: function() {
       if (!window.i18n || typeof window.i18n.t !== 'function') return;
 
-      var elements = document.querySelectorAll('[data-i18n]');
+      var elements = document.querySelectorAll('#eve-chat-page [data-i18n]');
       for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
         var key = element.getAttribute('data-i18n');
-        if (window.i18n.t(key)) {
-          if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-            element.placeholder = window.i18n.t(key);
-          } else {
-            element.textContent = window.i18n.t(key);
-          }
+        var translated = window.i18n.t(key);
+        if (!translated || translated === key) continue;
+
+        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+          element.placeholder = translated;
+        } else if (element.tagName === 'OPTION') {
+          element.textContent = translated;
+        } else {
+          element.textContent = translated;
         }
       }
     },
@@ -234,7 +238,10 @@
     },
     
     buildPrompt: function(userMessage) {
-      var lang = window.currentLang || 'zh';
+      var lang = 'zh';
+      if (window.i18n && typeof window.i18n.getCurrentLang === 'function') {
+        lang = window.i18n.getCurrentLang();
+      }
       
       if (lang === 'zh') {
         return `你是 Eve，PIXEL TOOLS 网站的智能助手。你必须严格按照以下身份和知识回答用户的问题：
@@ -455,7 +462,10 @@ ${userMessage}`;
     },
     
     getMissingAPIKeyMessage: function() {
-      var lang = window.currentLang || 'zh';
+      var lang = 'zh';
+      if (window.i18n && typeof window.i18n.getCurrentLang === 'function') {
+        lang = window.i18n.getCurrentLang();
+      }
       if (lang === 'zh') {
         return '请先在设置中配置你的 AI API Key，这样我才能和你聊天哦！';
       } else {
@@ -464,7 +474,10 @@ ${userMessage}`;
     },
     
     getErrorMessage: function() {
-      var lang = window.currentLang || 'zh';
+      var lang = 'zh';
+      if (window.i18n && typeof window.i18n.getCurrentLang === 'function') {
+        lang = window.i18n.getCurrentLang();
+      }
       if (lang === 'zh') {
         return '哎呀，连接出了点问题，请稍后再试！';
       } else {
