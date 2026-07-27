@@ -1,7 +1,99 @@
 (function() {
+  // ============================================================
+  // 工具函数 / Utility Functions
+  // ============================================================
+
+  // 将 Markdown 转换为 HTML（与 pixel-ai.js 保持一致）/ Convert Markdown to HTML
+  function markdownToHtml(text) {
+    if (!text) return '';
+
+    // 转义 HTML 标签，然后逐步转换 Markdown 语法
+    var html = text.replace(/&/g, '&amp;')
+                   .replace(/</g, '&lt;')
+                   .replace(/>/g, '&gt;');
+
+    // 代码块（```code```）/ Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+    // 内联代码（`code`）/ Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // 粗体（**text**）/ Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    // 斜体（*text*）/ Italic
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+    // 删除线（~~text~~）/ Strikethrough
+    html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+
+    // 链接（[text](url)）/ Links
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+    // 三级标题（### text）/ h3 headers
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+
+    // 四级标题（#### text）/ h4 headers
+    html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+
+    // 列表项（- text）/ List items
+    html = html.replace(/^-\s(.+)$/gm, '<li>$1</li>');
+
+    // 引用（> text）/ Blockquote
+    html = html.replace(/^>\s(.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // 将连续的 li 包裹在 ul 中 / Wrap consecutive li in ul
+    html = html.replace(/(<li>.+<\/li>)+/g, '<ul>$&</ul>');
+
+    // 换行（\n）/ Line breaks
+    html = html.replace(/\n/g, '<br>');
+
+    return html;
+  }
+
+  // 清理 HTML（移除 script 标签）/ Sanitize HTML (strip scripts)
+  function sanitizeHtml(html) {
+    return html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+               .replace(/<script[^>]*>/gi, '');
+  }
+
+  // SSE 流式响应解析 / Parse SSE streaming response
+  async function parseSSE(response, onDelta) {
+    if (!response.body) throw new Error('NO_RESPONSE_BODY');
+    var reader = response.body.getReader();
+    var decoder = new TextDecoder('utf-8');
+    var buffer = '';
+    var fullContent = '';
+    try {
+      while (true) {
+        var result = await reader.read();
+        if (result.done) break;
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line || line.indexOf('data: ') !== 0) continue;
+          var dataStr = line.substring(6);
+          if (dataStr === '[DONE]') return fullContent;
+          try {
+            var data = JSON.parse(dataStr);
+            var delta = onDelta(data, fullContent);
+            if (delta && typeof delta === 'string') fullContent += delta;
+          } catch (e) {}
+        }
+      }
+      return fullContent;
+    } finally {
+      reader.releaseLock();
+    }
+  }
+
   var EveChat = {
     chatHistory: [],
     isTyping: false,
+    streamingMessageEl: null,
+    streamingContent: '',
     
     init: function() {
       this.bindEvents();
@@ -242,9 +334,13 @@
       var bubbleDiv = document.createElement('div');
       bubbleDiv.className = 'eve-message-bubble';
       
-      var contentEl = document.createElement('p');
+      var contentEl = document.createElement('div');
+      contentEl.className = 'eve-message-content';
       if (isHtml) {
         contentEl.innerHTML = content;
+      } else if (role === 'eve') {
+        // Eve 的回复渲染 Markdown / Render Markdown for Eve's replies
+        contentEl.innerHTML = sanitizeHtml(markdownToHtml(content));
       } else {
         contentEl.textContent = content;
       }
@@ -254,6 +350,70 @@
       messagesContainer.appendChild(messageDiv);
       
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    },
+
+    // 创建流式消息占位元素 / Create streaming message placeholder element
+    startStreamingMessage: function() {
+      var messagesContainer = document.getElementById('eve-chat-messages');
+      if (!messagesContainer) return null;
+
+      var messageDiv = document.createElement('div');
+      messageDiv.className = 'eve-message eve-message-eve';
+      messageDiv.id = 'eve-streaming-message';
+
+      var bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'eve-message-bubble';
+
+      var contentEl = document.createElement('div');
+      contentEl.className = 'eve-message-content';
+      contentEl.innerHTML = '<span class="eve-cursor">▋</span>';
+
+      bubbleDiv.appendChild(contentEl);
+      messageDiv.appendChild(bubbleDiv);
+      messagesContainer.appendChild(messageDiv);
+
+      this.streamingMessageEl = messageDiv;
+      this.streamingContent = '';
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return messageDiv;
+    },
+
+    // 更新流式消息内容 / Update streaming message content
+    updateStreamingMessage: function(content) {
+      if (!this.streamingMessageEl) return;
+      this.streamingContent = content;
+      var contentDiv = this.streamingMessageEl.querySelector('.eve-message-content');
+      if (contentDiv) {
+        // 流式输出时实时渲染 Markdown / Render Markdown in real-time during streaming
+        contentDiv.innerHTML = sanitizeHtml(markdownToHtml(content)) + '<span class="eve-cursor">▋</span>';
+      }
+      var messagesContainer = document.getElementById('eve-chat-messages');
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    },
+
+    // 流式输出完成后定型 / Finalize streaming message
+    finalizeStreamingMessage: function() {
+      if (this.streamingMessageEl) {
+        var contentDiv = this.streamingMessageEl.querySelector('.eve-message-content');
+        if (contentDiv && this.streamingContent) {
+          contentDiv.innerHTML = sanitizeHtml(markdownToHtml(this.streamingContent));
+        }
+        this.streamingMessageEl.id = '';
+        this.streamingMessageEl = null;
+      }
+      this.streamingContent = '';
+    },
+
+    // 移除流式消息元素（用于出错时回退）/ Remove streaming message element (for error fallback)
+    removeStreamingMessage: function() {
+      if (this.streamingMessageEl && this.streamingMessageEl.parentNode) {
+        this.streamingMessageEl.parentNode.removeChild(this.streamingMessageEl);
+      }
+      this.streamingMessageEl = null;
+      this.streamingContent = '';
     },
     
     sendMessage: async function(userMessage) {
@@ -272,11 +432,29 @@
         ...this.chatHistory
       ];
       
+      // 先创建流式消息占位 / Create streaming message placeholder first
+      this.startStreamingMessage();
+
       try {
-        var response = await this.callAPI(messages, settings);
-        this.addMessage('eve', response);
+        var response = '';
+        var usedStream = true;
+        try {
+          // 尝试流式输出 / Try streaming first
+          response = await this.callAPIStream(messages, settings);
+          if (!response || !response.trim()) throw new Error('EMPTY_STREAM_RESPONSE');
+        } catch (streamErr) {
+          // 流式失败，回退到非流式 / Fallback to non-stream on stream failure
+          usedStream = false;
+          this.removeStreamingMessage();
+          console.warn('Eve stream failed, falling back to non-stream:', streamErr);
+          this.startStreamingMessage();
+          response = await this.callAPI(messages, settings);
+        }
+        this.streamingContent = response;
+        this.finalizeStreamingMessage();
         this.chatHistory.push({ role: 'assistant', content: response });
       } catch (error) {
+        this.removeStreamingMessage();
         this.addMessage('eve', this.getErrorMessage());
         console.error('Eve chat error:', error);
       } finally {
@@ -294,7 +472,7 @@
         return `你是 Eve，PIXEL TOOLS 网站的智能助手。你必须严格按照以下身份和知识回答用户的问题：
 
 【身份设定】
-- 名字：Eve（中文名：伊芙）
+- 名字：Eve
 - 身份：PIXEL TOOLS 网站的专属智能助手
 - 性格：友好、热情、乐于助人，带有像素风格的可爱感
 - 创作者：小枕未焱（英文名：xiaozhen_weiyan）
@@ -330,6 +508,59 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
    - 像素时钟：像素风格的实时时钟
    - 像素RPG：像素风格的角色扮演游戏
    - 像素AI：内置的AI聊天工具，支持多种模型提供商
+
+【项目详细信息】（来自 GitHub 仓库 README.md）
+- 项目名称：Pixel Tools / 像素风格工具网站
+- 在线访问：https://xiaozhenweiyan.github.io/pixel-tools/
+- GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools
+- 项目定位：复古像素风格的纯前端工具集合网站，覆盖学习、艺术、沙盒、工具、娱乐五大类别
+- 运行环境：所有功能 100% 在浏览器中运行，无需后端、无需登录、无需联网（仅首次加载需要网络，PWA 安装后可离线使用）
+- 推荐浏览器：最新版 Chrome / Edge / Firefox / Safari
+
+核心特性：
+1. 复古深空像素 UI：统一调色板（深空蓝 #1a1a2e、面板紫 #2d2d44、金色强调 #ffd700），像素边框（3px solid）、硬阴影（4px 4px 0）、等宽字体（Courier New），呈现 8-bit / 16-bit 时代计算机界面的复古美学
+2. 中英文双语支持（i18n）：完整 i18n 系统，支持 auto / zh / en 模式，auto 跟随系统语言，切换立即生效无需刷新
+3. PWA 离线 + 可安装：所有静态资源通过 Service Worker 缓存，可安装到桌面后完全离线使用
+4. 响应式设计：桌面双栏布局，移动单栏自适应，触控友好的按钮尺寸和间距
+5. 首页类别折叠：5 个顶级类别可独立折叠/展开，状态保存到 localStorage
+6. 首页"最近"快速访问：自动记录最近访问的 3 个工具
+7. ESC 键导航：任意子页面按 ESC 返回上一级
+8. 鼠标拖拽粒子特效：拖拽鼠标留下像素风格粒子轨迹，位于最顶层但不阻挡交互
+9. 每页教程：每个工具页面都有"教程"按钮
+10. 函数系统参数动画：支持参数 a, b, c, d... 滑块和正弦波动画
+11. 自适应坐标单位长度：使用 1-2-5 优雅单位刻度策略
+12. 纯前端（零后端 / 零登录 / 零数据收集）：所有计算、存储、渲染都在浏览器中完成
+13. WebAssembly 加速（实验性）：反应扩散模式可选启用 Wasm 加速，性能提升 3-5 倍
+14. MCP Server 集成：包含 MCP 服务器（mcp-server/server.py），将计算器和预测器封装为 MCP 工具
+15. 像素风格自定义弹窗：所有提示、确认、参数输入使用自定义 .pixel-dialog 像素风格弹窗
+16. 零框架原生 JS：除 p5.js（仅像素艺术生成器使用）外，无第三方前端框架
+
+技术栈：
+- 原生 JavaScript（ES5 兼容语法 + IIFE 模式）
+- Canvas 2D API（所有绘图）
+- Web Audio API（像素音乐合成器实时 8-bit 音色合成）
+- Service Worker + Cache API（PWA 离线缓存，Network-First 策略）
+- CSS Variables（统一调色板和设计 token 管理）
+- p5.js（仅像素艺术生成器作为绘图辅助库）
+- WebAssembly（实验性，反应扩散模式加速）
+- localStorage（保存用户设置：昵称、头像、背景、语言、类别折叠状态、最近工具、速算挑战排行榜等）
+- IndexedDB / Blob URL（保存头像和背景图片）
+- GitHub Actions（自动部署到 GitHub Pages）
+
+数据存储与隐私：
+- 所有数据存储在浏览器的 localStorage / IndexedDB 中
+- 用户信息（昵称、头像、背景）持久化在 localStorage，并设置 pixel_user_session cookie（max-age 一年）作为注册标记
+- 所有图像处理（像素化、绘图导出）完全在客户端完成，图像永远不会上传到任何服务器
+- 无用户系统、无登录注册、无服务器日志、无遥测
+
+工具详细说明：
+- 像素 AI（Pixel AI）：支持 9 家模型提供商（OpenAI / Anthropic / Google / 通义千问 / 文心一言 / DeepSeek / Mistral / Groq / 自定义），API Key 仅存储在浏览器 localStorage，支持 Token 使用统计、对话历史、中英文 UI、一键清除
+- 像素艺术生成器：8 种艺术模式（流场、粒子、马赛克、螺旋、分形树、Voronoi 镶嵌、波干涉、反应扩散），相同种子 + 相同参数 = 相同图像
+- 像素绘图编辑器：支持画笔、橡皮擦、填充、吸管、直线、矩形、圆形等工具，多图层操作，NES / GameBoy / CGA 复古调色板
+- 像素迷宫：4 种算法生成迷宫（递归回溯、Prim、Kruskal、Eller），支持 BFS 最短路径求解动画
+- 神经网络可视化：实时显示前向/反向传播、权重变化、损失曲线、决策边界，支持 XOR、正弦拟合、分类等数据集
+- 预测系统：内置 40 种数学预测方法，按权重融合产生最终预测结果，支持回测权重和均匀权重两种模式
+- 像素 RPG：地下城迷宫冒险，回合制战斗，7 槽装备系统，8 种道具，火炬照明视野，8-bit 音效
 
 【回答规则】
 1. 必须使用中文回答
@@ -382,6 +613,59 @@ PIXEL TOOLS is a pixel-style tool website made solely by xiaozhen_weiyan, contai
    - Pixel Clock: Pixel-style real-time clock
    - Pixel RPG: Pixel-style role-playing game
    - Pixel AI: Built-in AI chat tool supporting multiple model providers
+
+[Project Details] (from GitHub repository README.md)
+- Project Name: Pixel Tools
+- Online Demo: https://xiaozhenweiyan.github.io/pixel-tools/
+- GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools
+- Project Positioning: A retro pixel-style pure frontend tool collection website, covering five categories: Learning, Art, Sandbox, Tools, and Entertainment
+- Runtime Environment: All features run 100% in the browser — no backend, no login, no network required (network is only needed for the first load; after PWA installation, it works offline)
+- Recommended Browsers: latest Chrome / Edge / Firefox / Safari
+
+Core Features:
+1. Retro Deep-Space Pixel UI: Unified color palette (deep space blue #1a1a2e, panel purple #2d2d44, gold accent #ffd700), pixel borders (3px solid), hard shadows (4px 4px 0), monospace font (Courier New), presenting the retro aesthetic of 8-bit / 16-bit era computer interfaces
+2. Bilingual Support (i18n): Complete i18n system supporting auto / zh / en modes. auto follows the system language, switching takes effect immediately without refreshing
+3. PWA Offline + Installable: All static assets cached via Service Worker, can be installed to desktop for fully offline use
+4. Responsive Design: Desktop dual-column layout, mobile single-column adaptive, touch-friendly button sizes and spacing
+5. Homepage Category Collapsing: 5 top-level categories can be independently collapsed/expanded, state saved to localStorage
+6. Homepage "Recent" Quick Access: Automatically records the 3 most recently visited tools
+7. ESC Key Navigation: Press ESC on any sub-page to go back to the previous level
+8. Mouse Drag Particle Effects: Dragging the mouse leaves a pixel-style particle trail, at the topmost layer but without blocking interaction
+9. Per-page Tutorials: Each tool page has a "Tutorial" button
+10. Function System Parameter Animation: Supports parameters a, b, c, d... sliders and sine wave animation
+11. Adaptive Coordinate Unit Length: Uses 1-2-5 nice unit tick strategy
+12. Pure Frontend (Zero Backend / Zero Login / Zero Data Collection): All computation, storage, and rendering happen in the browser
+13. WebAssembly Acceleration (experimental): Reaction-diffusion mode can optionally enable Wasm acceleration, 3-5x performance improvement
+14. MCP Server Integration: Includes MCP server (mcp-server/server.py) wrapping calculator and predictor as MCP tools
+15. Pixel-style Custom Dialogs: All prompts, confirmations, parameter inputs use custom .pixel-dialog pixel-style dialogs
+16. Zero-framework Vanilla JS: Apart from p5.js (used only by pixel art generator), no third-party frontend frameworks
+
+Tech Stack:
+- Vanilla JavaScript (ES5-compatible syntax + IIFE pattern)
+- Canvas 2D API (all drawing)
+- Web Audio API (pixel music synthesizer real-time 8-bit timbre synthesis)
+- Service Worker + Cache API (PWA offline caching, Network-First strategy)
+- CSS Variables (unified palette and design token management)
+- p5.js (used only by pixel art generator as drawing helper library)
+- WebAssembly (experimental, reaction-diffusion mode acceleration)
+- localStorage (saves user settings: nickname, avatar, background, language, category collapse state, recent tools, speed challenge leaderboard, etc.)
+- IndexedDB / Blob URL (saves avatar and background images)
+- GitHub Actions (automatic deployment to GitHub Pages)
+
+Data Storage & Privacy:
+- All data stored in browser's localStorage / IndexedDB
+- User information (nickname, avatar, background) persisted in localStorage with pixel_user_session cookie (max-age one year) as registered marker
+- All image processing (pixelization, drawing export) done entirely on client side; images never uploaded to any server
+- No user system, no login/registration, no server logs, no telemetry
+
+Tool Details:
+- Pixel AI: Supports 9 providers (OpenAI / Anthropic / Google / Qwen / ERNIE / DeepSeek / Mistral / Groq / Custom), API Key stored only in browser localStorage, supports Token usage tracking, chat history, bilingual UI, one-click clear
+- Pixel Art Generator: 8 art modes (Flow Field, Particles, Mosaic, Spiral, Fractal Tree, Voronoi, Wave Interference, Reaction-Diffusion), same seed + same parameters = same image
+- Pixel Drawing Editor: Supports brush, eraser, fill, eyedropper, line, rectangle, circle tools, multi-layer operations, NES / GameBoy / CGA retro palettes
+- Pixel Maze: 4 maze generation algorithms (Recursive Backtracker, Prim, Kruskal, Eller), supports BFS shortest path solving animation
+- Neural Network Visualizer: Real-time display of forward/backward propagation, weight changes, loss curves, decision boundaries, supports XOR, sine fitting, classification datasets
+- Prediction System: 40 built-in mathematical prediction methods, fused by weight for final prediction, supports backtest weights and uniform weights modes
+- Pixel RPG: Dungeon maze adventure, turn-based combat, 7-slot equipment system, 8 items, torch lighting, 8-bit sound effects
 
 [Response Rules]
 1. Must respond in English
@@ -531,6 +815,185 @@ ${userMessage}`;
       }
 
       return '';
+    },
+
+    // 流式调用 API / Stream API call
+    callAPIStream: async function(messages, settings) {
+      var url, headers, body;
+
+      if (this.isOpenAICompatible(settings.provider)) {
+        var baseUrl = settings.baseUrl || this.getProviderBaseUrl(settings.provider);
+        if (settings.provider === 'custom' && !baseUrl) {
+          baseUrl = 'https://api.openai.com/v1';
+        }
+        baseUrl = baseUrl.replace(/\/$/, '');
+        if (settings.provider !== 'custom' && baseUrl.indexOf('/v1') === -1 && baseUrl.indexOf('/openai/v1') === -1) {
+          baseUrl += '/v1';
+        }
+
+        url = baseUrl + '/chat/completions';
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + settings.apiKey
+        };
+        body = {
+          model: settings.model || 'gpt-4o-mini',
+          messages: messages,
+          temperature: 0.7,
+          stream: true,
+          stream_options: { include_usage: true }
+        };
+
+        var response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+          var errorText = '';
+          try {
+            var errorData = await response.json();
+            errorText = errorData.error ? (errorData.error.message || JSON.stringify(errorData.error)) : JSON.stringify(errorData);
+          } catch (e) { errorText = 'HTTP ' + response.status; }
+          throw new Error('API request failed: ' + response.status + ' - ' + errorText);
+        }
+
+        var self = this;
+        var result = await parseSSE(response, function(data, currentContent) {
+          if (data.choices && data.choices[0] && data.choices[0].delta) {
+            var delta = data.choices[0].delta;
+            if (delta.content) {
+              self.updateStreamingMessage(currentContent + delta.content);
+              return delta.content;
+            }
+          }
+          return null;
+        });
+        return result;
+      } else if (settings.provider === 'anthropic') {
+        var anthropicBaseUrl = settings.baseUrl || 'https://api.anthropic.com/v1';
+        anthropicBaseUrl = anthropicBaseUrl.replace(/\/$/, '');
+        url = anthropicBaseUrl + '/messages';
+        headers = {
+          'Content-Type': 'application/json',
+          'x-api-key': settings.apiKey,
+          'anthropic-version': '2023-06-01'
+        };
+        // Anthropic 不接受 system role 在 messages 中，需单独传递 / Anthropic doesn't accept system role in messages
+        var anthropicMessages = [];
+        var systemContent = '';
+        for (var i = 0; i < messages.length; i++) {
+          if (messages[i].role === 'system') {
+            systemContent += messages[i].content + '\n';
+          } else {
+            anthropicMessages.push({
+              role: messages[i].role === 'assistant' ? 'assistant' : 'user',
+              content: messages[i].content
+            });
+          }
+        }
+        body = {
+          model: settings.model || 'claude-3-5-sonnet-20240620',
+          max_tokens: 4096,
+          messages: anthropicMessages,
+          stream: true
+        };
+        if (systemContent.trim()) {
+          body.system = systemContent.trim();
+        }
+
+        response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+          var aErr = '';
+          try { var aData = await response.json(); aErr = aData.error ? (aData.error.message || JSON.stringify(aData.error)) : JSON.stringify(aData); } catch (e) { aErr = 'HTTP ' + response.status; }
+          throw new Error('API request failed: ' + response.status + ' - ' + aErr);
+        }
+
+        // Anthropic 流式响应需要单独解析 / Anthropic streaming needs custom parsing
+        if (!response.body) throw new Error('NO_RESPONSE_BODY');
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder('utf-8');
+        var buffer = '';
+        var fullContent = '';
+        try {
+          while (true) {
+            var rResult = await reader.read();
+            if (rResult.done) break;
+            buffer += decoder.decode(rResult.value, { stream: true });
+            var lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (var li = 0; li < lines.length; li++) {
+              var line = lines[li].trim();
+              if (!line || line.indexOf('data: ') !== 0) continue;
+              var dataStr = line.substring(6);
+              try {
+                var data = JSON.parse(dataStr);
+                if (data.type === 'content_block_delta' && data.delta && data.delta.text) {
+                  fullContent += data.delta.text;
+                  this.updateStreamingMessage(fullContent);
+                }
+              } catch (e) {}
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+        return fullContent;
+      } else if (settings.provider === 'google') {
+        var googleBaseUrl = settings.baseUrl || 'https://generativelanguage.googleapis.com/v1beta';
+        googleBaseUrl = googleBaseUrl.replace(/\/$/, '');
+        url = googleBaseUrl + '/models/' + (settings.model || 'gemini-2.0-flash') + ':streamGenerateContent?key=' + encodeURIComponent(settings.apiKey) + '&alt=sse';
+        headers = { 'Content-Type': 'application/json' };
+        // Google 不接受 system role，需用 systemInstruction / Google uses systemInstruction
+        var googleContents = [];
+        var googleSystem = '';
+        for (var gi = 0; gi < messages.length; gi++) {
+          if (messages[gi].role === 'system') {
+            googleSystem += messages[gi].content + '\n';
+          } else {
+            googleContents.push({
+              role: messages[gi].role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: messages[gi].content }]
+            });
+          }
+        }
+        body = { contents: googleContents };
+        if (googleSystem.trim()) {
+          body.systemInstruction = { parts: [{ text: googleSystem.trim() }] };
+        }
+
+        response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+          var gErr = '';
+          try { var gData = await response.json(); gErr = gData.error ? (gData.error.message || JSON.stringify(gData.error)) : JSON.stringify(gData); } catch (e) { gErr = 'HTTP ' + response.status; }
+          throw new Error('API request failed: ' + response.status + ' - ' + gErr);
+        }
+
+        var gSelf = this;
+        var gResult = await parseSSE(response, function(data, currentContent) {
+          if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+            var parts = data.candidates[0].content.parts || [];
+            var delta = '';
+            for (var pi = 0; pi < parts.length; pi++) { if (parts[pi].text) delta += parts[pi].text; }
+            if (delta) {
+              gSelf.updateStreamingMessage(currentContent + delta);
+              return delta;
+            }
+          }
+          return null;
+        });
+        return gResult;
+      } else {
+        throw new Error('Unsupported provider: ' + settings.provider);
+      }
     },
 
     fetchModels: async function(provider, apiKey) {

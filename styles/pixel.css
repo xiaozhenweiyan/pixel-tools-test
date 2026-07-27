@@ -7755,6 +7755,7 @@ canvas {
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  min-height: 0;
 }
 .eve-mascot-container {
   text-align: center;
@@ -7776,6 +7777,7 @@ canvas {
 .eve-chat-messages {
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -7784,6 +7786,27 @@ canvas {
   border: 3px solid #ffffff;
   border-radius: 4px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+/* 像素风格滚动条 / Pixel-style scrollbar */
+.eve-chat-messages::-webkit-scrollbar {
+  width: 12px;
+}
+.eve-chat-messages::-webkit-scrollbar-track {
+  background: #1a1a2e;
+  border: 2px solid #3d3d54;
+}
+.eve-chat-messages::-webkit-scrollbar-thumb {
+  background: #ffd700;
+  border: 2px solid #1a1a2e;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+}
+.eve-chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #ffe650;
+}
+.eve-chat-messages {
+  scrollbar-width: thin;
+  scrollbar-color: #ffd700 #1a1a2e;
 }
 .eve-message {
   display: flex;
@@ -7803,8 +7826,9 @@ canvas {
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
   font-family: 'Courier New', monospace;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #ffffff;
+  max-width: 100%;
 }
 .eve-message-user .eve-message-bubble {
   background: #1a1a2e;
@@ -7813,6 +7837,115 @@ canvas {
 .eve-message-bubble p {
   margin: 0;
   word-break: break-word;
+}
+
+/* Eve 消息内容 Markdown 渲染样式（与 pixel-ai 保持一致）/ Eve message content Markdown styles */
+.eve-message-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+.eve-message-eve .eve-message-content {
+  white-space: pre-wrap;
+}
+.eve-message-content b,
+.eve-message-content strong {
+  color: #ffd700;
+  font-weight: bold;
+}
+.eve-message-content em,
+.eve-message-content i {
+  color: #ffb3b3;
+  font-style: italic;
+}
+.eve-message-content del {
+  text-decoration: line-through;
+  color: #8888aa;
+}
+.eve-message-content code {
+  background: #1a1a2e;
+  padding: 2px 6px;
+  border: 1px solid #3d3d54;
+  border-radius: 2px;
+  font-size: 13px;
+  color: #d8d8e8;
+  font-family: 'Consolas', 'Monaco', 'Source Code Pro', 'Menlo', 'Courier New', monospace;
+}
+.eve-message-content pre {
+  background: #1a1a2e;
+  background-image:
+    linear-gradient(45deg, rgba(61, 61, 84, 0.4) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(61, 61, 84, 0.4) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(61, 61, 84, 0.4) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(61, 61, 84, 0.4) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  border: 2px solid #3d3d54;
+  padding: 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+.eve-message-content pre code {
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: #e0e0e8;
+  background-image: none;
+}
+.eve-message-content h3 {
+  color: #ffd700;
+  font-size: 16px;
+  margin: 12px 0 6px 0;
+  border-bottom: 2px solid #3d3d54;
+  padding-bottom: 4px;
+}
+.eve-message-content h4 {
+  color: #1e90ff;
+  font-size: 15px;
+  margin: 10px 0 4px 0;
+}
+.eve-message-content ul {
+  margin: 6px 0;
+  padding-left: 24px;
+  list-style-type: square;
+}
+.eve-message-content li {
+  margin: 4px 0;
+}
+.eve-message-content blockquote {
+  border-left: 4px solid #ffd700;
+  padding: 8px 12px;
+  margin: 8px 0;
+  color: #c8c8e0;
+  background: #1a1a2e;
+  background-image:
+    linear-gradient(45deg, rgba(255, 215, 0, 0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 215, 0, 0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 215, 0, 0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 215, 0, 0.08) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+}
+.eve-message-content a {
+  color: #1e90ff;
+  text-decoration: underline;
+  word-break: break-all;
+}
+.eve-message-content a:hover {
+  color: #00bfff;
+}
+
+/* 流式输出光标 / Streaming cursor */
+.eve-cursor {
+  display: inline-block;
+  color: #ffd700;
+  animation: eve-blink 1s steps(2) infinite;
+  margin-left: 2px;
+  font-weight: bold;
+}
+@keyframes eve-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
 }
 .eve-chat-input-area {
   display: flex;
