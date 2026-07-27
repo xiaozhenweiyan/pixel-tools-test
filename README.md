@@ -939,6 +939,7 @@ cd wasm
 ### 2026-07 · Pixel AI chat tool
 
 - **Pixel AI chat tool** — New AI chat tool with 9 LLM providers, token usage tracking, local API key storage, bilingual UI
+- **Deep Thinking Mode** — Two-step reasoning: AI first analyzes the problem in a collapsible thinking card (streaming), then generates the final response based on the reasoning. Toggle via the "Deep Thinking" button in the topbar.
 
 ---
 
@@ -1957,6 +1958,7 @@ cd wasm
 ### 2026-07 · 像素 AI 聊天工具
 
 - **像素 AI 聊天工具** — 新增 AI 聊天工具，支持 9 家大模型提供商、Token 消耗统计、本地存储 API Key、双语界面
+- **深度思考模式** — 两步推理：AI 先在可折叠的思考卡片中进行流式分析（问题拆解→知识回顾→推理路径→可能答案→最优选择→结论），再基于思考结果生成最终回复。通过顶栏"深度思考"按钮切换开关。
 
 ---
 
