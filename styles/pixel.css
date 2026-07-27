@@ -7123,6 +7123,117 @@ canvas {
   color: #ff8800;
 }
 
+/* 深度思考模式卡片 / Deep thinking mode card */
+.ai-deep-thinking-card {
+  background: #0a0a1a;
+  border: 2px solid #444477;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: all 0.2s;
+}
+
+.ai-deep-thinking-card:hover {
+  border-color: #6666aa;
+}
+
+.ai-deep-thinking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: #111133;
+  border-bottom: 1px solid #333355;
+}
+
+.ai-deep-thinking-title {
+  color: #88ccff;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+
+.ai-deep-thinking-toggle {
+  background: transparent;
+  border: 1px solid #555577;
+  color: #aaaacc;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.ai-deep-thinking-toggle:hover {
+  border-color: #88ccff;
+  color: #88ccff;
+}
+
+.ai-deep-thinking-content {
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ccccdd;
+  font-family: 'Courier New', monospace;
+  max-height: 200px;
+  overflow-y: auto;
+  transition: max-height 0.3s ease;
+}
+
+.ai-deep-thinking-content code {
+  background: #1a1a33;
+  padding: 1px 4px;
+  border-radius: 2px;
+  color: #ffcc88;
+}
+
+.ai-deep-thinking-content pre {
+  background: #1a1a33;
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 4px 0;
+}
+
+.ai-deep-thinking-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.ai-deep-thinking-content strong {
+  color: #ffd700;
+}
+
+.ai-deep-thinking-card.collapsed .ai-deep-thinking-content {
+  max-height: 0;
+  padding: 0 10px;
+  overflow: hidden;
+}
+
+/* 深度思考模式切换按钮 / Deep thinking toggle button */
+#btn-ai-deep-thinking {
+  margin-left: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  border: 2px solid #444477;
+  background: #1a1a33;
+  color: #aaaacc;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+#btn-ai-deep-thinking:hover {
+  border-color: #88ccff;
+  color: #88ccff;
+}
+
+#btn-ai-deep-thinking.active {
+  border-color: #00ff88;
+  color: #00ff88;
+  background: #0a2a1a;
+}
+
 /* 编辑模式 / Edit mode */
 .ai-edit-textarea {
   width: 100%;
