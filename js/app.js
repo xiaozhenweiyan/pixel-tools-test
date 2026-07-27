@@ -3263,6 +3263,7 @@
   // ---------- 公仔彩蛋交互 / Mascot Easter Egg Interaction ----------
   function initMascotEasterEgg() {
     var mascotContainer = document.getElementById('landing-mascot-container');
+    var mascotCharacter = document.getElementById('mascot-character');
     var mascotDialog = document.getElementById('mascot-dialog');
     var dialogText = document.getElementById('mascot-dialog-text');
     if (!mascotContainer || !mascotDialog || !dialogText) return;
@@ -3272,28 +3273,29 @@
     // 初始化：确保对话框隐藏
     mascotDialog.style.display = 'none';
 
-    mascotContainer.addEventListener('click', function(e) {
-      // 如果点击的是对话框本身，不处理（让对话框自己的事件处理）
-      if (e.target.closest('.mascot-dialog')) return;
-
-      var isHidden = mascotDialog.style.display === 'none' || mascotDialog.style.display === '';
-      if (isHidden) {
-        // 显示对话框
-        var randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
-        try {
-          dialogText.textContent = window.i18n ? window.i18n.t(randomKey) : randomKey;
-        } catch (err) {
-          dialogText.textContent = randomKey;
+    // 只在公仔本身上绑定点击事件（避免同一横行的空白区域也触发）
+    if (mascotCharacter) {
+      mascotCharacter.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isHidden = mascotDialog.style.display === 'none' || mascotDialog.style.display === '';
+        if (isHidden) {
+          // 显示对话框
+          var randomKey = dialogKeys[Math.floor(Math.random() * dialogKeys.length)];
+          try {
+            dialogText.textContent = window.i18n ? window.i18n.t(randomKey) : randomKey;
+          } catch (err) {
+            dialogText.textContent = randomKey;
+          }
+          mascotDialog.style.display = 'block';
+          // 重置动画
+          mascotDialog.style.animation = 'none';
+          void mascotDialog.offsetWidth;
+          mascotDialog.style.animation = '';
+        } else {
+          mascotDialog.style.display = 'none';
         }
-        mascotDialog.style.display = 'block';
-        // 重置动画
-        mascotDialog.style.animation = 'none';
-        void mascotDialog.offsetWidth;
-        mascotDialog.style.animation = '';
-      } else {
-        mascotDialog.style.display = 'none';
-      }
-    });
+      });
+    }
 
     // 点击对话框进入 Eve 聊天室
     mascotDialog.addEventListener('click', function(e) {
