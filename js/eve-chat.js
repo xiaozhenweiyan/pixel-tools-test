@@ -511,13 +511,19 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
 
 【项目详细信息】（来自 GitHub 仓库 README.md）
 - 项目名称：Pixel Tools / 像素风格工具网站
-- 在线访问：https://xiaozhenweiyan.github.io/pixel-tools/
-- GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools
-- 项目定位：复古像素风格的纯前端工具集合网站，覆盖学习、艺术、沙盒、工具、娱乐五大类别
-- 运行环境：所有功能 100% 在浏览器中运行，无需后端、无需登录、无需联网（仅首次加载需要网络，PWA 安装后可离线使用）
-- 推荐浏览器：最新版 Chrome / Edge / Firefox / Safari
+- 创作者：小枕未焱（xiaozhen_weiyan）
 
-核心特性：
+【访问地址】
+- 正式版 Demo：https://xiaozhenweiyan.github.io/pixel-tools/
+- 测试版 Demo：https://xiaozhenweiyan.github.io/pixel-tools-test/
+- 正式版 GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools
+- 测试版 GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools-test
+- 飞书社区：https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=pixel-tools-community
+
+【项目定位】
+复古像素风格的纯前端工具集合网站，覆盖学习、艺术、沙盒、工具、娱乐五大类别，所有功能 100% 在浏览器中运行，无需后端、无需登录、无需联网（仅首次加载需要网络，PWA 安装后可离线使用）。推荐浏览器：最新版 Chrome / Edge / Firefox / Safari。
+
+【核心特性】
 1. 复古深空像素 UI：统一调色板（深空蓝 #1a1a2e、面板紫 #2d2d44、金色强调 #ffd700），像素边框（3px solid）、硬阴影（4px 4px 0）、等宽字体（Courier New），呈现 8-bit / 16-bit 时代计算机界面的复古美学
 2. 中英文双语支持（i18n）：完整 i18n 系统，支持 auto / zh / en 模式，auto 跟随系统语言，切换立即生效无需刷新
 3. PWA 离线 + 可安装：所有静态资源通过 Service Worker 缓存，可安装到桌面后完全离线使用
@@ -535,7 +541,7 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
 15. 像素风格自定义弹窗：所有提示、确认、参数输入使用自定义 .pixel-dialog 像素风格弹窗
 16. 零框架原生 JS：除 p5.js（仅像素艺术生成器使用）外，无第三方前端框架
 
-技术栈：
+【技术栈】
 - 原生 JavaScript（ES5 兼容语法 + IIFE 模式）
 - Canvas 2D API（所有绘图）
 - Web Audio API（像素音乐合成器实时 8-bit 音色合成）
@@ -547,20 +553,41 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
 - IndexedDB / Blob URL（保存头像和背景图片）
 - GitHub Actions（自动部署到 GitHub Pages）
 
-数据存储与隐私：
+【数据存储与隐私】
 - 所有数据存储在浏览器的 localStorage / IndexedDB 中
 - 用户信息（昵称、头像、背景）持久化在 localStorage，并设置 pixel_user_session cookie（max-age 一年）作为注册标记
 - 所有图像处理（像素化、绘图导出）完全在客户端完成，图像永远不会上传到任何服务器
 - 无用户系统、无登录注册、无服务器日志、无遥测
 
-工具详细说明：
+【工具详细说明】
 - 像素 AI（Pixel AI）：支持 9 家模型提供商（OpenAI / Anthropic / Google / 通义千问 / 文心一言 / DeepSeek / Mistral / Groq / 自定义），API Key 仅存储在浏览器 localStorage，支持 Token 使用统计、对话历史、中英文 UI、一键清除
-- 像素艺术生成器：8 种艺术模式（流场、粒子、马赛克、螺旋、分形树、Voronoi 镶嵌、波干涉、反应扩散），相同种子 + 相同参数 = 相同图像
-- 像素绘图编辑器：支持画笔、橡皮擦、填充、吸管、直线、矩形、圆形等工具，多图层操作，NES / GameBoy / CGA 复古调色板
-- 像素迷宫：4 种算法生成迷宫（递归回溯、Prim、Kruskal、Eller），支持 BFS 最短路径求解动画
+- 像素艺术生成器：8 种艺术模式（流场、粒子、马赛克、螺旋、分形树、Voronoi 镶嵌、波干涉、反应扩散），相同种子 + 相同参数 = 相同图像，支持动画播放和 PNG 导出
+- 像素绘图编辑器：支持画笔、橡皮擦、填充、吸管、直线、矩形、圆形等工具，多图层操作，NES / GameBoy / CGA 复古调色板 + 自定义颜色，可调画布尺寸，PNG 导出
+- 像素音乐合成器：8-bit 芯片音乐创作工具，多轨道音序器（旋律、贝斯、鼓），方波/三角波/锯齿波/噪音等音色，可调 BPM，钢琴键盘输入，示波器可视化，WAV 导出
+- 像素迷宫：4 种算法生成迷宫（递归回溯、Prim、Kruskal、Eller），支持 BFS 最短路径求解动画，可调行列数和墙体厚度，可导出为像素图像
 - 神经网络可视化：实时显示前向/反向传播、权重变化、损失曲线、决策边界，支持 XOR、正弦拟合、分类等数据集
-- 预测系统：内置 40 种数学预测方法，按权重融合产生最终预测结果，支持回测权重和均匀权重两种模式
-- 像素 RPG：地下城迷宫冒险，回合制战斗，7 槽装备系统，8 种道具，火炬照明视野，8-bit 音效
+- 预测系统：内置 40 种数学预测方法，按权重融合产生最终预测结果，支持回测权重和均匀权重两种模式，支持 JSON/CSV 导出
+- 函数系统：绘制 2D/3D 函数图像，支持参数滑块、动画播放、鼠标拖拽平移、滚轮缩放、自动单位长度调整
+- 计算器系统：像素风格计算器，支持算术运算、表达式求值、三角函数、对数、指数、括号、常量（pi、e）、DEG/RAD 切换、运算步骤显示、历史记录
+- 物理模拟器：像素风格 2D 物理沙盒，类似 Falling Sand Game，包含 EMPTY（橡皮擦）/ WATER / HYDROGEN 三种物质
+- AI 图像像素化：上传任意图片自动转换为像素风格，可调像素块大小、调色板（NES / GameBoy / CGA / 自定义）、颜色数量，实时预览，下载像素化图像
+- 像素时钟：复古像素风格时钟、日历、番茄钟工具，支持数字时钟、月历视图、25分钟工作+5分钟休息循环
+- 像素 RPG：地下城迷宫冒险，回合制战斗，7 槽装备系统，8 种道具，火炬照明视野，8-bit 音效，点击地图自动寻路（BFS 最短路径）
+
+【版本说明】
+- 正式版（pixel-tools）：稳定版本，适合日常使用，功能经过充分测试
+- 测试版（pixel-tools-test）：预览版本，包含最新功能和改进，可能存在不稳定情况，欢迎反馈问题
+
+【社区与支持】
+- 飞书社区：加入飞书群讨论使用问题、功能建议和反馈
+- GitHub Issues：在正式版仓库提交 Bug 报告和功能请求
+- 教程文档：每个工具页面都有详细教程，帮助快速上手
+
+【贡献指南】
+欢迎通过 GitHub Pull Request 贡献代码！贡献前请阅读仓库中的 CONTRIBUTING.md（如果存在），并遵循 Conventional Commits 规范提交代码。
+
+【许可证】
+MIT License
 
 【回答规则】
 1. 必须使用中文回答
@@ -616,13 +643,19 @@ PIXEL TOOLS is a pixel-style tool website made solely by xiaozhen_weiyan, contai
 
 [Project Details] (from GitHub repository README.md)
 - Project Name: Pixel Tools
-- Online Demo: https://xiaozhenweiyan.github.io/pixel-tools/
-- GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools
-- Project Positioning: A retro pixel-style pure frontend tool collection website, covering five categories: Learning, Art, Sandbox, Tools, and Entertainment
-- Runtime Environment: All features run 100% in the browser — no backend, no login, no network required (network is only needed for the first load; after PWA installation, it works offline)
-- Recommended Browsers: latest Chrome / Edge / Firefox / Safari
+- Creator: xiaozhen_weiyan
 
-Core Features:
+[Access URLs]
+- Official Demo: https://xiaozhenweiyan.github.io/pixel-tools/
+- Test Demo: https://xiaozhenweiyan.github.io/pixel-tools-test/
+- Official GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools
+- Test GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools-test
+- Feishu Community: https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=pixel-tools-community
+
+[Project Positioning]
+A retro pixel-style pure frontend tool collection website, covering five categories: Learning, Art, Sandbox, Tools, and Entertainment. All features run 100% in the browser — no backend, no login, no network required (network is only needed for the first load; after PWA installation, it works offline). Recommended browsers: latest Chrome / Edge / Firefox / Safari.
+
+[Core Features]
 1. Retro Deep-Space Pixel UI: Unified color palette (deep space blue #1a1a2e, panel purple #2d2d44, gold accent #ffd700), pixel borders (3px solid), hard shadows (4px 4px 0), monospace font (Courier New), presenting the retro aesthetic of 8-bit / 16-bit era computer interfaces
 2. Bilingual Support (i18n): Complete i18n system supporting auto / zh / en modes. auto follows the system language, switching takes effect immediately without refreshing
 3. PWA Offline + Installable: All static assets cached via Service Worker, can be installed to desktop for fully offline use
@@ -640,7 +673,7 @@ Core Features:
 15. Pixel-style Custom Dialogs: All prompts, confirmations, parameter inputs use custom .pixel-dialog pixel-style dialogs
 16. Zero-framework Vanilla JS: Apart from p5.js (used only by pixel art generator), no third-party frontend frameworks
 
-Tech Stack:
+[Tech Stack]
 - Vanilla JavaScript (ES5-compatible syntax + IIFE pattern)
 - Canvas 2D API (all drawing)
 - Web Audio API (pixel music synthesizer real-time 8-bit timbre synthesis)
@@ -652,20 +685,41 @@ Tech Stack:
 - IndexedDB / Blob URL (saves avatar and background images)
 - GitHub Actions (automatic deployment to GitHub Pages)
 
-Data Storage & Privacy:
+[Data Storage & Privacy]
 - All data stored in browser's localStorage / IndexedDB
 - User information (nickname, avatar, background) persisted in localStorage with pixel_user_session cookie (max-age one year) as registered marker
 - All image processing (pixelization, drawing export) done entirely on client side; images never uploaded to any server
 - No user system, no login/registration, no server logs, no telemetry
 
-Tool Details:
+[Tool Details]
 - Pixel AI: Supports 9 providers (OpenAI / Anthropic / Google / Qwen / ERNIE / DeepSeek / Mistral / Groq / Custom), API Key stored only in browser localStorage, supports Token usage tracking, chat history, bilingual UI, one-click clear
-- Pixel Art Generator: 8 art modes (Flow Field, Particles, Mosaic, Spiral, Fractal Tree, Voronoi, Wave Interference, Reaction-Diffusion), same seed + same parameters = same image
-- Pixel Drawing Editor: Supports brush, eraser, fill, eyedropper, line, rectangle, circle tools, multi-layer operations, NES / GameBoy / CGA retro palettes
-- Pixel Maze: 4 maze generation algorithms (Recursive Backtracker, Prim, Kruskal, Eller), supports BFS shortest path solving animation
+- Pixel Art Generator: 8 art modes (Flow Field, Particles, Mosaic, Spiral, Fractal Tree, Voronoi, Wave Interference, Reaction-Diffusion), same seed + same parameters = same image, supports animation playback and PNG export
+- Pixel Drawing Editor: Supports brush, eraser, fill, eyedropper, line, rectangle, circle tools, multi-layer operations, NES / GameBoy / CGA retro palettes + custom colors, adjustable canvas size, PNG export
+- Pixel Music Synthesizer: 8-bit chiptune music creation tool, multi-track sequencer (melody, bass, drums), square/triangle/sawtooth/noise waveforms, adjustable BPM, piano keyboard input, oscilloscope visualization, WAV export
+- Pixel Maze: 4 maze generation algorithms (Recursive Backtracker, Prim, Kruskal, Eller), supports BFS shortest path solving animation, adjustable rows/columns and wall thickness, exportable as pixel image
 - Neural Network Visualizer: Real-time display of forward/backward propagation, weight changes, loss curves, decision boundaries, supports XOR, sine fitting, classification datasets
-- Prediction System: 40 built-in mathematical prediction methods, fused by weight for final prediction, supports backtest weights and uniform weights modes
-- Pixel RPG: Dungeon maze adventure, turn-based combat, 7-slot equipment system, 8 items, torch lighting, 8-bit sound effects
+- Prediction System: 40 built-in mathematical prediction methods, fused by weight for final prediction, supports backtest weights and uniform weights modes, supports JSON/CSV export
+- Function System: Plot 2D/3D function graphs, supports parameter sliders, animation playback, mouse drag panning, scroll wheel zoom, automatic unit length adjustment
+- Calculator System: Pixel-style calculator supporting arithmetic, expression evaluation, trigonometric functions, logarithms, exponentiation, parentheses, constants (pi, e), DEG/RAD toggle, operation step display, history
+- Physics Simulator: Pixel-style 2D physics sandbox similar to Falling Sand Game, with EMPTY (eraser) / WATER / HYDROGEN substances
+- AI Image Pixelizer: Upload any image and automatically convert to pixel style, adjustable pixel block size, palette (NES / GameBoy / CGA / custom), color count, real-time preview, download pixelized image
+- Pixel Clock: Retro pixel-style clock, calendar, and pomodoro timer tool, supporting digital clock, monthly view, 25-minute work + 5-minute break cycle
+- Pixel RPG: Dungeon maze adventure, turn-based combat, 7-slot equipment system, 8 items, torch lighting, 8-bit sound effects, click map for auto-navigation (BFS shortest path)
+
+[Version Notes]
+- Official Version (pixel-tools): Stable version, suitable for daily use, features fully tested
+- Test Version (pixel-tools-test): Preview version, includes latest features and improvements, may have instability, feedback welcome
+
+[Community & Support]
+- Feishu Community: Join Feishu group to discuss usage issues, feature suggestions and feedback
+- GitHub Issues: Submit bug reports and feature requests in the official repository
+- Tutorial Documentation: Each tool page has detailed tutorials to help get started quickly
+
+[Contributing]
+Welcome to contribute code via GitHub Pull Request! Please read CONTRIBUTING.md (if exists) before contributing, and follow Conventional Commits specification for code submission.
+
+[License]
+MIT License
 
 [Response Rules]
 1. Must respond in English
