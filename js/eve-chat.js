@@ -518,7 +518,7 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
 - 测试版 Demo：https://xiaozhenweiyan.github.io/pixel-tools-test/
 - 正式版 GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools
 - 测试版 GitHub 仓库：https://github.com/xiaozhenweiyan/pixel-tools-test
-- 飞书社区：https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=pixel-tools-community
+- 飞书文档（网站介绍与教程）：https://hcnj46275xas.feishu.cn/docx/Qbj5d9GNAoX33Rx5tR3cvW9Tntd
 
 【项目定位】
 复古像素风格的纯前端工具集合网站，覆盖学习、艺术、沙盒、工具、娱乐五大类别，所有功能 100% 在浏览器中运行，无需后端、无需登录、无需联网（仅首次加载需要网络，PWA 安装后可离线使用）。推荐浏览器：最新版 Chrome / Edge / Firefox / Safari。
@@ -579,7 +579,7 @@ PIXEL TOOLS 是一个由小枕未焱独自制作的像素风格工具网站，�
 - 测试版（pixel-tools-test）：预览版本，包含最新功能和改进，可能存在不稳定情况，欢迎反馈问题
 
 【社区与支持】
-- 飞书社区：加入飞书群讨论使用问题、功能建议和反馈
+- 飞书文档：包含网站详细介绍和使用教程
 - GitHub Issues：在正式版仓库提交 Bug 报告和功能请求
 - 教程文档：每个工具页面都有详细教程，帮助快速上手
 
@@ -650,7 +650,7 @@ PIXEL TOOLS is a pixel-style tool website made solely by xiaozhen_weiyan, contai
 - Test Demo: https://xiaozhenweiyan.github.io/pixel-tools-test/
 - Official GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools
 - Test GitHub Repository: https://github.com/xiaozhenweiyan/pixel-tools-test
-- Feishu Community: https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=pixel-tools-community
+- Feishu Document (Website Introduction & Tutorial): https://hcnj46275xas.feishu.cn/docx/Qbj5d9GNAoX33Rx5tR3cvW9Tntd
 
 [Project Positioning]
 A retro pixel-style pure frontend tool collection website, covering five categories: Learning, Art, Sandbox, Tools, and Entertainment. All features run 100% in the browser — no backend, no login, no network required (network is only needed for the first load; after PWA installation, it works offline). Recommended browsers: latest Chrome / Edge / Firefox / Safari.
@@ -711,7 +711,7 @@ A retro pixel-style pure frontend tool collection website, covering five categor
 - Test Version (pixel-tools-test): Preview version, includes latest features and improvements, may have instability, feedback welcome
 
 [Community & Support]
-- Feishu Community: Join Feishu group to discuss usage issues, feature suggestions and feedback
+- Feishu Document: Contains detailed website introduction and usage tutorials
 - GitHub Issues: Submit bug reports and feature requests in the official repository
 - Tutorial Documentation: Each tool page has detailed tutorials to help get started quickly
 
