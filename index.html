@@ -703,6 +703,7 @@
       <div class="pixel-ide-right-panel">
         <div class="pixel-ide-ai-header">
           <span data-i18n="pixel_ide_ai_title">AI 助手</span>
+          <button id="btn-ide-ai-deep-thinking" class="pixel-btn" data-i18n="pixel_ide_deep_thinking_enable">🧠 深度思考</button>
           <button id="btn-ide-ai-settings" class="pixel-btn" data-i18n="pixel_ide_ai_settings">⚙ 设置</button>
           <button id="btn-ide-ai-new-chat" class="pixel-btn" data-i18n="pixel_ide_ai_new_chat">新对话</button>
         </div>
@@ -1854,66 +1855,66 @@
       </div>
     </div>
 
-    <!-- 模型设置弹窗 -->
-    <div id="ai-settings-modal" class="ai-settings-modal pixel-dialog" style="display:none;">
-      <div class="pixel-dialog-content">
-        <h2 data-i18n="pixel_ai_settings_title">模型设置</h2>
-        
-        <div class="ai-settings-section">
-          <label class="settings-label" data-i18n="pixel_ai_settings_provider">模型提供商</label>
-          <select id="ai-provider-select" class="pixel-input">
-            <option value="openai" data-i18n="pixel_ai_provider_openai">OpenAI</option>
-            <option value="anthropic" data-i18n="pixel_ai_provider_anthropic">Anthropic</option>
-            <option value="google" data-i18n="pixel_ai_provider_google">Google Gemini</option>
-            <option value="qwen" data-i18n="pixel_ai_provider_qwen">通义千问</option>
-            <option value="ernie" data-i18n="pixel_ai_provider_ernie">文心一言</option>
-            <option value="deepseek" data-i18n="pixel_ai_provider_deepseek">DeepSeek</option>
-            <option value="mistral" data-i18n="pixel_ai_provider_mistral">Mistral</option>
-            <option value="groq" data-i18n="pixel_ai_provider_groq">Groq</option>
-            <option value="custom" data-i18n="pixel_ai_provider_custom">自定义 (OpenAI 兼容)</option>
-          </select>
-        </div>
+  </div>
 
-        <div class="ai-settings-section">
-          <label class="settings-label" data-i18n="pixel_ai_settings_model">模型</label>
-          <select id="ai-model-select" class="pixel-input"></select>
-        </div>
+  <!-- 模型设置弹窗（移出 pixel-ai-page，供 pixel-ai 与 pixel-ide 共用） -->
+  <div id="ai-settings-modal" class="ai-settings-modal pixel-dialog" style="display:none;">
+    <div class="pixel-dialog-content">
+      <h2 data-i18n="pixel_ai_settings_title">模型设置</h2>
 
-        <div class="ai-settings-section">
-          <label class="settings-label" data-i18n="pixel_ai_settings_api_key">API Key</label>
-          <div class="ai-api-key-row">
-            <input type="password" id="ai-api-key-input" class="pixel-input" placeholder="sk-...">
-            <button type="button" class="pixel-btn" id="btn-ai-toggle-key" data-i18n="pixel_ai_settings_show">显示</button>
-          </div>
-        </div>
+      <div class="ai-settings-section">
+        <label class="settings-label" data-i18n="pixel_ai_settings_provider">模型提供商</label>
+        <select id="ai-provider-select" class="pixel-input">
+          <option value="openai" data-i18n="pixel_ai_provider_openai">OpenAI</option>
+          <option value="anthropic" data-i18n="pixel_ai_provider_anthropic">Anthropic</option>
+          <option value="google" data-i18n="pixel_ai_provider_google">Google Gemini</option>
+          <option value="qwen" data-i18n="pixel_ai_provider_qwen">通义千问</option>
+          <option value="ernie" data-i18n="pixel_ai_provider_ernie">文心一言</option>
+          <option value="deepseek" data-i18n="pixel_ai_provider_deepseek">DeepSeek</option>
+          <option value="mistral" data-i18n="pixel_ai_provider_mistral">Mistral</option>
+          <option value="groq" data-i18n="pixel_ai_provider_groq">Groq</option>
+          <option value="custom" data-i18n="pixel_ai_provider_custom">自定义 (OpenAI 兼容)</option>
+        </select>
+      </div>
 
-        <div class="ai-settings-section" id="ai-base-url-section" style="display:none;">
-          <label class="settings-label" data-i18n="pixel_ai_settings_base_url">API Base URL</label>
-          <input type="text" id="ai-base-url-input" class="pixel-input" placeholder="https://api.example.com/v1">
-        </div>
+      <div class="ai-settings-section">
+        <label class="settings-label" data-i18n="pixel_ai_settings_model">模型</label>
+        <select id="ai-model-select" class="pixel-input"></select>
+      </div>
 
-        <p class="ai-security-hint" data-i18n="pixel_ai_settings_security_hint">API Key 仅保存在本地浏览器，不上传任何服务器</p>
-
-        <div class="pixel-dialog-buttons">
-          <button class="pixel-btn" id="btn-ai-settings-cancel" data-i18n="pixel_ai_settings_cancel">取消</button>
-          <button class="pixel-btn" id="btn-ai-settings-save" data-i18n="pixel_ai_settings_save">保存</button>
+      <div class="ai-settings-section">
+        <label class="settings-label" data-i18n="pixel_ai_settings_api_key">API Key</label>
+        <div class="ai-api-key-row">
+          <input type="password" id="ai-api-key-input" class="pixel-input" placeholder="sk-...">
+          <button type="button" class="pixel-btn" id="btn-ai-toggle-key" data-i18n="pixel_ai_settings_show">显示</button>
         </div>
       </div>
-    </div>
 
-    <!-- 自制确认弹窗 / Custom Confirm Modal -->
-    <div id="ai-confirm-modal" class="ai-confirm-modal" style="display:none;">
-      <div class="pixel-dialog ai-confirm-dialog">
-        <div class="ai-confirm-icon" id="ai-confirm-icon">⚠</div>
-        <h2 id="ai-confirm-title" data-i18n="pixel_ai_confirm_title">确认操作</h2>
-        <p id="ai-confirm-message" class="ai-confirm-message">确定要执行此操作吗？</p>
-        <div class="pixel-dialog-buttons">
-          <button class="pixel-btn" id="btn-ai-confirm-cancel" data-i18n="pixel_ai_confirm_cancel">取消</button>
-          <button class="pixel-btn ai-confirm-ok-btn" id="btn-ai-confirm-ok" data-i18n="pixel_ai_confirm_ok">确定</button>
-        </div>
+      <div class="ai-settings-section" id="ai-base-url-section" style="display:none;">
+        <label class="settings-label" data-i18n="pixel_ai_settings_base_url">API Base URL</label>
+        <input type="text" id="ai-base-url-input" class="pixel-input" placeholder="https://api.example.com/v1">
+      </div>
+
+      <p class="ai-security-hint" data-i18n="pixel_ai_settings_security_hint">API Key 仅保存在本地浏览器，不上传任何服务器</p>
+
+      <div class="pixel-dialog-buttons">
+        <button class="pixel-btn" id="btn-ai-settings-cancel" data-i18n="pixel_ai_settings_cancel">取消</button>
+        <button class="pixel-btn" id="btn-ai-settings-save" data-i18n="pixel_ai_settings_save">保存</button>
       </div>
     </div>
+  </div>
 
+  <!-- 自制确认弹窗（移出 pixel-ai-page，供 pixel-ai 与 pixel-ide 共用） / Custom Confirm Modal -->
+  <div id="ai-confirm-modal" class="ai-confirm-modal" style="display:none;">
+    <div class="pixel-dialog ai-confirm-dialog">
+      <div class="ai-confirm-icon" id="ai-confirm-icon">⚠</div>
+      <h2 id="ai-confirm-title" data-i18n="pixel_ai_confirm_title">确认操作</h2>
+      <p id="ai-confirm-message" class="ai-confirm-message">确定要执行此操作吗？</p>
+      <div class="pixel-dialog-buttons">
+        <button class="pixel-btn" id="btn-ai-confirm-cancel" data-i18n="pixel_ai_confirm_cancel">取消</button>
+        <button class="pixel-btn ai-confirm-ok-btn" id="btn-ai-confirm-ok" data-i18n="pixel_ai_confirm_ok">确定</button>
+      </div>
+    </div>
   </div>
 
   <div id="settings-page" class="settings-page">

@@ -8484,5 +8484,122 @@ canvas {
   white-space: nowrap;
 }
 
+/* 像素IDE 深度思考卡片 / Pixel IDE Deep Thinking Card */
+.pixel-ide-ai-deep-thinking-card {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  background: #0a0a1a;
+  border: 2px solid #444477;
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.pixel-ide-ai-deep-thinking-card:hover {
+  border-color: #6666aa;
+}
+
+.pixel-ide-ai-deep-thinking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: #111133;
+  border-bottom: 1px solid #333366;
+}
+
+.pixel-ide-ai-deep-thinking-title {
+  color: #88ccff;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+.pixel-ide-ai-deep-thinking-toggle {
+  background: transparent;
+  border: 1px solid #555577;
+  color: #aaaacc;
+  padding: 2px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: var(--font);
+  transition: all 0.1s;
+}
+
+.pixel-ide-ai-deep-thinking-toggle:hover {
+  border-color: #88ccff;
+  color: #88ccff;
+}
+
+.pixel-ide-ai-deep-thinking-content {
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ccccdd;
+  font-family: 'Courier New', monospace;
+  max-height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.pixel-ide-ai-deep-thinking-content code {
+  background: #1a1a33;
+  padding: 1px 4px;
+  border-radius: 2px;
+  color: #ffcc88;
+  word-break: break-all;
+  font-size: 11px;
+}
+
+.pixel-ide-ai-deep-thinking-content pre {
+  background: #1a1a33;
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 4px 0;
+  font-size: 11px;
+}
+
+.pixel-ide-ai-deep-thinking-content pre code {
+  background: transparent;
+  padding: 0;
+  word-break: normal;
+}
+
+.pixel-ide-ai-deep-thinking-content strong {
+  color: #ffd700;
+}
+
+.pixel-ide-ai-deep-thinking-card.collapsed .pixel-ide-ai-deep-thinking-content {
+  display: none;
+}
+
+/* 像素IDE 深度思考切换按钮 / Pixel IDE Deep thinking toggle button */
+#btn-ide-ai-deep-thinking {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 2px solid #444477;
+  background: #1a1a33;
+  color: #aaaacc;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+#btn-ide-ai-deep-thinking:hover {
+  border-color: #88ccff;
+  color: #88ccff;
+}
+
+#btn-ide-ai-deep-thinking.active {
+  border-color: #00ff88;
+  color: #00ff88;
+  background: #0a2a1a;
+}
+
+
 
 

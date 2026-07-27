@@ -27,6 +27,8 @@ window.PixelIDE = (function () {
     isStreaming: false,
     streamingMessageEl: null,
     streamingContent: '',
+    deepThinkingEnabled: false,
+    deepThinkingContent: '',
     dom: {}
   };
 
@@ -286,6 +288,7 @@ window.PixelIDE = (function () {
     state.dom.aiSendBtn = document.getElementById('btn-ide-ai-send');
     state.dom.aiSettingsBtn = document.getElementById('btn-ide-ai-settings');
     state.dom.aiNewChatBtn = document.getElementById('btn-ide-ai-new-chat');
+    state.dom.aiDeepThinkingBtn = document.getElementById('btn-ide-ai-deep-thinking');
 
     state.dom.backBtn = document.getElementById('btn-back-to-pixel-programming');
   }
@@ -407,6 +410,40 @@ window.PixelIDE = (function () {
     if (!state.dom.aiMessages) return;
     var container = state.dom.aiMessages;
 
+    // 深度思考卡片（位于助手消息之前）/ Deep thinking card (before assistant message)
+    if (msg.role === 'assistant' && msg.deepThinkingContent) {
+      var card = document.createElement('div');
+      card.className = 'pixel-ide-ai-deep-thinking-card';
+
+      var header = document.createElement('div');
+      header.className = 'pixel-ide-ai-deep-thinking-header';
+
+      var title = document.createElement('span');
+      title.className = 'pixel-ide-ai-deep-thinking-title';
+      title.textContent = t('pixel_ide_deep_thinking_reasoning');
+      header.appendChild(title);
+
+      var toggle = document.createElement('button');
+      toggle.className = 'pixel-ide-ai-deep-thinking-toggle';
+      toggle.textContent = t('pixel_ide_deep_thinking_collapse');
+      (function (cardEl, toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          cardEl.classList.toggle('collapsed');
+          toggleBtn.textContent = cardEl.classList.contains('collapsed') ?
+            t('pixel_ide_deep_thinking_expand') : t('pixel_ide_deep_thinking_collapse');
+        });
+      })(card, toggle);
+      header.appendChild(toggle);
+      card.appendChild(header);
+
+      var thinkingContent = document.createElement('div');
+      thinkingContent.className = 'pixel-ide-ai-deep-thinking-content';
+      thinkingContent.innerHTML = sanitizeHtml(markdownToHtml(msg.deepThinkingContent));
+      card.appendChild(thinkingContent);
+
+      container.appendChild(card);
+    }
+
     var msgDiv = document.createElement('div');
     msgDiv.className = 'pixel-ide-ai-message pixel-ide-ai-message-' + msg.role;
     msgDiv.dataset.msgIndex = index;
@@ -460,7 +497,9 @@ window.PixelIDE = (function () {
   function updateStreamingMessage(content) {
     if (!state.streamingMessageEl) return;
     state.streamingContent = content;
+    // 先查找普通消息内容区，再回退到深度思考内容区
     var contentDiv = state.streamingMessageEl.querySelector('.pixel-ide-ai-message-content');
+    if (!contentDiv) contentDiv = state.streamingMessageEl.querySelector('.pixel-ide-ai-deep-thinking-content');
     if (contentDiv) {
       contentDiv.innerHTML = sanitizeHtml(markdownToHtml(content));
     }
@@ -594,20 +633,24 @@ window.PixelIDE = (function () {
       var reply;
       var usedStream = true;
 
-      try {
-        appendStreamingMessage('assistant');
-        reply = await callApi(true);
-        if (!reply || !reply.trim()) throw new Error('EMPTY_STREAM_RESPONSE');
-      } catch (streamErr) {
-        usedStream = false;
-        if (state.streamingMessageEl && state.streamingMessageEl.parentNode) {
-          state.streamingMessageEl.parentNode.removeChild(state.streamingMessageEl);
+      if (state.deepThinkingEnabled) {
+        reply = await doDeepThinkingApiCall();
+      } else {
+        try {
+          appendStreamingMessage('assistant');
+          reply = await callApi(true);
+          if (!reply || !reply.trim()) throw new Error('EMPTY_STREAM_RESPONSE');
+        } catch (streamErr) {
+          usedStream = false;
+          if (state.streamingMessageEl && state.streamingMessageEl.parentNode) {
+            state.streamingMessageEl.parentNode.removeChild(state.streamingMessageEl);
+          }
+          finalizeStreamingMessage();
+          reply = await callApi(false);
         }
-        finalizeStreamingMessage();
-        reply = await callApi(false);
       }
 
-      state.messages.push({ role: 'assistant', content: reply });
+      state.messages.push({ role: 'assistant', content: reply, deepThinkingContent: state.deepThinkingContent });
 
       if (usedStream) {
         finalizeStreamingMessage();
@@ -631,7 +674,153 @@ window.PixelIDE = (function () {
       saveConversations();
     } finally {
       state.isLoading = false;
+      state.deepThinkingContent = '';
       updateAISendButtonState();
+    }
+  }
+
+  // ============================================================
+  // 深度思考 / Deep Thinking
+  // ============================================================
+
+  async function doDeepThinkingApiCall() {
+    // 清除上一次的思考卡片（如有）
+    if (state.dom.aiMessages) {
+      var oldCard = state.dom.aiMessages.querySelector('#ide-ai-deep-thinking-card');
+      if (oldCard) oldCard.remove();
+    }
+
+    var thinkingCard = appendDeepThinkingCard();
+    state.deepThinkingContent = '';
+
+    var thinkingPrompt = buildDeepThinkingPrompt(state.messages);
+    var lastUserMsg = state.messages[state.messages.length - 1].content;
+    var thinkingMessages = [
+      { role: 'system', content: thinkingPrompt },
+      { role: 'user', content: lastUserMsg }
+    ];
+
+    // 临时替换 state.messages 用于思考阶段调用
+    var originalMessages = state.messages.slice();
+    state.messages = thinkingMessages;
+
+    // 将流式输出目标临时指向思考卡片
+    state.streamingMessageEl = thinkingCard;
+    state.streamingContent = '';
+
+    var thinkingReply = '';
+    try {
+      thinkingReply = await callApi(true);
+    } catch (e) {
+      // 流式失败则回退非流式
+      thinkingReply = await callApi(false);
+      updateDeepThinkingCard(thinkingReply);
+    } finally {
+      state.messages = originalMessages;
+    }
+
+    state.deepThinkingContent = thinkingReply || '';
+    // 清除流式状态，但保留卡片
+    state.streamingMessageEl = null;
+    state.streamingContent = '';
+
+    // 最终回答的流式输出
+    appendStreamingMessage('assistant');
+
+    var finalPrompt = buildFinalResponsePrompt(thinkingReply);
+    var finalMessages = originalMessages.slice();
+    finalMessages.unshift({ role: 'system', content: finalPrompt });
+
+    var originalMessages2 = originalMessages.slice();
+    state.messages = finalMessages;
+
+    try {
+      return await callApi(true);
+    } finally {
+      state.messages = originalMessages2;
+    }
+  }
+
+  function buildDeepThinkingPrompt(messages) {
+    var userMsg = messages[messages.length - 1].content;
+    return '你是一个深度思考助手。请对用户的问题 "' + userMsg + '" 进行深度分析和推理。\n\n' +
+      '请按照以下结构输出你的思考过程，并用【【符号】】框住整个思考内容：\n\n' +
+      '【【\n' +
+      '1. 问题分析：拆解问题的核心要点\n' +
+      '2. 相关知识：回顾与问题相关的知识\n' +
+      '3. 推理路径：逐步推导的逻辑过程\n' +
+      '4. 可能的答案：列出几种可能的解答方向\n' +
+      '5. 最优选择：分析哪种答案最合理\n' +
+      '6. 结论：总结你的思考结果\n' +
+      '】】\n\n' +
+      '请详细思考，不要跳过任何步骤。你的思考过程将被用于生成最终回复。';
+  }
+
+  function buildFinalResponsePrompt(thinkingContent) {
+    return '你是一个智能助手。我已经对用户的问题进行了深度思考，以下是思考过程：\n\n' +
+      thinkingContent + '\n\n' +
+      '请基于以上思考过程，用自然、友好的语言回答用户的问题。你的回答应该：\n' +
+      '1. 直接回应用户的问题，不要提及思考过程\n' +
+      '2. 语言流畅，逻辑清晰\n' +
+      '3. 保持像素风格的可爱语气\n' +
+      '4. 如果是技术问题，提供清晰的解释和示例';
+  }
+
+  function appendDeepThinkingCard() {
+    if (!state.dom.aiMessages) return null;
+
+    var card = document.createElement('div');
+    card.id = 'ide-ai-deep-thinking-card';
+    card.className = 'pixel-ide-ai-deep-thinking-card';
+
+    var header = document.createElement('div');
+    header.className = 'pixel-ide-ai-deep-thinking-header';
+
+    var title = document.createElement('span');
+    title.className = 'pixel-ide-ai-deep-thinking-title';
+    title.textContent = t('pixel_ide_deep_thinking_reasoning');
+    header.appendChild(title);
+
+    var toggle = document.createElement('button');
+    toggle.className = 'pixel-ide-ai-deep-thinking-toggle';
+    toggle.textContent = t('pixel_ide_deep_thinking_collapse');
+    (function (cardEl, toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        cardEl.classList.toggle('collapsed');
+        toggleBtn.textContent = cardEl.classList.contains('collapsed') ?
+          t('pixel_ide_deep_thinking_expand') : t('pixel_ide_deep_thinking_collapse');
+      });
+    })(card, toggle);
+    header.appendChild(toggle);
+
+    card.appendChild(header);
+
+    var content = document.createElement('div');
+    content.className = 'pixel-ide-ai-deep-thinking-content';
+    content.textContent = t('pixel_ide_deep_thinking_thinking');
+    card.appendChild(content);
+
+    state.dom.aiMessages.appendChild(card);
+    state.dom.aiMessages.scrollTop = state.dom.aiMessages.scrollHeight;
+
+    return card;
+  }
+
+  function updateDeepThinkingCard(content) {
+    var card = document.getElementById('ide-ai-deep-thinking-card');
+    if (!card) return;
+    var contentDiv = card.querySelector('.pixel-ide-ai-deep-thinking-content');
+    if (contentDiv) {
+      contentDiv.innerHTML = sanitizeHtml(markdownToHtml(content || ''));
+    }
+  }
+
+  function toggleDeepThinking() {
+    state.deepThinkingEnabled = !state.deepThinkingEnabled;
+    if (state.dom.aiDeepThinkingBtn) {
+      state.dom.aiDeepThinkingBtn.textContent = state.deepThinkingEnabled ?
+        t('pixel_ide_deep_thinking_disable') : t('pixel_ide_deep_thinking_enable');
+      state.dom.aiDeepThinkingBtn.classList.toggle('active', state.deepThinkingEnabled);
     }
   }
 
@@ -772,6 +961,10 @@ window.PixelIDE = (function () {
       state.dom.aiNewChatBtn.addEventListener('click', createConversation);
     }
 
+    if (state.dom.aiDeepThinkingBtn) {
+      state.dom.aiDeepThinkingBtn.addEventListener('click', toggleDeepThinking);
+    }
+
     if (state.dom.aiSettingsBtn) {
       state.dom.aiSettingsBtn.addEventListener('click', function () {
         if (window.PixelAI && window.PixelAI.openSettings) {
@@ -801,6 +994,15 @@ window.PixelIDE = (function () {
   // 初始化 / Initialization
   // ============================================================
 
+  function onLanguageChange() {
+    if (state.dom.aiDeepThinkingBtn) {
+      state.dom.aiDeepThinkingBtn.textContent = state.deepThinkingEnabled ?
+        t('pixel_ide_deep_thinking_disable') : t('pixel_ide_deep_thinking_enable');
+      state.dom.aiDeepThinkingBtn.classList.toggle('active', state.deepThinkingEnabled);
+    }
+    renderAIMessages();
+  }
+
   function init() {
     if (window.i18n && typeof window.i18n.applyToDOM === 'function') {
       window.i18n.applyToDOM();
@@ -812,6 +1014,8 @@ window.PixelIDE = (function () {
     createConversation();
     renderFilesList();
     renderConversationList();
+
+    document.addEventListener('languagechange', onLanguageChange);
   }
 
   return {
