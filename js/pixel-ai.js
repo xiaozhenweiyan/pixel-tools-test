@@ -65,8 +65,8 @@ window.PixelAI = (function () {
       ]},
     { id: 'deepseek', nameKey: 'pixel_ai_provider_deepseek', apiType: API_TYPES.OPENAI, baseUrl: 'https://api.deepseek.com/v1',
       models: [
-        { id: 'deepseek-chat', nameKey: 'pixel_ai_model_deepseek_chat' },
-        { id: 'deepseek-reasoner', nameKey: 'pixel_ai_model_deepseek_reasoner' }
+        { id: 'deepseek-v4-flash', nameKey: 'pixel_ai_model_deepseek_v4_flash' },
+        { id: 'deepseek-v4-pro', nameKey: 'pixel_ai_model_deepseek_v4_pro' }
       ]},
     { id: 'mistral', nameKey: 'pixel_ai_provider_mistral', apiType: API_TYPES.OPENAI, baseUrl: 'https://api.mistral.ai/v1',
       models: [
