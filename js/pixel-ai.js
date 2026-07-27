@@ -1808,14 +1808,19 @@ ${thinkingContent}
 
   function init() {
     cacheDom();
-    if (!state.dom.messages) return;
 
     loadSettings();
+
+    if (!state.dom.messages) {
+      loadConversations();
+      bindEvents();
+      return;
+    }
+
     loadConversations();
     initCustomScrollbar();
     bindEvents();
 
-    // 加载或创建对话 / Load or create conversation
     if (state.conversations.length > 0) {
       switchConversation(state.conversations[0].id);
     } else {

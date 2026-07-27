@@ -828,45 +828,58 @@ window.PixelIDE = (function () {
   // 代码运行 / Code Execution
   // ============================================================
 
-  function runCode() {
+  async function runCode() {
     if (!state.dom.editor || !state.dom.output) return;
 
     var code = state.dom.editor.value;
     var lang = state.currentLang;
-    var output = '';
 
-    if (lang === 'python') {
-      if (code.includes('print(')) {
-        var matches = code.match(/print\(['"]([^'"]+)['"]\)/g);
-        if (matches) {
-          for (var i = 0; i < matches.length; i++) {
-            var content = matches[i].match(/print\(['"]([^'"]+)['"]\)/);
-            if (content) output += content[1] + '\n';
-          }
-        } else {
-          output = t('pixel_ide_running_python') + '\n' + t('pixel_ide_simulated_output');
-        }
-      } else {
-        output = t('pixel_ide_running_python') + '\n' + t('pixel_ide_simulated_output');
-      }
-    } else {
-      if (code.includes('cout')) {
-        var coutMatches = code.match(/cout\s*<<\s*['"]([^'"]+)['"]/g);
-        if (coutMatches) {
-          for (var j = 0; j < coutMatches.length; j++) {
-            var coutContent = coutMatches[j].match(/cout\s*<<\s*['"]([^'"]+)['"]/);
-            if (coutContent) output += coutContent[1] + '\n';
-          }
-        } else {
-          output = t('pixel_ide_running_cpp') + '\n' + t('pixel_ide_simulated_output');
-        }
-      } else {
-        output = t('pixel_ide_running_cpp') + '\n' + t('pixel_ide_simulated_output');
-      }
+    if (state.dom.runBtn) {
+      state.dom.runBtn.disabled = true;
+      state.dom.runBtn.textContent = t('pixel_ide_running');
     }
 
-    state.dom.output.textContent = output;
-    showToast(t('pixel_ide_run_success'));
+    state.dom.output.textContent = t('pixel_ide_running_code') + '...';
+
+    try {
+      var response = await fetch('http://127.0.0.1:8765/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          code: code,
+          language: lang
+        })
+      });
+
+      var result = await response.json();
+
+      var output = '';
+      if (result.stdout && result.stdout.trim()) {
+        output += result.stdout;
+      }
+      if (result.stderr && result.stderr.trim()) {
+        if (output) output += '\n';
+        output += 'stderr:\n' + result.stderr;
+      }
+      if (!output) {
+        output = result.success ? t('pixel_ide_run_success') : t('pixel_ide_run_failed');
+      }
+
+      state.dom.output.textContent = output;
+      showToast(result.success ? t('pixel_ide_run_success') : t('pixel_ide_run_failed'));
+    } catch (e) {
+      state.dom.output.textContent = t('pixel_ide_run_error') + ': ' + e.message + '\n\n' +
+        t('pixel_ide_run_hint');
+      showToast(t('pixel_ide_run_error'));
+    } finally {
+      if (state.dom.runBtn) {
+        state.dom.runBtn.disabled = false;
+        state.dom.runBtn.textContent = t('pixel_ide_run');
+      }
+    }
   }
 
   // ============================================================

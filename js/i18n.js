@@ -560,6 +560,11 @@
       pixel_ide_running_cpp: '正在运行 C++...',
       pixel_ide_simulated_output: '（模拟输出）',
       pixel_ide_run_success: '运行成功！',
+      pixel_ide_run_failed: '运行失败！',
+      pixel_ide_run_error: '运行错误',
+      pixel_ide_running: '运行中...',
+      pixel_ide_running_code: '正在执行代码',
+      pixel_ide_run_hint: '提示：请先启动代码执行服务器\n在终端运行：python3 mcp-server/code_executor.py',
       pixel_ide_save_success: '保存成功！',
       pixel_ide_sending: '发送中...',
 
@@ -1707,6 +1712,11 @@
       pixel_ide_running_cpp: 'Running C++...',
       pixel_ide_simulated_output: '(Simulated output)',
       pixel_ide_run_success: 'Run successful!',
+      pixel_ide_run_failed: 'Run failed!',
+      pixel_ide_run_error: 'Run error',
+      pixel_ide_running: 'Running...',
+      pixel_ide_running_code: 'Executing code',
+      pixel_ide_run_hint: 'Hint: Please start the code execution server first\nRun in terminal: python3 mcp-server/code_executor.py',
       pixel_ide_save_success: 'Saved successfully!',
       pixel_ide_sending: 'Sending...',
 

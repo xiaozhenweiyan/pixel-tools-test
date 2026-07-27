@@ -2770,6 +2770,9 @@
   function initPixelIDETool() {
     if (initFlags.pixelIDE) return;
     initFlags.pixelIDE = true;
+    if (window.PixelAI && typeof window.PixelAI.init === 'function') {
+      window.PixelAI.init();
+    }
     if (window.PixelIDE) {
       window.PixelIDE.init();
     }

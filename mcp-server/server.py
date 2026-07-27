@@ -4,10 +4,14 @@ Pixel Tools MCP Server
 
 依赖：mcp (FastMCP)，通过 stdio 传输。
 计算器逻辑复用自 js/app.js 的 calculateExpr / trigEval / formatCalcResult；
-预测器是简化版（4 种基础方法），权重计算参考 js/weights.js。
+预测器是简化版（4 种基础方法），权重计算参考 js/weights.js；
+代码执行支持 Python 和 C++。
 """
 import math
 import re
+import subprocess
+import tempfile
+import os
 from typing import List, Union
 
 from mcp.server.fastmcp import FastMCP
@@ -454,6 +458,147 @@ def list_predictors() -> list:
             / List of methods with name and description
     """
     return [{"name": p["name"], "description": p["desc"]} for p in PREDICTORS]
+
+
+# ============================================================
+# 代码执行 / Code Execution
+# ============================================================
+
+def _execute_python(code: str) -> dict:
+    """执行 Python 代码
+
+    Execute Python code and return results.
+    """
+    try:
+        result = subprocess.run(
+            ["python3", "-c", code],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        return {
+            "success": result.returncode == 0,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "return_code": result.returncode
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "success": False,
+            "stdout": "",
+            "stderr": "Error: 代码执行超时（超过30秒）",
+            "return_code": -1
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "stdout": "",
+            "stderr": f"Error: {str(e)}",
+            "return_code": -1
+        }
+
+
+def _execute_cpp(code: str) -> dict:
+    """执行 C++ 代码
+
+    Execute C++ code and return results.
+    """
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.cpp', delete=False) as f:
+            f.write(code)
+            cpp_file = f.name
+        
+        exe_file = cpp_file.replace('.cpp', '.out')
+        
+        compile_result = subprocess.run(
+            ["g++", cpp_file, "-o", exe_file, "-std=c++17"],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        if compile_result.returncode != 0:
+            os.unlink(cpp_file)
+            return {
+                "success": False,
+                "stdout": "",
+                "stderr": f"编译错误:\n{compile_result.stderr}",
+                "return_code": compile_result.returncode
+            }
+        
+        run_result = subprocess.run(
+            [exe_file],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        os.unlink(cpp_file)
+        os.unlink(exe_file)
+        
+        return {
+            "success": run_result.returncode == 0,
+            "stdout": run_result.stdout,
+            "stderr": run_result.stderr,
+            "return_code": run_result.returncode
+        }
+    except subprocess.TimeoutExpired:
+        try:
+            os.unlink(cpp_file)
+            os.unlink(exe_file)
+        except:
+            pass
+        return {
+            "success": False,
+            "stdout": "",
+            "stderr": "Error: 代码执行超时（超过30秒）",
+            "return_code": -1
+        }
+    except FileNotFoundError:
+        return {
+            "success": False,
+            "stdout": "",
+            "stderr": "Error: 未找到 g++ 编译器，请确保已安装 g++",
+            "return_code": -2
+        }
+    except Exception as e:
+        try:
+            os.unlink(cpp_file)
+            os.unlink(exe_file)
+        except:
+            pass
+        return {
+            "success": False,
+            "stdout": "",
+            "stderr": f"Error: {str(e)}",
+            "return_code": -1
+        }
+
+
+@mcp.tool()
+def execute_code(code: str, language: str = "python") -> dict:
+    """执行代码 / Execute code
+
+    支持 Python 和 C++ 代码执行。
+
+    Args:
+        code: 要执行的代码
+            / Code to execute
+        language: 代码语言，"python"（默认）或 "cpp"
+            / Code language, "python" (default) or "cpp"
+
+    Returns:
+        dict: {
+            "success": bool,      # 是否执行成功
+            "stdout": str,        # 标准输出
+            "stderr": str,        # 标准错误
+            "return_code": int    # 返回码
+        }
+    """
+    if language.lower() == "cpp":
+        return _execute_cpp(code)
+    else:
+        return _execute_python(code)
 
 
 if __name__ == "__main__":
